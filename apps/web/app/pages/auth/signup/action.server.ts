@@ -1,0 +1,24 @@
+import { json, redirect } from "@remix-run/node";
+import { parseWithZod } from "@conform-to/zod";
+import { actionHandler } from "~/utils/action.server";
+import { signUpSchema } from "~/api/Auth/authApi.contracts";
+import { AuthApi } from "~/api/Auth/AuthApi.server";
+import { routes } from "~/routes";
+
+export const action = actionHandler({
+  post: async ({ request }, { fetch }) => {
+    const formData = await request.formData();
+
+    const submission = parseWithZod(formData, { schema: signUpSchema });
+
+    if (submission.status !== "success") {
+      return json(submission.reply(), { status: 400 });
+    }
+
+    const authApi = new AuthApi(fetch);
+
+    await authApi.signUp(submission.value);
+
+    return redirect(routes.signIn.getPath());
+  },
+});
