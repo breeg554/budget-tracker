@@ -1,0 +1,23 @@
+# fly.toml app configuration file generated for pdg-website on 2024-03-01T23:02:21+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'pdg-website'
+primary_region = 'waw'
+kill_signal = "SIGINT"
+
+[env]
+  PAGE_URL = "https://pdg-website.fly.dev"
+  API_URL = "https://jsonplaceholder.typicode.com"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[vm]]
+  size = 'shared-cpu-1x'
