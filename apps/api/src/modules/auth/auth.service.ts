@@ -9,6 +9,7 @@ import { CreateUserDto } from '~/dtos/users/create-user.dto';
 import { UserService } from '~/modules/user/user.service';
 import { User } from '~/entities/user/user.entity';
 import { SignInDto } from '~/dtos/auth/sign-in.dto';
+import { GetUserDto } from '~/dtos/users/get-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<User> {
+  async validateUser(email: string, password: string): Promise<GetUserDto> {
     const user: User = await this.userService.findOneByEmail(email);
 
     const isMatch: boolean = bcrypt.compareSync(password, user.password);

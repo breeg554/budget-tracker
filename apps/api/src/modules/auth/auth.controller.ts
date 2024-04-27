@@ -4,24 +4,19 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '~/modules/auth/auth.service';
 import { Public } from '~/modules/auth/public.decorator';
 import { SignInDto } from '~/dtos/auth/sign-in.dto';
-import { SignUpDto } from '~/dtos/auth/sign-up.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Response } from 'express';
-import { ConfigService } from '@nestjs/config';
+import { CreateUserDto } from '~/dtos/users/create-user.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    private readonly configService: ConfigService,
-  ) {}
+  constructor(private authService: AuthService) {}
   @Public()
   @UseGuards(AuthGuard('local'))
   @HttpCode(HttpStatus.OK)
@@ -32,20 +27,29 @@ export class AuthController {
   ) {
     const { accessToken } = await this.authService.signIn(signInDto);
 
+    this.returnCookie(res, accessToken);
+  }
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('signup')
+  async signUp(
+    @Body() signUpDto: CreateUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken } = await this.authService.signUp(signUpDto);
+
+    this.returnCookie(res, accessToken);
+  }
+
+  private returnCookie(res: Response, token: string) {
     res
-      .cookie('access_token', accessToken, {
+      .cookie('access_token', token, {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
         expires: new Date(Date.now() + 1 * 24 * 60 * 1000),
       })
       .send({ status: 'ok' });
-  }
-
-  @Public()
-  @HttpCode(HttpStatus.OK)
-  @Post('signup')
-  signUp(@Body() signUpDto: SignUpDto) {
-    return this.authService.signUp(signUpDto);
   }
 }
