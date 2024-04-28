@@ -45,7 +45,7 @@ export const HomePage = () => {
     );
   };
 
-  console.log(actionData);
+  console.log(users);
 
   return (
     <div>
