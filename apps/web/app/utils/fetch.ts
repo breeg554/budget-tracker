@@ -18,13 +18,13 @@ type ParsedResponse<T> = Response & { data: T };
 export const typedFetch = async <T extends ZodType>(
   schema: T,
   url: string,
-  args?: RequestInit
+  args?: RequestInit,
 ): Promise<ParsedResponse<z.infer<T>>> => {
   const response = await fetch(url, merge(args ?? {}, DefaultFetchArgs)).catch(
     (e) => {
       console.error(`Failed to fetch from url: ${url} - ${e}`);
       throw new UnknownAPIError();
-    }
+    },
   );
 
   if (!response.ok) {

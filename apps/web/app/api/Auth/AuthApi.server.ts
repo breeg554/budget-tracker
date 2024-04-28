@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { typedFetch, TypedFetch } from "~/utils/fetch";
 import { SignInBody, SignUpBody } from "./authApi.types";
-import { fromSignInResponse } from "~/api/Auth/authApi.contracts";
 
 export class AuthApi {
   private readonly baseUrl = "/auth";
@@ -12,23 +11,16 @@ export class AuthApi {
   }
 
   signUp(data: SignUpBody) {
-    return this.client(z.any(), `${this.baseUrl}/register`, {
+    return this.client(z.any(), `${this.baseUrl}/signup`, {
       method: "POST",
       body: JSON.stringify(data),
     });
   }
 
   signIn(data: SignInBody) {
-    return this.client(fromSignInResponse, `${this.baseUrl}/login`, {
+    return this.client(z.any(), `${this.baseUrl}/signin`, {
       method: "POST",
       body: JSON.stringify(data),
-    });
-  }
-
-  refreshToken(refreshToken: string) {
-    return this.client(fromSignInResponse, `${this.baseUrl}/refresh`, {
-      method: "POST",
-      body: JSON.stringify({ refreshToken }),
     });
   }
 }

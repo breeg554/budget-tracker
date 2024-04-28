@@ -1,12 +1,11 @@
-import { createCookieSessionStorage } from "@remix-run/node";
+import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { routes } from "~/routes";
 
-type AuthData = {};
+type AuthData = {
+  tokens: string;
+};
 
-type SessionData = {
-  expirationDate: number;
-} & AuthData;
-
-const createSession = createCookieSessionStorage<SessionData>({
+const createSession = createCookieSessionStorage<AuthData>({
   cookie: {
     name: "__session",
     secrets: [process.env.SESSION_SECRET as string],
@@ -23,27 +22,34 @@ export const logout = async (request: Request) => {
   const cookie = request.headers.get("Cookie");
   const session = await getSession(cookie);
 
-  const headers = new Headers();
-  headers.set("Set-Cookie", await destroySession(session));
-
-  return headers;
+  return await destroySession(session);
 };
 
 export const requireSignedIn = async (request: Request) => {
   const cookie = request.headers.get("Cookie");
   const session = await getSession(cookie);
+
+  if (!session.get("tokens")) {
+    throw redirect(routes.signIn.getPath(), {
+      headers: { "Set-cookie": await logout(request) },
+    });
+  }
 };
 
 export const requireNotSignedIn = async (request: Request) => {
   const cookie = request.headers.get("Cookie");
   const session = await getSession(cookie);
+
+  if (session.get("tokens")) {
+    throw redirect(routes.homepage.getPath());
+  }
 };
 
-export const setAuthSession = async (
-  sessionData: AuthData,
-  request: Request
-) => {
+export const setAuthSession = async (request: Request, response: Response) => {
+  const authCookie = response.headers.get("Set-Cookie")!;
   const session = await getSession(request.headers.get("Cookie"));
+
+  session.set("tokens", authCookie);
 
   return await commitSession(session);
 };

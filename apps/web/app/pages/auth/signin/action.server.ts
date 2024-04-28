@@ -18,8 +18,10 @@ export const action = actionHandler({
 
     const authApi = new AuthApi(fetch);
 
+    const response = await authApi.signIn(submission.value);
+
     return redirect(routes.homepage.getPath(), {
-      headers: { "Set-cookie": await setAuthSession({}, request) },
+      headers: { "Set-cookie": await setAuthSession(request, response) },
     });
   },
 });
