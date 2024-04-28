@@ -1,5 +1,6 @@
 import { typedFetch, TypedFetch } from "~/utils/fetch";
 import { fromTodosResponse } from "./sampleApi.contracts";
+import { z } from "zod";
 
 export class SampleApi {
   private readonly client: TypedFetch;
@@ -9,6 +10,6 @@ export class SampleApi {
   }
 
   getSampleData() {
-    return this.client(fromTodosResponse, "/RedisTest");
+    return this.client(z.any(), "/users");
   }
 }

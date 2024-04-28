@@ -21,6 +21,10 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<GetUserDto> {
     const user: User = await this.userService.findOneByEmail(email);
 
+    if (!user) {
+      throw new BadRequestException('User does not exist');
+    }
+
     const isMatch: boolean = bcrypt.compareSync(password, user.password);
 
     if (!isMatch) {

@@ -6,7 +6,7 @@ import { routes } from "~/routes";
 export const action = actionHandler({
   post: async ({ request }) => {
     return redirect(routes.signIn.getPath(), {
-      headers: await logout(request),
+      headers: { "Set-cookie": await logout(request) },
     });
   },
 });

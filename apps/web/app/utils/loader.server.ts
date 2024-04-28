@@ -7,19 +7,20 @@ import {
   UnknownAPIError,
 } from "~/utils/errors";
 import { routes } from "~/routes";
+import { logout } from "~/session.server";
 
 export const loaderHandler =
   <T>(fn: (args: LoaderFunctionArgs, helpers: { fetch: TypedFetch }) => T) =>
   async (args: LoaderFunctionArgs) => {
     try {
-      return fn(args, { fetch: await serverTypedFetch(args.request) });
+      return await fn(args, { fetch: await serverTypedFetch(args.request) });
     } catch (e) {
       if (e instanceof UnknownAPIError) {
         throw json(
           { error: "Unknown API error" },
           {
             status: 500,
-          }
+          },
         );
       } else if (e instanceof NotFoundError) {
         throw new Response(null, {
@@ -27,8 +28,11 @@ export const loaderHandler =
           statusText: "Not Found",
         });
       } else if (e instanceof UnauthorizedError) {
-        //@todo redirect to signin ?
-        throw redirect(routes.signIn.getPath());
+        throw redirect(routes.signIn.getPath(), {
+          headers: {
+            "Set-cookie": await logout(args.request),
+          },
+        });
       }
 
       console.error(e);

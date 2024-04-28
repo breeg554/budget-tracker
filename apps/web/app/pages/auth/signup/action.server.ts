@@ -4,6 +4,7 @@ import { actionHandler } from "~/utils/action.server";
 import { signUpSchema } from "~/api/Auth/authApi.contracts";
 import { AuthApi } from "~/api/Auth/AuthApi.server";
 import { routes } from "~/routes";
+import { setAuthSession } from "~/session.server";
 
 export const action = actionHandler({
   post: async ({ request }, { fetch }) => {
@@ -17,8 +18,10 @@ export const action = actionHandler({
 
     const authApi = new AuthApi(fetch);
 
-    await authApi.signUp(submission.value);
+    const response = await authApi.signUp(submission.value);
 
-    return redirect(routes.signIn.getPath());
+    return redirect(routes.signIn.getPath(), {
+      headers: { "Set-cookie": await setAuthSession(request, response) },
+    });
   },
 });
