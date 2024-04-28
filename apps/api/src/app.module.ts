@@ -9,8 +9,8 @@ import { User } from '~/entities/user/user.entity';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { JwtGuard } from '~/modules/auth/jwt.guard';
 import { JwtStrategy } from '~/modules/auth/jwt.strategy';
-import { ZodValidationPipe } from 'nestjs-zod';
 import { LoggerModule } from 'nestjs-pino';
+import { CustomZodValidationPipe } from '~/modules/errors/zodValidationPipe';
 
 @Module({
   imports: [
@@ -36,7 +36,7 @@ import { LoggerModule } from 'nestjs-pino';
   providers: [
     {
       provide: APP_PIPE,
-      useClass: ZodValidationPipe,
+      useClass: CustomZodValidationPipe,
     },
     AppService,
     {

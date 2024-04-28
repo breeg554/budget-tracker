@@ -14,6 +14,7 @@ import {
 } from "~/utils/errors";
 import { routes } from "~/routes";
 import { logout } from "~/session.server";
+import { SubmissionResult } from "@conform-to/react";
 
 type ActionHandler<T> = (
   args: ActionFunctionArgs,
@@ -65,10 +66,8 @@ export const actionHandler =
       }
     } catch (e) {
       if (e instanceof ValidationError) {
-        //@todo handle form validation
-        throw new ValidationError();
+        return json(toSubmissionError(e.fieldErrors));
       } else if (e instanceof UnauthorizedError) {
-        //@todo redirect to signin ?
         throw redirect(routes.signIn.getPath(), {
           headers: {
             "Set-cookie": await logout(actionArgs.request),
@@ -77,12 +76,9 @@ export const actionHandler =
       } else if (e instanceof NotFoundError) {
         throw notFound();
       } else if (e instanceof UnknownAPIError) {
-        return json(
-          { error: "Unknown API error" },
-          {
-            status: 500,
-          },
-        );
+        return json(toSubmissionError({ global: ["Unknown API error"] }), {
+          status: 500,
+        });
       }
       console.error(e);
       throw e;
@@ -90,3 +86,11 @@ export const actionHandler =
 
     return notFound();
   };
+
+function toSubmissionError(errors: Record<string, string[]>): SubmissionResult {
+  return {
+    error: errors,
+    status: "error",
+    initialValue: {},
+  };
+}

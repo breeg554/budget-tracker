@@ -29,8 +29,8 @@ export const typedFetch = async <T extends ZodType>(
 
   if (!response.ok) {
     if (response.status === 422) {
-      //todo handle error
-      throw new ValidationError();
+      const errors = await response.json();
+      throw new ValidationError(errors.fieldErrors ?? {});
     } else if (response.status === 401) {
       throw new UnauthorizedError();
     } else if (response.status === 404) {
