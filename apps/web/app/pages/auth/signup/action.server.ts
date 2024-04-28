@@ -13,7 +13,7 @@ export const action = actionHandler({
     const submission = parseWithZod(formData, { schema: signUpSchema });
 
     if (submission.status !== "success") {
-      return json(submission.reply(), { status: 400 });
+      return json(submission.reply());
     }
 
     const authApi = new AuthApi(fetch);

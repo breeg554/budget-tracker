@@ -9,15 +9,22 @@ import {
   PasswordField,
   FieldLabel,
 } from "~/components/form/fields";
-import { Link } from "@remix-run/react";
+import { Link, useActionData } from "@remix-run/react";
 import { routes } from "~/routes";
+import { action } from "./action.server";
 
 export const SignUpPage = () => {
+  const lastResult = useActionData<typeof action>();
+
   return (
     <div>
       <h1 className="text-xl text-pink-500 mb-10">Register</h1>
 
-      <ValidatedForm method="post" schema={signUpSchema}>
+      <ValidatedForm
+        method="post"
+        schema={signUpSchema}
+        lastResult={lastResult}
+      >
         <Field name="email">
           <FieldLabel>Email</FieldLabel>
           <EmailField />

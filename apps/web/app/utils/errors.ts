@@ -17,7 +17,7 @@ export class NotFoundError extends Error {
 }
 
 export class ValidationError extends Error {
-  constructor() {
-    super("Validation Error");
+  constructor(public readonly fieldErrors: Record<string, string[]>) {
+    super();
   }
 }
