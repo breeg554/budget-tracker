@@ -22,7 +22,7 @@ export class AuthService {
     const user: User = await this.userService.findOneByEmail(email);
 
     if (!user) {
-      throw new BadRequestException('User does not exist');
+      throw new UnauthorizedException();
     }
 
     const isMatch: boolean = bcrypt.compareSync(password, user.password);
