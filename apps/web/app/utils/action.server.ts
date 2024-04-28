@@ -13,10 +13,11 @@ import {
   ValidationError,
 } from "~/utils/errors";
 import { routes } from "~/routes";
+import { logout } from "~/session.server";
 
 type ActionHandler<T> = (
   args: ActionFunctionArgs,
-  helpers: { fetch: TypedFetch }
+  helpers: { fetch: TypedFetch },
 ) => Promise<T>;
 
 export const actionHandler =
@@ -68,7 +69,11 @@ export const actionHandler =
         throw new ValidationError();
       } else if (e instanceof UnauthorizedError) {
         //@todo redirect to signin ?
-        throw redirect(routes.signIn.getPath());
+        throw redirect(routes.signIn.getPath(), {
+          headers: {
+            "Set-cookie": await logout(actionArgs.request),
+          },
+        });
       } else if (e instanceof NotFoundError) {
         throw notFound();
       } else if (e instanceof UnknownAPIError) {
@@ -76,7 +81,7 @@ export const actionHandler =
           { error: "Unknown API error" },
           {
             status: 500,
-          }
+          },
         );
       }
       console.error(e);
