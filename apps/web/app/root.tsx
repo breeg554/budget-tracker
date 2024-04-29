@@ -6,6 +6,7 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 import { Theme } from "@radix-ui/themes";
+import { PageProgress } from "~/progressBar/PageProgress";
 import "@radix-ui/themes/styles.css";
 import "./style.css";
 
@@ -19,7 +20,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Theme>{children}</Theme>
+        <Theme>
+          <PageProgress />
+          {children}
+        </Theme>
         <ScrollRestoration />
         <Scripts />
       </body>

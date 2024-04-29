@@ -1,0 +1,11 @@
+#nprogress .bar{
+    @apply !bg-secondary-150 !h-[1.5px]
+}
+
+#nprogress .spinner-icon{
+    @apply !border-t-secondary-100 !border-l-secondary-100
+}
+
+#nprogress .peg{
+    @apply !shadow-xl !shadow-secondary-50
+}
