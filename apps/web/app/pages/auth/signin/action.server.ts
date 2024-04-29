@@ -20,7 +20,7 @@ export const action = actionHandler({
 
     const response = await authApi.signIn(submission.value);
 
-    return redirect(routes.homepage.getPath(), {
+    return redirect(routes.dashboard.getPath(), {
       headers: { "Set-cookie": await setAuthSession(request, response) },
     });
   },

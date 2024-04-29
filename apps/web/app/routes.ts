@@ -11,8 +11,20 @@ export const routes = {
     pattern: "/signOut" as const,
     getPath: () => "/signOut" as const,
   },
-  homepage: {
+  dashboard: {
     pattern: "/" as const,
     getPath: () => "/" as const,
+  },
+  statistics: {
+    pattern: "/statistics" as const,
+    getPath: () => "/statistics" as const,
+  },
+  profile: {
+    pattern: "/profile" as const,
+    getPath: () => "/profile" as const,
+  },
+  receipts: {
+    pattern: "/receipts" as const,
+    getPath: () => "/receipts" as const,
   },
 } as const;
