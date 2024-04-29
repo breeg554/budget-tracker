@@ -59,7 +59,7 @@ export const DashboardPage = () => {
       {/*{users.map((user) => (*/}
       {/*  <p>{user.email}</p>*/}
       {/*))}*/}
-
+      <div className="w-16 h-16 bg-primary-500" />
       {/*<Webcam*/}
       {/*  ref={ref}*/}
       {/*  audio={false}*/}

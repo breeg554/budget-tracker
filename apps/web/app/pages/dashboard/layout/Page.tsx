@@ -8,7 +8,7 @@ export const DashboardLayout = () => {
         <Outlet />
       </main>
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-100">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-150">
         <DashboardNav />
       </div>
     </>
