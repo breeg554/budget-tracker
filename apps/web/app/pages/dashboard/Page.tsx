@@ -6,9 +6,10 @@ import { useCallback, useRef, useState } from "react";
 import ReactWebcam from "react-webcam";
 import { createWorker } from "tesseract.js";
 import { Buildel } from "~/libs/Buildel";
-import { loader } from "~/pages/home/loader.server";
+import { loader } from "./loader.server";
+import { Button } from "@radix-ui/themes";
 
-export const HomePage = () => {
+export const DashboardPage = () => {
   const actionData = useActionData();
   const { buildelSecret, users } = useLoaderData<typeof loader>();
   const buildel = new Buildel(36, 153, buildelSecret);
@@ -52,10 +53,12 @@ export const HomePage = () => {
       <button onClick={onLogout}>Logout</button>
 
       <h1 className="text-xl text-pink-500 mb-10">Welcome to BUDGET TRACKER</h1>
-
-      {users.map((user) => (
-        <p>{user.email}</p>
-      ))}
+      <Button variant="surface" size="1" my="-2">
+        Refresh
+      </Button>
+      {/*{users.map((user) => (*/}
+      {/*  <p>{user.email}</p>*/}
+      {/*))}*/}
 
       {/*<Webcam*/}
       {/*  ref={ref}*/}

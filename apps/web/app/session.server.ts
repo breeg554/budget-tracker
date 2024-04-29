@@ -41,7 +41,7 @@ export const requireNotSignedIn = async (request: Request) => {
   const session = await getSession(cookie);
 
   if (session.get("tokens")) {
-    throw redirect(routes.homepage.getPath());
+    throw redirect(routes.dashboard.getPath());
   }
 };
 
