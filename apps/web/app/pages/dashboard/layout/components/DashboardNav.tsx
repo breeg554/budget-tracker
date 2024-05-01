@@ -13,7 +13,7 @@ interface DashboardNavProps {}
 
 export const DashboardNav: React.FC<DashboardNavProps> = () => {
   return (
-    <nav className="w-full px-6 py-4">
+    <nav className="w-full px-2 py-4">
       <ul className="grid gap-1 grid-cols-5 relative">
         <DashboardNavItem>
           <DashboardNavLink to={routes.dashboard.getPath()}>

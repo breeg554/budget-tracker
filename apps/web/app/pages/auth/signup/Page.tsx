@@ -1,5 +1,4 @@
 import type { MetaFunction } from "@remix-run/node";
-import { signUpSchema } from "~/api/Auth/authApi.contracts";
 import { ValidatedForm } from "~/components/form/ValidatedForm";
 import { SubmitButton } from "~/components/form/SubmitButton";
 import { Field } from "~/components/form/Field";
@@ -12,19 +11,26 @@ import {
 import { Link, useActionData } from "@remix-run/react";
 import { routes } from "~/routes";
 import { action } from "./action.server";
+import { useForm } from "@conform-to/react";
+import { parseWithZod } from "@conform-to/zod";
+import { schema } from "~/pages/auth/signin/schema";
 
 export const SignUpPage = () => {
   const lastResult = useActionData<typeof action>();
+
+  const [form] = useForm({
+    lastResult,
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema });
+    },
+    shouldValidate: "onSubmit",
+  });
 
   return (
     <div>
       <h1 className="text-xl text-pink-500 mb-10">Register</h1>
 
-      <ValidatedForm
-        method="post"
-        schema={signUpSchema}
-        lastResult={lastResult}
-      >
+      <ValidatedForm method="post" form={form}>
         <Field name="email">
           <FieldLabel>Email</FieldLabel>
           <EmailField />
