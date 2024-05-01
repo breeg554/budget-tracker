@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from "react";
-import { FormMetadata, FormProvider } from "@conform-to/react";
+import { FormMetadata, FormProvider, getFormProps } from "@conform-to/react";
 import { Form, FormProps } from "./Form";
 
 interface ValidatedFormProps extends FormProps {
@@ -13,7 +13,7 @@ export const ValidatedForm: React.FC<PropsWithChildren<ValidatedFormProps>> = ({
 }) => {
   return (
     <FormProvider context={form.context}>
-      <Form {...rest} id={form.id} onSubmit={form.onSubmit}>
+      <Form {...rest} {...getFormProps(form)}>
         {children}
       </Form>
     </FormProvider>
