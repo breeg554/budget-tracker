@@ -13,6 +13,8 @@ import { TransactionType } from '~/dtos/transaction/transaction-type.enum';
 export class Transaction {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+  @Column()
+  name: string;
   @Column({ type: 'numeric', precision: 10, scale: 3 })
   value: number;
   @Column({

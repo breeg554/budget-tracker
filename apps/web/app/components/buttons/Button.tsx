@@ -1,26 +1,11 @@
-import React, { ButtonHTMLAttributes } from "react";
-import { cn } from "~/utils/cn";
+import React from "react";
+import {
+  Button as RadixButton,
+  ButtonProps as RadixButtonProps,
+} from "@radix-ui/themes";
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  loading?: boolean;
-};
+export type ButtonProps = RadixButtonProps & {};
 
-export const Button: React.FC<ButtonProps> = ({
-  children,
-  loading,
-  className,
-  ...rest
-}) => {
-  return (
-    <button
-      className={cn(
-        "text-white bg-pink-500 disabled:bg-neutral-200",
-        className
-      )}
-      {...rest}
-    >
-      {children}
-      {loading && <span>loading...</span>}
-    </button>
-  );
+export const Button: React.FC<ButtonProps> = (props) => {
+  return <RadixButton {...props} />;
 };

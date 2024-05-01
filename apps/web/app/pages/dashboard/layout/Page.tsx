@@ -4,7 +4,7 @@ import { DashboardNav } from "~/dashboard/layout/components/DashboardNav";
 export const DashboardLayout = () => {
   return (
     <>
-      <main>
+      <main className="min-h-screen overflow-y-auto">
         <Outlet />
       </main>
 

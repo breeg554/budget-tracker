@@ -1,9 +1,13 @@
 import type { Config } from "tailwindcss";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 export default {
   content: ["./app/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--default-font-family)", ...defaultTheme.fontFamily.sans],
+      },
       colors: {
         primary: {
           50: "var(--purple-1)",

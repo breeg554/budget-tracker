@@ -11,13 +11,22 @@ import {
 } from "~/components/form/fields";
 import { Link } from "@remix-run/react";
 import { routes } from "~/routes";
+import { useForm } from "@conform-to/react";
+import { parseWithZod } from "@conform-to/zod";
 
 export const SignInPage = () => {
+  const [form] = useForm({
+    onValidate({ formData }) {
+      return parseWithZod(formData, { schema });
+    },
+    shouldValidate: "onSubmit",
+  });
+
   return (
     <div>
       <h1 className="text-xl text-pink-500 mb-10">Login</h1>
 
-      <ValidatedForm method="post" schema={schema}>
+      <ValidatedForm method="post" form={form}>
         <Field name="email">
           <FieldLabel>Email</FieldLabel>
           <EmailField />

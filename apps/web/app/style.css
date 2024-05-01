@@ -5,6 +5,9 @@
 
 
 :root, .light, .light-theme {
+    --default-font-family:  "Poppins", "Roboto", system-ui, sans-serif;
+    --heading-font-family: "Poppins", "Roboto",  system-ui, sans-serif;
+
     --purple-1: #fdfcff;
     --purple-2: #fbf8fe;
     --purple-3: #f5eeff;
@@ -68,6 +71,11 @@
     --gray-surface: #ffffffcc;
     --gray-indicator: #8b8d98;
     --gray-track: #8b8d98;
+}
+
+.radix-themes {
+    --default-font-family: var(--default-font-family);
+    --heading-font-family: var(--heading-font-family);
 }
 
 @supports (color: color(display-p3 1 1 1)) {

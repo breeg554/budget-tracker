@@ -7,11 +7,13 @@ import ReactWebcam from "react-webcam";
 import { createWorker } from "tesseract.js";
 import { Buildel } from "~/libs/Buildel";
 import { loader } from "./loader.server";
-import { Button } from "@radix-ui/themes";
+import { Button, IconButton } from "@radix-ui/themes";
+import { SectionWrapper } from "~/layout/SectionWrapper";
+import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 
 export const DashboardPage = () => {
   const actionData = useActionData();
-  const { buildelSecret, users } = useLoaderData<typeof loader>();
+  const { buildelSecret } = useLoaderData<typeof loader>();
   const buildel = new Buildel(36, 153, buildelSecret);
   const ref = useRef<ReactWebcam>(null);
   const fetcher = useFetcher();
@@ -46,20 +48,42 @@ export const DashboardPage = () => {
     );
   };
 
-  console.log(users);
-
   return (
-    <div>
+    <>
+      <SectionWrapper className="mb-6 mt-10 flex gap-2 items-center justify-between">
+        <h1 className="text-4xl text-neutral-900">
+          <span className="block">Hello,</span>{" "}
+          <span className="block font-bold">Dawid</span>
+        </h1>
+
+        <button className="rounded-full border border-neutral-150 w-12 h-12 bg-transparent flex justify-center items-center">
+          <MagnifyingGlassIcon width={20} height={20} />
+        </button>
+      </SectionWrapper>
+
+      <SectionWrapper className="mb-6">
+        <div className="bg-primary-900 w-full h-[200px] rounded-3xl" />
+      </SectionWrapper>
+
+      <SectionWrapper>
+        <header className="flex gap-2 justify-between items-center mb-2">
+          <h2 className="text-neutral-900">Spending</h2>
+
+          <p>select</p>
+        </header>
+
+        <ul>
+          <li className="flex justify-between">
+            <span>element 1</span> <span>-100</span>
+          </li>
+        </ul>
+      </SectionWrapper>
       <button onClick={onLogout}>Logout</button>
 
-      <h1 className="text-xl text-pink-500 mb-10">Welcome to BUDGET TRACKER</h1>
-      <Button variant="surface" size="1" my="-2">
-        Refresh
-      </Button>
       {/*{users.map((user) => (*/}
       {/*  <p>{user.email}</p>*/}
       {/*))}*/}
-      <div className="w-16 h-16 bg-primary-500" />
+
       {/*<Webcam*/}
       {/*  ref={ref}*/}
       {/*  audio={false}*/}
@@ -76,7 +100,7 @@ export const DashboardPage = () => {
       {/*{src && <img src={src} />}*/}
 
       {/*<p>{text}</p>*/}
-    </div>
+    </>
   );
 };
 
