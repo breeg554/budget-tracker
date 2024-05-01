@@ -5,6 +5,7 @@ export type TextInputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
   "defaultValue" | "value" | "size" | "type" | "color"
 > & {
+  variant?: "classic" | "surface" | "soft";
   value?: string | number;
   defaultValue?: string | number;
   size?: "1" | "2" | "3";

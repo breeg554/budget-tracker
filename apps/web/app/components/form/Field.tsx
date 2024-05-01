@@ -3,19 +3,29 @@ import { useField as useConformField } from "@conform-to/react";
 
 type FieldContextProps = {
   name: string;
+  formId?: string;
 };
 
 const FieldContext = React.createContext<FieldContextProps | undefined>(
-  undefined
+  undefined,
 );
 
 interface FieldProps {
   name: string;
+  formId?: string;
+  className?: string;
 }
 
-export const Field = ({ name, children }: PropsWithChildren<FieldProps>) => {
+export const Field = ({
+  name,
+  children,
+  formId,
+  className,
+}: PropsWithChildren<FieldProps>) => {
   return (
-    <FieldContext.Provider value={{ name }}>{children}</FieldContext.Provider>
+    <FieldContext.Provider value={{ name, formId }}>
+      <div className={className}>{children}</div>
+    </FieldContext.Provider>
   );
 };
 
@@ -24,7 +34,7 @@ export const useField = <T,>() => {
 
   if (!ctx) throw new Error("useField can be used only inside Field");
 
-  const [fieldMeta] = useConformField<T>(ctx.name);
+  const [fieldMeta] = useConformField<T>(ctx.name, { formId: ctx.formId });
 
   return fieldMeta;
 };
