@@ -20,16 +20,17 @@ import { FieldError, FieldLabel, TextField } from "~/form/fields";
 import { TransactionItemForm } from "~/dashboard/receipts/new/components/TransactionItemForm";
 import {
   CreateTransactionItemDto,
-  TransactionItemCategory,
+  GetTransactionItemCategoryDto,
 } from "~/api/Transaction/transactionApi.types";
 import {
   createTransactionSchema,
   TransactionType,
 } from "~/api/Transaction/transactionApi.contracts";
+import { MonetaryValue } from "~/utils/MonetaryValue";
 
 interface TransactionFormProps {
   lastResult?: SubmissionResult | null;
-  itemCategories: TransactionItemCategory[];
+  itemCategories: GetTransactionItemCategoryDto[];
 }
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({
@@ -150,7 +151,7 @@ function InsertItemButton({
 
 interface TransactionFormItemProps {
   field: FieldMetadata<CreateTransactionItemDto>;
-  categories: TransactionItemCategory[];
+  categories: GetTransactionItemCategoryDto[];
 }
 
 function TransactionFormItem({ field, categories }: TransactionFormItemProps) {
@@ -196,12 +197,12 @@ function TransactionFormSummaryValue({
     return value;
   };
 
-  const value = getSumValue() ?? 0;
+  const value = new MonetaryValue(getSumValue() ?? 0);
 
   return (
     <h1 className="text-5xl font-bold w-full text-center">
-      {value}
-      <span className="text-xl">$</span>
+      {value.amount.toFixed(2)}
+      <span className="text-xl">{value.currency}</span>
     </h1>
   );
 }

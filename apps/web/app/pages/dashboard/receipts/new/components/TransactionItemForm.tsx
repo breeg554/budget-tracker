@@ -14,12 +14,12 @@ import { NumberField } from "~/form/fields/NumberField";
 import { SelectField } from "~/form/fields/SelectField";
 import {
   CreateTransactionItemDto,
-  TransactionItemCategory,
+  GetTransactionItemCategoryDto,
 } from "~/api/Transaction/transactionApi.types";
 
 interface TransactionItemFormProps {
   onSubmit?: (values: CreateTransactionItemDto) => void;
-  categories: TransactionItemCategory[];
+  categories: GetTransactionItemCategoryDto[];
 }
 
 export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({

@@ -7,7 +7,9 @@ import {
   transactionItemCategory,
 } from "./transactionApi.contracts";
 
-export type TransactionItemCategory = z.TypeOf<typeof transactionItemCategory>;
+export type GetTransactionItemCategoryDto = z.TypeOf<
+  typeof transactionItemCategory
+>;
 
 export type GetTransactionDto = z.TypeOf<typeof getTransactionSchema>;
 
