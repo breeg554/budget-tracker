@@ -25,7 +25,9 @@ export class TransactionItem {
     enum: TransactionItemType,
   })
   type: TransactionItemType;
-  @ManyToOne(() => TransactionItemCategory, (category) => category.items)
+  @ManyToOne(() => TransactionItemCategory, (category) => category.items, {
+    eager: true,
+  })
   category: TransactionItemCategory;
   @ManyToOne(() => Transaction, (transaction) => transaction.items)
   transaction: Transaction;

@@ -1,24 +1,30 @@
-import React, { ReactNode } from "react";
+import React from "react";
 import { ValidatedForm } from "~/form/ValidatedForm";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { Field } from "~/form/Field";
 import { FieldError, FieldLabel, TextField } from "~/form/fields";
 import {
-  CreateTransactionItemSchema,
   createTransactionItemSchema,
   TransactionItemType,
 } from "~/api/Transaction/transactionApi.contracts";
 import { SubmitButton } from "~/form/SubmitButton";
 import { HiddenField } from "~/form/fields/HiddenField";
 import { NumberField } from "~/form/fields/NumberField";
+import { SelectField } from "~/form/fields/SelectField";
+import {
+  CreateTransactionItemDto,
+  TransactionItemCategory,
+} from "~/api/Transaction/transactionApi.types";
 
 interface TransactionItemFormProps {
-  onSubmit?: (values: CreateTransactionItemSchema) => void;
+  onSubmit?: (values: CreateTransactionItemDto) => void;
+  categories: TransactionItemCategory[];
 }
 
 export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
   onSubmit,
+  categories,
 }) => {
   const [form] = useForm({
     onValidate({ formData }) {
@@ -35,12 +41,17 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         values[key] = value;
       }
 
-      onSubmit?.(values as CreateTransactionItemSchema);
+      onSubmit?.(values as CreateTransactionItemDto);
     },
   });
 
+  const categoryValues = categories.map((category) => ({
+    value: category.id,
+    label: category.name,
+  }));
+
   return (
-    <ValidatedForm method="POST" form={form}>
+    <ValidatedForm form={form} className="flex flex-col gap-3">
       <HiddenField name="type" defaultValue={TransactionItemType.OUTCOME} />
 
       <Field name="name">
@@ -51,23 +62,25 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
 
       <Field name="category">
         <FieldLabel>Category</FieldLabel>
-        <TextField placeholder="eg. Diary" />
+        <SelectField
+          options={categoryValues}
+          contentProps={{ position: "popper" }}
+          triggerProps={{ placeholder: "eg. Dairy" }}
+        />
         <FieldError />
       </Field>
 
-      <div className="grid grid-cols-2 gap-2">
-        <Field name="value">
-          <FieldLabel>Price</FieldLabel>
-          <NumberField placeholder="eg. 2.22" />
-          <FieldError />
-        </Field>
+      <Field name="amount">
+        <FieldLabel>Amount</FieldLabel>
+        <NumberField placeholder="Amount of the item" />
+        <FieldError />
+      </Field>
 
-        <Field name="amount">
-          <FieldLabel>Amount</FieldLabel>
-          <NumberField placeholder="eg. 1" />
-          <FieldError />
-        </Field>
-      </div>
+      <Field name="value">
+        <FieldLabel>Price</FieldLabel>
+        <NumberField placeholder="Price of the single item" />
+        <FieldError />
+      </Field>
 
       <SubmitButton>Add item</SubmitButton>
     </ValidatedForm>

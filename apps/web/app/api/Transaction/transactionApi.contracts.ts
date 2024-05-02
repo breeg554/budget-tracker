@@ -22,10 +22,6 @@ export const createTransactionItemSchema = z.object({
   category: z.string(),
 });
 
-export type CreateTransactionItemSchema = z.TypeOf<
-  typeof createTransactionItemSchema
->;
-
 export enum TransactionType {
   PURCHASE = "purchase",
 }
@@ -34,8 +30,33 @@ export const createTransactionSchema = z.object({
   name: z.string(),
   type: z.nativeEnum(TransactionType),
   date: z.string(),
-  value: z.number().min(0),
   items: z.array(createTransactionItemSchema),
 });
 
-export type CreateTransactionSchema = z.TypeOf<typeof createTransactionSchema>;
+export const getTransactionItemCategorySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+});
+
+export const getTransactionItemSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  type: z.nativeEnum(TransactionItemType),
+  amount: z.number(),
+  value: z.union([z.number(), z.string().transform((val) => Number(val))]),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  category: getTransactionItemCategorySchema,
+});
+
+export const getTransactionSchema = z.object({
+  id: z.string(),
+  type: z.nativeEnum(TransactionType),
+  date: z.string(),
+  createdAt: z.string(),
+  updatedAt: z.string(),
+  items: z.array(getTransactionItemSchema),
+  value: z.number(),
+});
+
+export const fromGetTransactionsResponse = z.array(getTransactionSchema);
