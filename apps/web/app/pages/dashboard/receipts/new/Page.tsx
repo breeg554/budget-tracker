@@ -1,12 +1,9 @@
 import type { MetaFunction } from "@remix-run/node";
-import { TextInput } from "~/inputs/TextInput";
-import { SectionWrapper } from "~/layout/SectionWrapper";
-import { Cross1Icon, PlusIcon } from "@radix-ui/react-icons";
+import { Cross1Icon } from "@radix-ui/react-icons";
 import { IconButton } from "~/buttons/IconButton";
 import { useHistoryBack } from "~/hooks/useHistoryBack";
 import { useActionData, useLoaderData } from "@remix-run/react";
 import { loader } from "./loader.server";
-import { ValidatedForm } from "~/form/ValidatedForm";
 import { TransactionForm } from "~/dashboard/receipts/new/components/TransactionForm";
 import { action } from "./action.server";
 
@@ -26,7 +23,10 @@ export const NewReceiptPage = () => {
         <Cross1Icon width={20} height={20} />
       </IconButton>
 
-      <TransactionForm lastResult={lastResult} />
+      <TransactionForm
+        lastResult={lastResult}
+        itemCategories={itemCategories}
+      />
     </main>
   );
 };

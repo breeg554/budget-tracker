@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from "react";
 import { useField as useConformField } from "@conform-to/react";
+import { cn } from "~/utils/cn";
 
 type FieldContextProps = {
   name: string;
@@ -24,7 +25,7 @@ export const Field = ({
 }: PropsWithChildren<FieldProps>) => {
   return (
     <FieldContext.Provider value={{ name, formId }}>
-      <div className={className}>{children}</div>
+      <div className={cn("flex flex-col", className)}>{children}</div>
     </FieldContext.Provider>
   );
 };

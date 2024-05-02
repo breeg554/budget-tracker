@@ -1,55 +1,28 @@
 import type { MetaFunction } from "@remix-run/node";
-import { useActionData, useFetcher, useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { routes } from "~/routes";
-import { Webcam } from "~/components/webcam/Webcam";
-import { useCallback, useRef, useState } from "react";
-import ReactWebcam from "react-webcam";
-import { createWorker } from "tesseract.js";
-import { Buildel } from "~/libs/Buildel";
 import { loader } from "./loader.server";
-import { Button, IconButton } from "@radix-ui/themes";
 import { SectionWrapper } from "~/layout/SectionWrapper";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
+import { GetTransactionItemDto } from "~/api/Transaction/transactionApi.types";
 
 export const DashboardPage = () => {
-  const actionData = useActionData();
-  const { buildelSecret } = useLoaderData<typeof loader>();
-  const buildel = new Buildel(36, 153, buildelSecret);
-  const ref = useRef<ReactWebcam>(null);
+  const { transactions } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
-  const [src, setSrc] = useState<string | null | undefined>(null);
-  const [text, setText] = useState("");
+
   const onLogout = () => {
     fetcher.submit(null, { action: routes.signOut.getPath(), method: "post" });
   };
 
-  const getText = async () => {
-    const worker = await createWorker("pol");
-    const ret = await worker.recognize(
-      "https://images.ctfassets.net/iltqx28aclck/nbapnItLpmV7vkzq7hoSl/527b4cbc13ad88e4a2090cf4f5fa63e7/Messenger_creation_81ad4459-bb90-4d6f-93b2-d52c49a0fa39.jpeg",
-      // src!
-    );
-    console.log(ret.data.text);
-    setText(ret.data.text);
-    await worker.terminate();
-  };
-
-  const capture = useCallback(() => {
-    const imageSrc = ref.current?.getScreenshot();
-
-    console.log(imageSrc);
-    setSrc(imageSrc);
-  }, []);
-
-  const startRun = async () => {
-    fetcher.submit(
-      { text: encodeURIComponent(text) },
-      { method: "post", encType: "application/json" },
-    );
-  };
+  const items = transactions.reduce(
+    (curr, transaction) => [...curr, ...transaction.items],
+    [] as GetTransactionItemDto[],
+  );
 
   return (
     <>
+      <button onClick={onLogout}>Logout</button>
+
       <SectionWrapper className="mb-6 mt-10 flex gap-2 items-center justify-between">
         <h1 className="text-4xl text-neutral-900">
           <span className="block">Hello,</span>{" "}
@@ -73,37 +46,23 @@ export const DashboardPage = () => {
         </header>
 
         <ul>
-          <li className="flex justify-between">
-            <span>element 1</span> <span>-100</span>
-          </li>
+          {items.map((item) => (
+            <li key={item.id} className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <span className="font-bold">{item.name}</span>
+                <span className="text-neutral-700">{item.category.name}</span>
+              </div>{" "}
+              <span>
+                {item.amount} * {item.value}pln
+              </span>
+            </li>
+          ))}
         </ul>
       </SectionWrapper>
-      <button onClick={onLogout}>Logout</button>
-
-      {/*{users.map((user) => (*/}
-      {/*  <p>{user.email}</p>*/}
-      {/*))}*/}
-
-      {/*<Webcam*/}
-      {/*  ref={ref}*/}
-      {/*  audio={false}*/}
-      {/*  height={200}*/}
-      {/*  screenshotFormat="image/jpeg"*/}
-      {/*  width={600}*/}
-      {/*/>*/}
-      {/*<button onClick={startRun}>Start run</button>*/}
-
-      {/*<button onClick={capture}>Capture photo</button>*/}
-
-      {/*<button onClick={getText}>GET TEXT</button>*/}
-
-      {/*{src && <img src={src} />}*/}
-
-      {/*<p>{text}</p>*/}
     </>
   );
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: "BUDGET TRACKER" }];
+  return [{ title: "Dashboard" }];
 };

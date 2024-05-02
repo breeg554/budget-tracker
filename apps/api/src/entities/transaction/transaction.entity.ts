@@ -15,8 +15,7 @@ export class Transaction {
   id: string;
   @Column()
   name: string;
-  @Column({ type: 'numeric', precision: 10, scale: 3 })
-  value: number;
+
   @Column({
     type: 'enum',
     enum: TransactionType,
@@ -25,6 +24,7 @@ export class Transaction {
   @OneToMany(
     () => TransactionItem,
     (transactionItem) => transactionItem.transaction,
+    { cascade: true },
   )
   items: TransactionItem[];
   @Column()
