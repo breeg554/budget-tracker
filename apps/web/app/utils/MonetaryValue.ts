@@ -29,6 +29,6 @@ export class MonetaryValue {
   }
 
   public format() {
-    return `${this.currency} ${this.amount}`;
+    return `${this.amount.toFixed(2)}${this.currency} `;
   }
 }

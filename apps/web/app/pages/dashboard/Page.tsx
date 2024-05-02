@@ -5,7 +5,9 @@ import { loader } from "./loader.server";
 import { SectionWrapper } from "~/layout/SectionWrapper";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { GetTransactionItemDto } from "~/api/Transaction/transactionApi.types";
-import { MonetaryValue } from "~/utils/MonetaryValue";
+import { TransactionItemList } from "~/dashboard/components/TransactionItemList";
+import groupBy from "lodash.groupby";
+import dayjs from "dayjs";
 
 export const DashboardPage = () => {
   const { transactions } = useLoaderData<typeof loader>();
@@ -15,11 +17,15 @@ export const DashboardPage = () => {
     fetcher.submit(null, { action: routes.signOut.getPath(), method: "post" });
   };
 
+  const days = groupBy(transactions, ({ date }) =>
+    dayjs(date).format("DD MMMM"),
+  );
+
   const items = transactions.reduce(
     (curr, transaction) => [...curr, ...transaction.items],
     [] as GetTransactionItemDto[],
   );
-
+  console.log(days);
   return (
     <>
       <button onClick={onLogout}>Logout</button>
@@ -46,17 +52,9 @@ export const DashboardPage = () => {
           <p>select</p>
         </header>
 
-        <ul>
-          {items.map((item) => (
-            <li key={item.id} className="flex items-center justify-between">
-              <div className="flex flex-col">
-                <span className="font-bold">{item.name}</span>
-                <span className="text-neutral-700">{item.category.name}</span>
-              </div>{" "}
-              <span>{new MonetaryValue(item.value, item.amount).format()}</span>
-            </li>
-          ))}
-        </ul>
+        <div className="pb-20">
+          <TransactionItemList items={days} />
+        </div>
       </SectionWrapper>
     </>
   );

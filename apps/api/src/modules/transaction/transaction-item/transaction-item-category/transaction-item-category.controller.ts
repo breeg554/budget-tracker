@@ -11,7 +11,6 @@ export class TransactionItemCategoryController {
   ) {}
 
   @Get()
-  @Public()
   getAll(): Promise<GetTransactionItemCategoryDto[]> {
     return this.transactionItemCategoryService.findAll();
   }
