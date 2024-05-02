@@ -1,9 +1,7 @@
 import { typedFetch, TypedFetch } from "~/utils/fetch";
-import {
-  CreateTransactionSchema,
-  fromGetTransactionsResponse,
-} from "./transactionApi.contracts";
 import { z } from "zod";
+import { CreateTransactionDto } from "~/api/Transaction/transactionApi.types";
+import { fromGetTransactionsResponse } from "./transactionApi.contracts";
 
 export class TransactionApi {
   private readonly baseUrl = "/transactions";
@@ -13,7 +11,7 @@ export class TransactionApi {
     this.client = client;
   }
 
-  create(data: CreateTransactionSchema) {
+  create(data: CreateTransactionDto) {
     return this.client(z.any(), this.baseUrl, {
       method: "POST",
       body: JSON.stringify(data),

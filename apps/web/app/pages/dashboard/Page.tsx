@@ -5,6 +5,7 @@ import { loader } from "./loader.server";
 import { SectionWrapper } from "~/layout/SectionWrapper";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { GetTransactionItemDto } from "~/api/Transaction/transactionApi.types";
+import { MonetaryValue } from "~/utils/MonetaryValue";
 
 export const DashboardPage = () => {
   const { transactions } = useLoaderData<typeof loader>();
@@ -52,9 +53,7 @@ export const DashboardPage = () => {
                 <span className="font-bold">{item.name}</span>
                 <span className="text-neutral-700">{item.category.name}</span>
               </div>{" "}
-              <span>
-                {item.amount} * {item.value}pln
-              </span>
+              <span>{new MonetaryValue(item.value, item.amount).format()}</span>
             </li>
           ))}
         </ul>
