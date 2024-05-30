@@ -20,17 +20,20 @@ import {
 interface TransactionItemFormProps {
   onSubmit?: (values: CreateTransactionItemDto) => void;
   categories: GetTransactionItemCategoryDto[];
+  defaultValues?: Partial<CreateTransactionItemDto>
 }
 
 export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
   onSubmit,
   categories,
+  defaultValues
 }) => {
   const [form] = useForm({
+    defaultValue: defaultValues,
+    shouldValidate: "onSubmit",
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createTransactionItemSchema });
     },
-    shouldValidate: "onSubmit",
     onSubmit: (e, { formData }) => {
       e.preventDefault();
       e.stopPropagation();
@@ -82,7 +85,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         <FieldError />
       </Field>
 
-      <SubmitButton>Add item</SubmitButton>
+      <SubmitButton>{defaultValues ?"Update item" :"Add item"}</SubmitButton>
     </ValidatedForm>
   );
 };
