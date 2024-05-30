@@ -6,8 +6,7 @@ import { GearIcon } from "~/icons/GearIcon";
 import { BarChartIcon } from "~/icons/BarChartIcon";
 import { DashboardIcon } from "~/icons/DashboardIcon";
 import { FileTextIcon } from "~/icons/FileTextIcon";
-import { ColumnsIcon } from "~/icons/ColumnsIcon";
-import { Link } from "~/components/link/Link";
+import { ScanLink } from "~/dashboard/layout/components/ScanLink";
 
 interface DashboardNavProps {}
 
@@ -79,16 +78,5 @@ function DashboardNavItem({ children }: PropsWithChildren) {
     <li className="w-full h-full flex justify-center items-center">
       {children}
     </li>
-  );
-}
-
-function ScanLink() {
-  return (
-    <Link
-      to={routes.newReceipt.getPath()}
-      className="transition bg-secondary-150 hover:bg-secondary-200 rounded-full w-14 h-14 text-white flex justify-center items-center shadow-lg shadow-secondary-100/50"
-    >
-      <ColumnsIcon width={22} height={22} />
-    </Link>
   );
 }

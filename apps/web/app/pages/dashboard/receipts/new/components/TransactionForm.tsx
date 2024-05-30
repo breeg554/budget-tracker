@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes,useState } from "react";
+import React, { ButtonHTMLAttributes, useEffect, useState } from "react";
 import { ValidatedForm } from "~/form/ValidatedForm";
 import { SectionWrapper } from "~/layout/SectionWrapper";
 import { PlusIcon } from "@radix-ui/react-icons";
@@ -19,6 +19,7 @@ import { HiddenField } from "~/form/fields/HiddenField";
 import { FieldError, FieldLabel, TextField } from "~/form/fields";
 import { TransactionItemForm } from "~/dashboard/receipts/new/components/TransactionItemForm";
 import {
+  CreateTransactionDto,
   CreateTransactionItemDto,
   GetTransactionItemCategoryDto,
 } from "~/api/Transaction/transactionApi.types";
@@ -28,68 +29,82 @@ import {
 } from "~/api/Transaction/transactionApi.contracts";
 import { MonetaryValue } from "~/utils/MonetaryValue";
 import { FormPersistentState } from "~/components/form/FormPersistentState";
+import { ScanLink } from "~/dashboard/layout/components/ScanLink";
 
 interface TransactionFormProps {
   lastResult?: SubmissionResult | null;
   itemCategories: GetTransactionItemCategoryDto[];
+  defaultValue?: Partial<CreateTransactionDto>;
 }
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({
   lastResult,
   itemCategories,
+  defaultValue,
 }) => {
-  const [editableField,setEditableField] = useState<null | FieldMetadata<CreateTransactionItemDto> >(null)
-  const { value: isOpen, setFalse,setTrue, setValue } = useBoolean(false);
+  const [editableField, setEditableField] =
+    useState<null | FieldMetadata<CreateTransactionItemDto>>(null);
+  const { value: isOpen, setFalse, setTrue, setValue } = useBoolean(false);
 
   const [form, fields] = useForm({
     lastResult,
+    defaultValue,
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createTransactionSchema });
     },
     shouldValidate: "onSubmit",
   });
 
-  const items = fields.items.getFieldList();
+  useEffect(() => {
+    if (!defaultValue) return;
 
-  const closeDialog = ()=>{
-    setFalse()
-    setEditableField(null)
+    form.update({
+      name: fields.items.name,
+      value: defaultValue.items,
+    });
+  }, [defaultValue]);
+
+  const items = fields.items.getFieldList();
+  const closeDialog = () => {
+    setFalse();
+    setEditableField(null);
     form.validate();
-  }
+  };
 
   const insertItem = (values: CreateTransactionItemDto) => {
     form.insert({
       name: fields.items.name,
+      // @ts-ignore
       defaultValue: values,
     });
-    closeDialog()
+    closeDialog();
   };
 
   const updateItem = (updated: CreateTransactionItemDto) => {
-    if(!editableField) return
+    if (!editableField) return;
 
     form.update({
       name: fields.items.name,
-      value: items.map(item=>{
-        if(item.key===editableField.key) return updated
-        return item.value
+      value: items.map((item) => {
+        if (item.key === editableField.key) return updated;
+        return item.value;
       }),
     });
-    closeDialog()
+    closeDialog();
   };
 
-  const onEditItem = (item: FieldMetadata<CreateTransactionItemDto> )=>{
-    setEditableField(item)
-    setTrue()
-  }
+  const onEditItem = (item: FieldMetadata<CreateTransactionItemDto>) => {
+    setEditableField(item);
+    setTrue();
+  };
 
-  const handleOnToggle = (value: boolean)=>{
-    setValue(value)
-  }
+  const handleOnToggle = (value: boolean) => {
+    setValue(value);
+  };
 
   return (
     <ValidatedForm method="POST" form={form} onSubmit={form.onSubmit}>
-      <FormPersistentState/>
+      <FormPersistentState />
 
       <SectionWrapper className="pb-8 pt-14">
         <TransactionFormSummaryValue field={fields.items} />
@@ -119,11 +134,12 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       <SectionWrapper>
         <header className="flex justify-between gap-2 items-center">
           <h2>Items</h2>
+
+          <ScanLink size="2" />
         </header>
 
         <ul className="flex flex-col gap-2 py-4">
           {items.map((item) => {
-
             return (
               <TransactionFormItem
                 key={item.key}
@@ -152,7 +168,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                 <TransactionItemForm
                   onSubmit={editableField ? updateItem : insertItem}
                   categories={itemCategories}
-                  defaultValues={editableField?.value as CreateTransactionItemDto}
+                  defaultValues={
+                    editableField?.value as CreateTransactionItemDto
+                  }
                 />
               </Dialog.Content>
             </Dialog.Root>
@@ -186,13 +204,17 @@ function InsertItemButton({
 interface TransactionFormItemProps {
   field: FieldMetadata<CreateTransactionItemDto>;
   categories: GetTransactionItemCategoryDto[];
-  onEdit?: (item: FieldMetadata<CreateTransactionItemDto> )=>void
+  onEdit?: (item: FieldMetadata<CreateTransactionItemDto>) => void;
 }
 
-function TransactionFormItem({ field, categories,onEdit }: TransactionFormItemProps) {
+function TransactionFormItem({
+  field,
+  categories,
+  onEdit,
+}: TransactionFormItemProps) {
   const itemFields = field.getFieldset();
 
-  const {value: name} = useInputControl(itemFields.name);
+  const { value: name } = useInputControl(itemFields.name);
   const category = useInputControl(itemFields.category);
   const amount = useInputControl(itemFields.amount);
   const value = useInputControl(itemFields.value);
@@ -202,11 +224,11 @@ function TransactionFormItem({ field, categories,onEdit }: TransactionFormItemPr
     return categories.find((category) => category.id === id)?.name;
   };
 
-  const handleOnEdit = (e: React.MouseEvent<HTMLButtonElement> )=>{
-    e.preventDefault()
-    e.stopPropagation()
-    onEdit?.(field)
-  }
+  const handleOnEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onEdit?.(field);
+  };
 
   return (
     <li className="bg-neutral-50 border border-neutral-150 rounded p-2 text-sm text-neutral-900">
@@ -215,7 +237,9 @@ function TransactionFormItem({ field, categories,onEdit }: TransactionFormItemPr
       <p>Amount: {amount.value}</p>
       <p>Value: {value.value}</p>
 
-      <button type='button' onClick={handleOnEdit}>Edit</button>
+      <button type="button" onClick={handleOnEdit}>
+        Edit
+      </button>
     </li>
   );
 }
