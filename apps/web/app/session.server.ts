@@ -5,16 +5,18 @@ type AuthData = {
   tokens: string;
 };
 
-const createSession = createCookieSessionStorage<AuthData>({
-  cookie: {
-    name: "__session",
-    secrets: [process.env.SESSION_SECRET as string],
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 60 * 60 * 24 * 31,
+const createSession = createCookieSessionStorage<AuthData, Record<string, any>>(
+  {
+    cookie: {
+      name: "__session",
+      secrets: [process.env.SESSION_SECRET as string],
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 60 * 60 * 24 * 31,
+    },
   },
-});
+);
 
 export const { getSession, commitSession, destroySession } = createSession;
 

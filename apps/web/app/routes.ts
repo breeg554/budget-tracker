@@ -31,4 +31,8 @@ export const routes = {
     pattern: "/receipts/new" as const,
     getPath: () => `${routes.receipts.getPath()}/new` as const,
   },
+  scanReceipt: {
+    pattern: "/receipts/new/scan" as const,
+    getPath: () => `${routes.newReceipt.getPath()}/scan` as const,
+  },
 } as const;
