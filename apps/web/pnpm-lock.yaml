@@ -5,6 +5,12 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@buildel/buildel':
+    specifier: ^0.2.7
+    version: 0.2.7
+  '@buildel/buildel-auth':
+    specifier: ^0.0.2
+    version: 0.0.2
   '@conform-to/react':
     specifier: ^1.0.2
     version: 1.0.2(react@18.2.0)
@@ -506,6 +512,19 @@ packages:
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
     dev: true
+
+  /@buildel/buildel-auth@0.0.2:
+    resolution: {integrity: sha512-OKjLAlf5HQNDJJ+YH2gGZa/5TVPeozQX91l0CUil//WBsEVuUEj34Eepo+3uy4lKJkmK19ie/pevoXfEQS4BaA==}
+    dependencies:
+      crypto-js: 4.2.0
+    dev: false
+
+  /@buildel/buildel@0.2.7:
+    resolution: {integrity: sha512-uphl33Dx5zTT+ZytIUcw3SRkLLsP+SaW6lZzTOdj9+p81BkLiDHiMmoUFlTzROv0XmPHEGGvrM89UrgIJmZZEg==}
+    dependencies:
+      phoenix: 1.7.12
+      uuid: 9.0.1
+    dev: false
 
   /@conform-to/dom@1.0.2:
     resolution: {integrity: sha512-iIY7xwkAFboxwE+Y+W7D60RLqFIP2YdRzu5SY+TXBJPPuQTUxcW7ia4YVV/y9SSc105c9mLpNgh2jGKiulGCBQ==}
@@ -3784,6 +3803,10 @@ packages:
       shebang-command: 2.0.0
       which: 2.0.2
 
+  /crypto-js@4.2.0:
+    resolution: {integrity: sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==}
+    dev: false
+
   /css-what@6.1.0:
     resolution: {integrity: sha512-HTUrgRJ7r4dsZKU6GjmpfRK1O76h97Z8MfS1G0FozR+oF2kG6Vfe8JE6zwrkbxigziPHinCJ+gCPjA9EaBDtRw==}
     engines: {node: '>= 6'}
@@ -6767,6 +6790,10 @@ packages:
       is-reference: 3.0.2
     dev: true
 
+  /phoenix@1.7.12:
+    resolution: {integrity: sha512-jo8sK7mVYTFSa5FITmL/1lAbARIJMcEMJrMPZtUdss1zE37VZBnCowpakH8sEzH0ezs+hIaXSyYPCwlzrvph+g==}
+    dev: false
+
   /picocolors@1.0.0:
     resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==}
     dev: true
@@ -8287,6 +8314,11 @@ packages:
   /utils-merge@1.0.1:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
+
+  /uuid@9.0.1:
+    resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
+    hasBin: true
+    dev: false
 
   /uvu@0.5.6:
     resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}
