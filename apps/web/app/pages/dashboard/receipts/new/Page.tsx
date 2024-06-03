@@ -48,13 +48,7 @@ export const NewReceiptPage = () => {
         defaultValue={recipe}
       />
 
-      <Dialog.Root open={isOpen} onOpenChange={onClose}>
-        <Dialog.Content className="max-w-xl w-full">
-          <Dialog.Title>Take or upload photo</Dialog.Title>
-
-          <Outlet />
-        </Dialog.Content>
-      </Dialog.Root>
+      <Outlet />
     </main>
   );
 };

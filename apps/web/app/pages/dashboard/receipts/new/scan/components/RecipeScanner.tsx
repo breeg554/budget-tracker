@@ -7,18 +7,14 @@ import { assert } from "~/utils/assert";
 import { Button } from "~/buttons/Button";
 
 interface RecipeScannerProps {
-  isOpen: boolean;
   onScan: (image: string) => void;
   onClose: () => void;
 }
 
 export const RecipeScanner: React.FC<PropsWithChildren<RecipeScannerProps>> = ({
-  isOpen,
   onClose,
   onScan,
 }) => {
-  if (!isOpen) return null;
-
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 bg-black">
       <ScannerModal onScreenshot={onScan} />

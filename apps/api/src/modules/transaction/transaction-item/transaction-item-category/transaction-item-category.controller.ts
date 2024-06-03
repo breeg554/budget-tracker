@@ -10,6 +10,7 @@ export class TransactionItemCategoryController {
     private readonly transactionItemCategoryService: TransactionItemCategoryService,
   ) {}
 
+  @Public()
   @Get()
   getAll(): Promise<GetTransactionItemCategoryDto[]> {
     return this.transactionItemCategoryService.findAll();

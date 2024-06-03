@@ -21,11 +21,11 @@ export const action = actionHandler({
     await requireSignedIn(request);
 
     const formData = await request.formData();
-
+    console.log(formData.get("items"));
     const submission = parseWithZod(formData, {
       schema: extendedTransactionSchema.partial(),
     });
-
+    console.log(submission);
     if (submission.status !== "success") {
       return json(submission.reply());
     }
