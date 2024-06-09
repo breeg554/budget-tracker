@@ -2,12 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { TransactionItem } from '~/entities/transaction/transactionItem.entity';
 import { TransactionType } from '~/dtos/transaction/transaction-type.enum';
+import { Organization } from '~/entities/organization/organization.entity';
 
 @Entity()
 export class Transaction {
@@ -15,7 +17,6 @@ export class Transaction {
   id: string;
   @Column()
   name: string;
-
   @Column({
     type: 'enum',
     enum: TransactionType,
@@ -27,6 +28,8 @@ export class Transaction {
     { cascade: true },
   )
   items: TransactionItem[];
+  @ManyToOne(() => Organization, (organization) => organization.transactions)
+  organization: Organization;
   @Column()
   date: string;
   @CreateDateColumn()
