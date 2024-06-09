@@ -22,15 +22,15 @@ type Action =
 interface ScanState {
   step: Step;
   image: string | null;
-  recipeText: string | null;
-  recipeItems: Partial<CreateTransactionItemDto>[] | null;
+  receiptText: string | null;
+  receiptItems: Partial<CreateTransactionItemDto>[] | null;
   error: null | string;
 }
 
 export const defaultScanState: ScanState = {
   image: null,
-  recipeText: null,
-  recipeItems: null,
+  receiptText: null,
+  receiptItems: null,
   error: null,
   step: "method",
 };
@@ -61,13 +61,13 @@ export const useScanReducer = () => {
   const disconnectBuildel = async () => {
     return buildelRef.current?.disconnect();
   };
-  console.log(state.recipeText);
   const sendScan = async (scan: string) => {
     assert(runRef.current, "Run not initialized");
     assert(runRef.current.status === "running", "Run is not running");
     assert(state.image, "Image not uploaded");
 
     const text = await tesseract().getText(scan);
+    console.log(text);
     dispatch({ type: "retrieveText", payload: { text } });
 
     runRef.current.push("text_input_1:input", text);
@@ -89,7 +89,7 @@ export const useScanReducer = () => {
     if (state.step === "preview" && state.image) {
       sendScan(state.image);
     }
-  }, [state.step]);
+  }, [state.step, state.image]);
 
   useEffect(() => {
     connectBuildel();
@@ -102,8 +102,8 @@ export const useScanReducer = () => {
   return {
     step: state.step,
     image: state.image,
-    hasText: !!state.recipeText,
-    recipeItems: state.recipeItems,
+    hasText: !!state.receiptText,
+    receiptItems: state.receiptItems,
     error: state.error,
     closeScanner,
     openScanner,
@@ -131,7 +131,7 @@ function scanReducer(state: ScanState, action: Action): ScanState {
     case "retrieveText": {
       return {
         ...state,
-        recipeText: action.payload.text,
+        receiptText: action.payload.text,
       };
     }
     case "retrieveItems": {
@@ -145,7 +145,7 @@ function scanReducer(state: ScanState, action: Action): ScanState {
       if (result.success) {
         return {
           ...state,
-          recipeItems: result.data,
+          receiptItems: result.data,
         };
       }
 

@@ -6,15 +6,14 @@ import { Cross2Icon, ReloadIcon } from "@radix-ui/react-icons";
 import { assert } from "~/utils/assert";
 import { Button } from "~/buttons/Button";
 
-interface RecipeScannerProps {
+interface ReceiptScannerProps {
   onScan: (image: string) => void;
   onClose: () => void;
 }
 
-export const RecipeScanner: React.FC<PropsWithChildren<RecipeScannerProps>> = ({
-  onClose,
-  onScan,
-}) => {
+export const ReceiptScanner: React.FC<
+  PropsWithChildren<ReceiptScannerProps>
+> = ({ onClose, onScan }) => {
   return (
     <div className="fixed top-0 bottom-0 left-0 right-0 bg-black">
       <ScannerModal onScreenshot={onScan} />
