@@ -12,14 +12,14 @@ export const loader = loaderHandler(async ({ request }, { fetch }) => {
   const { data } = await transactionApi.getTransactionItemCategories();
 
   const session = await getSession(request.headers.get("Cookie"));
-  const recipe = session.get("TRANSACTION_FORM_STATE") || null;
+  const receipt = session.get("TRANSACTION_FORM_STATE") || null;
 
-  const validated = createTransactionSchema.partial().safeParse(recipe);
+  const validated = createTransactionSchema.partial().safeParse(receipt);
 
   return json(
     {
       itemCategories: data,
-      recipe: validated.success ? validated.data : undefined,
+      receipt: validated.success ? validated.data : undefined,
     },
     {
       headers: {

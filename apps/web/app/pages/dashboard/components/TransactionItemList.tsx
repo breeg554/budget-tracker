@@ -57,7 +57,9 @@ interface TransactionItemListItemProps {
   item: GetTransactionItemDto;
 }
 
-function TransactionItemListItem({ item }: TransactionItemListItemProps) {
+export function TransactionItemListItem({
+  item,
+}: TransactionItemListItemProps) {
   return (
     <section className="flex gap-2 justify-between items-center">
       <header className="flex items-center gap-3">
@@ -73,7 +75,7 @@ function TransactionItemListItem({ item }: TransactionItemListItemProps) {
 
       <p className="text-neutral-900 font-medium">
         {item.type === "outcome" && "-"}
-        {new MonetaryValue(item.value, item.amount).format()}
+        {new MonetaryValue(item.value, item.amount).withCurrency()}
       </p>
     </section>
   );

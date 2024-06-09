@@ -19,7 +19,7 @@ export const NewReceiptPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { itemCategories, recipe } = useLoaderData<typeof loader>();
+  const { itemCategories, receipt } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
 
   const isOpen = location.pathname === routes.scanReceipt.getPath();
@@ -45,7 +45,7 @@ export const NewReceiptPage = () => {
       <TransactionForm
         lastResult={lastResult}
         itemCategories={itemCategories}
-        defaultValue={recipe}
+        defaultValue={receipt}
       />
 
       <Outlet />

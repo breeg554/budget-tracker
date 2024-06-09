@@ -1,6 +1,6 @@
 import React from "react";
 import type { MetaFunction } from "@remix-run/node";
-import { RecipeRetriever } from "~/dashboard/receipts/new/scan/components/RecipeRetriever";
+import { ReceiptRetriever } from "~/dashboard/receipts/new/scan/components/ReceiptRetriever";
 import { Dialog } from "@radix-ui/themes";
 import { useFetcher, useNavigate } from "@remix-run/react";
 import { routes } from "~/routes";
@@ -29,7 +29,7 @@ export const ScanPage = () => {
       <Dialog.Content className="max-w-xl w-full">
         <Dialog.Title>Take or upload photo</Dialog.Title>
 
-        <RecipeRetriever
+        <ReceiptRetriever
           onRetrieve={onRetrieve}
           triggers={({ takePhoto, uploadPhoto }) => (
             <div className="flex gap-2 items-center">

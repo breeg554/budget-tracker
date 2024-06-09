@@ -21,11 +21,6 @@ export const DashboardPage = () => {
     dayjs(date).format("DD MMMM"),
   );
 
-  const items = transactions.reduce(
-    (curr, transaction) => [...curr, ...transaction.items],
-    [] as GetTransactionItemDto[],
-  );
-  console.log(days);
   return (
     <>
       <button onClick={onLogout}>Logout</button>

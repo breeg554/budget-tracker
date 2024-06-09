@@ -1,11 +1,11 @@
 import React, { ReactNode, useRef } from "react";
-import { RecipeScanner } from "./RecipeScanner";
+import { ReceiptScanner } from "./ReceiptScanner";
 import { useScanReducer } from "./scan.reducer";
 import { toBase64 } from "~/utils/files";
 import { CreateTransactionItemDto } from "~/api/Transaction/transactionApi.types";
 import { assert } from "~/utils/assert";
 
-interface RecipeRetrieverProps {
+interface ReceiptRetrieverProps {
   triggers: ({
     takePhoto,
     uploadPhoto,
@@ -16,7 +16,7 @@ interface RecipeRetrieverProps {
   onRetrieve: (items: Partial<CreateTransactionItemDto>[]) => void;
 }
 
-export const RecipeRetriever: React.FC<RecipeRetrieverProps> = ({
+export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
   triggers,
   onRetrieve,
 }) => {
@@ -24,7 +24,7 @@ export const RecipeRetriever: React.FC<RecipeRetrieverProps> = ({
   const {
     hasText,
     error,
-    recipeItems,
+    receiptItems,
     step,
     openScanner,
     closeScanner,
@@ -50,9 +50,9 @@ export const RecipeRetriever: React.FC<RecipeRetrieverProps> = ({
   };
 
   const handleOnRetrieve = () => {
-    assert(recipeItems);
+    assert(receiptItems);
 
-    onRetrieve(recipeItems);
+    onRetrieve(receiptItems);
   };
 
   const renderStep = () => {
@@ -69,14 +69,14 @@ export const RecipeRetriever: React.FC<RecipeRetrieverProps> = ({
           </>
         );
       case "scan":
-        return <RecipeScanner onClose={closeScanner} onScan={handleOnScan} />;
+        return <ReceiptScanner onClose={closeScanner} onScan={handleOnScan} />;
       case "preview":
         if (error) return <p>{error}</p>;
         if (!hasText) return <p>Retrieving text from image...</p>;
-        if (!recipeItems) return <p>Analyzing... Let's AI do some magic...</p>;
+        if (!receiptItems) return <p>Analyzing... Let's AI do some magic...</p>;
         return (
           <div>
-            <p>found {recipeItems.length} items.</p>
+            <p>found {receiptItems.length} items.</p>
             <button type="button" onClick={handleOnRetrieve}>
               Let's see
             </button>
