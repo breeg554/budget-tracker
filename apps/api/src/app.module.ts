@@ -3,7 +3,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UserModule } from '~/modules/user/user.module';
 import { AuthModule } from '~/modules/auth/auth.module';
 import { User } from '~/entities/user/user.entity';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
@@ -11,10 +10,11 @@ import { JwtGuard } from '~/modules/auth/jwt.guard';
 import { JwtStrategy } from '~/modules/auth/jwt.strategy';
 import { LoggerModule } from 'nestjs-pino';
 import { CustomZodValidationPipe } from '~/modules/errors/zodValidationPipe';
-import { TransactionModule } from '~/modules/transaction/transaction.module';
 import { TransactionItem } from '~/entities/transaction/transactionItem.entity';
 import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 import { Transaction } from '~/entities/transaction/transaction.entity';
+import { Organization } from '~/entities/organization/organization.entity';
+import { OrganizationModule } from '~/modules/organization/organization.module';
 
 @Module({
   imports: [
@@ -29,13 +29,18 @@ import { Transaction } from '~/entities/transaction/transaction.entity';
       password: process.env.DATABASE_PASSWORD,
       username: process.env.DATABASE_USERNAME,
       database: process.env.DATABASE_NAME,
-      entities: [User, Transaction, TransactionItem, TransactionItemCategory],
+      entities: [
+        User,
+        Organization,
+        Transaction,
+        TransactionItem,
+        TransactionItemCategory,
+      ],
       synchronize: true,
       logging: true,
     }),
-    UserModule,
     AuthModule,
-    TransactionModule,
+    OrganizationModule,
   ],
   controllers: [AppController],
   providers: [
