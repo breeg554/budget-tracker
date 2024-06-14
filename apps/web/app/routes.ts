@@ -11,28 +11,37 @@ export const routes = {
     pattern: "/signOut" as const,
     getPath: () => "/signOut" as const,
   },
+  organization: {
+    pattern: "/:organizationName" as const,
+    getPath: (organizationName: string) => `/${organizationName}` as const,
+  },
   dashboard: {
     pattern: "/" as const,
-    getPath: () => "/" as const,
+    getPath: () => `/` as const,
   },
   statistics: {
-    pattern: "/statistics" as const,
-    getPath: () => "/statistics" as const,
+    pattern: "/:organizationName/statistics" as const,
+    getPath: (organizationName: string) =>
+      `/${routes.organization.getPath(organizationName)}/statistics` as const,
   },
   profile: {
-    pattern: "/profile" as const,
-    getPath: () => "/profile" as const,
+    pattern: "/:organizationName/profile" as const,
+    getPath: (organizationName: string) =>
+      `/${routes.organization.getPath(organizationName)}/profile` as const,
   },
   receipts: {
-    pattern: "/receipts" as const,
-    getPath: () => "/receipts" as const,
+    pattern: "/:organizationName/receipts" as const,
+    getPath: (organizationName: string) =>
+      `/${routes.organization.getPath(organizationName)}/receipts` as const,
   },
   newReceipt: {
-    pattern: "/receipts/new" as const,
-    getPath: () => `${routes.receipts.getPath()}/new` as const,
+    pattern: "/:organizationName/receipts/new" as const,
+    getPath: (organizationName: string) =>
+      `${routes.receipts.getPath(organizationName)}/new` as const,
   },
   scanReceipt: {
-    pattern: "/receipts/new/scan" as const,
-    getPath: () => `${routes.newReceipt.getPath()}/scan` as const,
+    pattern: "/:organizationName/receipts/new/scan" as const,
+    getPath: (organizationName: string) =>
+      `${routes.newReceipt.getPath(organizationName)}/scan` as const,
   },
 } as const;
