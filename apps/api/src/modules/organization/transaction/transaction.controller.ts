@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { TransactionService } from '~/modules/transaction/transaction.service';
+import { TransactionService } from '~/modules/organization/transaction/transaction.service';
 import { CreateTransactionDto } from '~/dtos/transaction/create-transaction.dto';
 import { GetTransactionDto } from '~/dtos/transaction/get-transaction.dto';
 

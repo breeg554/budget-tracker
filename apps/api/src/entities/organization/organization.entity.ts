@@ -14,7 +14,7 @@ import { User } from '~/entities/user/user.entity';
 export class Organization {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @Column()
+  @Column({ unique: true })
   name: string;
   @OneToMany(() => Transaction, (transaction) => transaction.organization)
   transactions: Transaction[];

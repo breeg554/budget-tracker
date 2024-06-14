@@ -8,6 +8,7 @@ export const createTransactionSchema = z.object({
   type: z.nativeEnum(TransactionType),
   date: z.string(),
   items: z.array(createTransactionItemSchema),
+  author: z.string(),
 });
 
 export class CreateTransactionDto extends createZodDto(
