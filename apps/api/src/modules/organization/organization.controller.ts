@@ -18,7 +18,10 @@ export class OrganizationController {
   }
 
   @Get(':name')
-  findByName(@Param('name') name: string): Promise<GetOrganizationDto> {
-    return this.organizationService.findByName(name);
+  findByName(
+    @Param('name') name: string,
+    @User() user: GetUserDto,
+  ): Promise<GetOrganizationDto> {
+    return this.organizationService.findByNameAndUser(name, user.id);
   }
 }
