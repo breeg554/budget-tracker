@@ -10,4 +10,4 @@ export const getOrganizationSchema = z.object({
   transactions: z.array(getTransactionSchema),
 });
 
-export const fromGetOrganizationResponse = z.array(getOrganizationSchema);
+export const fromGetOrganizationsResponse = z.array(getOrganizationSchema);

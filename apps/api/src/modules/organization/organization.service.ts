@@ -39,6 +39,12 @@ export class OrganizationService {
     });
   }
 
+  async findAllByUser(email: string): Promise<Organization[]> {
+    return this.organizationRepository.findBy({
+      users: { email },
+    });
+  }
+
   async findByNameAndUser(name: string, userId: string): Promise<Organization> {
     const organization = await this.organizationRepository.findOne({
       where: {

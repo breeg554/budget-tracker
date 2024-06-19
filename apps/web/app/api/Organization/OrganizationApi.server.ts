@@ -1,5 +1,8 @@
 import { typedFetch, TypedFetch } from "~/utils/fetch";
-import { fromGetOrganizationResponse } from "~/api/Organization/organizationApi.contracts";
+import {
+  fromGetOrganizationsResponse,
+  getOrganizationSchema,
+} from "~/api/Organization/organizationApi.contracts";
 
 export class OrganizationApi {
   private readonly baseUrl = "/organizations";
@@ -10,7 +13,13 @@ export class OrganizationApi {
   }
 
   getAll() {
-    return this.client(fromGetOrganizationResponse, this.baseUrl, {
+    return this.client(fromGetOrganizationsResponse, this.baseUrl, {
+      method: "get",
+    });
+  }
+
+  getByName(name: string) {
+    return this.client(getOrganizationSchema, `${this.baseUrl}/${name}`, {
       method: "get",
     });
   }

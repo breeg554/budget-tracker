@@ -11,13 +11,17 @@ export const routes = {
     pattern: "/signOut" as const,
     getPath: () => "/signOut" as const,
   },
-  organization: {
-    pattern: "/:organizationName" as const,
-    getPath: (organizationName: string) => `/${organizationName}` as const,
-  },
   dashboard: {
     pattern: "/" as const,
     getPath: () => `/` as const,
+  },
+  newOrganization: {
+    pattern: "/organizations/new" as const,
+    getPath: () => `/organizations/new` as const,
+  },
+  organization: {
+    pattern: "/:organizationName" as const,
+    getPath: (organizationName: string) => `/${organizationName}` as const,
   },
   statistics: {
     pattern: "/:organizationName/statistics" as const,

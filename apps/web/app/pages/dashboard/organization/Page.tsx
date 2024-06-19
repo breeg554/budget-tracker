@@ -4,8 +4,7 @@ import { routes } from "~/routes";
 import { loader } from "./loader.server";
 import { SectionWrapper } from "~/layout/SectionWrapper";
 import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
-import { GetTransactionItemDto } from "~/api/Transaction/transactionApi.types";
-import { TransactionItemList } from "~/dashboard/components/TransactionItemList";
+import { TransactionItemList } from "./components/TransactionItemList";
 import groupBy from "lodash.groupby";
 import dayjs from "dayjs";
 

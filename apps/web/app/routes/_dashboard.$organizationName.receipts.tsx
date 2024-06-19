@@ -1,1 +1,1 @@
-export { page as default } from "~/pages/dashboard/receipts";
+export { page as default } from "~/pages/dashboard/organization/receipts";

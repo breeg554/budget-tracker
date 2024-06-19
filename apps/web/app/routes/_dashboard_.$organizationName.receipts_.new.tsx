@@ -1,2 +1,8 @@
-export { page as default, meta } from "~/pages/dashboard/receipts/new";
-export { loader, action } from "~/pages/dashboard/receipts/new/index.server";
+export {
+  page as default,
+  meta,
+} from "~/pages/dashboard/organization/receipts/new";
+export {
+  loader,
+  action,
+} from "~/pages/dashboard/organization/receipts/new/index.server";

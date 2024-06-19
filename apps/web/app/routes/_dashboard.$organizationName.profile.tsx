@@ -1,1 +1,1 @@
-export { page as default } from "~/pages/dashboard/profile";
+export { page as default } from "~/pages/dashboard/organization/profile";

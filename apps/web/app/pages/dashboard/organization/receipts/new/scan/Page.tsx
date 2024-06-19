@@ -1,16 +1,18 @@
 import React from "react";
 import type { MetaFunction } from "@remix-run/node";
-import { ReceiptRetriever } from "~/dashboard/receipts/new/scan/components/ReceiptRetriever";
+import { ReceiptRetriever } from "./components/ReceiptRetriever";
 import { Dialog } from "@radix-ui/themes";
 import { useFetcher, useNavigate } from "@remix-run/react";
 import { routes } from "~/routes";
 import { CreateTransactionItemDto } from "~/api/Transaction/transactionApi.types";
+import { useOrganizationName } from "~/utils/useOrganizationName";
 
 export const ScanPage = () => {
+  const organizationName = useOrganizationName();
   const navigate = useNavigate();
   const fetcher = useFetcher();
   const onClose = () => {
-    navigate(routes.newReceipt.getPath());
+    navigate(routes.newReceipt.getPath(organizationName));
   };
 
   const onRetrieve = (items: Partial<CreateTransactionItemDto>[]) => {

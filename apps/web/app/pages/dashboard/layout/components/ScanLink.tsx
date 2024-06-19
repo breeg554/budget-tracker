@@ -3,14 +3,16 @@ import { Link } from "~/link/Link";
 import { routes } from "~/routes";
 import { ColumnsIcon } from "~/icons/ColumnsIcon";
 import { cn } from "~/utils/cn";
+import { useOrganizationName } from "~/utils/useOrganizationName";
 
 interface ScanLinkProps {
   size?: "1" | "2" | "3" | "4";
 }
 export function ScanLink({ size = "4" }: ScanLinkProps) {
+  const organizationName = useOrganizationName();
   return (
     <Link
-      to={routes.scanReceipt.getPath()}
+      to={routes.scanReceipt.getPath(organizationName)}
       className={cn(
         "transition bg-secondary-150 hover:bg-secondary-200 rounded-full text-white flex justify-center items-center shadow-lg shadow-secondary-100/50",
         {
