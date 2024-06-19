@@ -10,25 +10,27 @@ import {
   useLocation,
 } from "@remix-run/react";
 import { loader } from "./loader.server";
-import { TransactionForm } from "~/dashboard/receipts/new/components/TransactionForm";
+import { TransactionForm } from "./components/TransactionForm";
 import { action } from "./action.server";
-import { Dialog } from "@radix-ui/themes";
 import { routes } from "~/routes";
+import { useOrganizationName } from "~/utils/useOrganizationName";
 
 export const NewReceiptPage = () => {
+  const organizationName = useOrganizationName();
   const location = useLocation();
   const navigate = useNavigate();
 
   const { itemCategories, receipt } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
 
-  const isOpen = location.pathname === routes.scanReceipt.getPath();
+  const isOpen =
+    location.pathname === routes.scanReceipt.getPath(organizationName);
   const onClose = () => {
-    navigate(routes.newReceipt.getPath());
+    navigate(routes.newReceipt.getPath(organizationName));
   };
 
   const backToDashboard = () => {
-    navigate(routes.dashboard.getPath());
+    navigate(routes.organization.getPath(organizationName));
   };
 
   return (

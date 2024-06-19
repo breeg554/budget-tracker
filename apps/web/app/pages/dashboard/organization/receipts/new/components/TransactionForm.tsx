@@ -17,7 +17,7 @@ import { DateField } from "~/form/fields/DateField";
 import { SubmitButton } from "~/form/SubmitButton";
 import { HiddenField } from "~/form/fields/HiddenField";
 import { FieldError, FieldLabel, TextField } from "~/form/fields";
-import { TransactionItemForm } from "~/dashboard/receipts/new/components/TransactionItemForm";
+import { TransactionItemForm } from "./TransactionItemForm";
 import {
   CreateTransactionDto,
   CreateTransactionItemDto,

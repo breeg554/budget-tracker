@@ -17,6 +17,11 @@ export class OrganizationController {
     return this.organizationService.create(data, user.id);
   }
 
+  @Get()
+  findAll(@User() user: any): Promise<GetOrganizationDto> {
+    return this.organizationService.findAllByUser(user.email);
+  }
+
   @Get(':name')
   findByName(
     @Param('name') name: string,
