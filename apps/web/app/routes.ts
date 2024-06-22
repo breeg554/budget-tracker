@@ -26,17 +26,17 @@ export const routes = {
   statistics: {
     pattern: "/:organizationName/statistics" as const,
     getPath: (organizationName: string) =>
-      `/${routes.organization.getPath(organizationName)}/statistics` as const,
+      `${routes.organization.getPath(organizationName)}/statistics` as const,
   },
   profile: {
     pattern: "/:organizationName/profile" as const,
     getPath: (organizationName: string) =>
-      `/${routes.organization.getPath(organizationName)}/profile` as const,
+      `${routes.organization.getPath(organizationName)}/profile` as const,
   },
   receipts: {
     pattern: "/:organizationName/receipts" as const,
     getPath: (organizationName: string) =>
-      `/${routes.organization.getPath(organizationName)}/receipts` as const,
+      `${routes.organization.getPath(organizationName)}/receipts` as const,
   },
   newReceipt: {
     pattern: "/:organizationName/receipts/new" as const,

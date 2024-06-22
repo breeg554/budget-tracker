@@ -7,7 +7,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
   app.useLogger(app.get(Logger));
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('/api');
   app.use(cookieParser());
 
   await app.listen(process.env.PORT || 3001);

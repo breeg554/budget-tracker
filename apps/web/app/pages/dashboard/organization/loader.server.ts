@@ -2,12 +2,15 @@ import { json } from "@remix-run/node";
 import { loaderHandler } from "~/utils/loader.server";
 import { requireSignedIn } from "~/session.server";
 import { TransactionApi } from "~/api/Transaction/TransactionApi.server";
+import { assert } from "~/utils/assert";
 
-export const loader = loaderHandler(async ({ request }, { fetch }) => {
+export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   await requireSignedIn(request);
+  assert(params.organizationName);
+
   const transactionApi = new TransactionApi(fetch);
 
-  const { data } = await transactionApi.getAll();
+  const { data } = await transactionApi.getAll(params.organizationName);
 
   return json({
     transactions: data,
