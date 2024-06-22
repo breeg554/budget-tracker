@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Transaction } from '~/entities/transaction/transaction.entity';
@@ -8,7 +8,6 @@ import { TransactionItemCategory } from '~/entities/transaction/transactionItemC
 import { GetTransactionDto } from '~/dtos/transaction/get-transaction.dto';
 import { OrganizationService } from '~/modules/organization/organization.service';
 import { UserService } from '~/modules/organization/user/user.service';
-import { OrganizationNotFoundException } from '~/modules/errors/organization-not-found.exception';
 
 @Injectable()
 export class TransactionService {
@@ -25,18 +24,12 @@ export class TransactionService {
     userId: string,
   ): Promise<GetTransactionDto> {
     const organization =
-      await this.organizationService.findByName(organizationName);
-
-    if (!organization) {
-      throw new OrganizationNotFoundException();
-    }
+      await this.organizationService.ensureUserInOrganization(
+        userId,
+        organizationName,
+      );
 
     const user = await this.userService.findOne(userId);
-
-    await this.organizationService.ensureUserInOrganization(
-      userId,
-      organization,
-    );
 
     const transaction = new Transaction();
     transaction.type = data.type;
@@ -65,16 +58,10 @@ export class TransactionService {
     userId: string,
   ): Promise<GetTransactionDto[]> {
     const organization =
-      await this.organizationService.findByName(organizationName);
-
-    if (!organization) {
-      throw new OrganizationNotFoundException();
-    }
-
-    await this.organizationService.ensureUserInOrganization(
-      userId,
-      organization,
-    );
+      await this.organizationService.ensureUserInOrganization(
+        userId,
+        organizationName,
+      );
 
     const transactions = await this.transactionRepository.find({
       where: { organization: { id: organization.id }, author: { id: userId } },
