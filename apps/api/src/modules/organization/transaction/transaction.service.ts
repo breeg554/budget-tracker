@@ -6,18 +6,17 @@ import { CreateTransactionDto } from '~/dtos/transaction/create-transaction.dto'
 import { TransactionItem } from '~/entities/transaction/transactionItem.entity';
 import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 import { GetTransactionDto } from '~/dtos/transaction/get-transaction.dto';
-import { Organization } from '~/entities/organization/organization.entity';
-import { User } from '~/entities/user/user.entity';
+import { OrganizationService } from '~/modules/organization/organization.service';
+import { UserService } from '~/modules/organization/user/user.service';
+import { OrganizationNotFoundException } from '~/modules/errors/organization-not-found.exception';
 
 @Injectable()
 export class TransactionService {
   constructor(
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
-    @InjectRepository(Organization)
-    private readonly organizationRepository: Repository<Organization>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly organizationService: OrganizationService,
+    private readonly userService: UserService,
   ) {}
 
   async create(
@@ -25,20 +24,19 @@ export class TransactionService {
     organizationName: string,
     userId: string,
   ): Promise<GetTransactionDto> {
-    const organization = await this.organizationRepository.findOne({
-      where: { name: organizationName },
-      relations: ['users'],
-    });
+    const organization =
+      await this.organizationService.findByName(organizationName);
 
     if (!organization) {
-      throw new NotFoundException(`Organization not found`);
+      throw new OrganizationNotFoundException();
     }
 
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const user = await this.userService.findOne(userId);
 
-    if (!user || !organization.users.some((orgUser) => orgUser.id === userId)) {
-      throw new NotFoundException(`Organization not found`);
-    }
+    await this.organizationService.ensureUserInOrganization(
+      userId,
+      organization,
+    );
 
     const transaction = new Transaction();
     transaction.type = data.type;
@@ -66,23 +64,20 @@ export class TransactionService {
     organizationName: string,
     userId: string,
   ): Promise<GetTransactionDto[]> {
-    const organization = await this.organizationRepository.findOne({
-      where: { name: organizationName },
-      relations: ['users'],
-    });
+    const organization =
+      await this.organizationService.findByName(organizationName);
 
     if (!organization) {
-      throw new NotFoundException(`Organization not found`);
+      throw new OrganizationNotFoundException();
     }
 
-    const user = await this.userRepository.findOne({ where: { id: userId } });
-
-    if (!user || !organization.users.some((orgUser) => orgUser.id === userId)) {
-      throw new NotFoundException(`Organization not found`);
-    }
+    await this.organizationService.ensureUserInOrganization(
+      userId,
+      organization,
+    );
 
     const transactions = await this.transactionRepository.find({
-      where: { organization: { id: organization.id }, author: { id: user.id } },
+      where: { organization: { id: organization.id }, author: { id: userId } },
       relations: ['items', 'author'],
     });
 

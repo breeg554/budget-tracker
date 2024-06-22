@@ -4,14 +4,15 @@ import { Repository } from 'typeorm';
 import { Organization } from '~/entities/organization/organization.entity';
 import { CreateOrganizationDto } from '~/dtos/organization/create-organization.dto';
 import { User } from '~/entities/user/user.entity';
+import { UserService } from '~/modules/organization/user/user.service';
+import { OrganizationNotFoundException } from '~/modules/errors/organization-not-found.exception';
 
 @Injectable()
 export class OrganizationService {
   constructor(
     @InjectRepository(Organization)
     private readonly organizationRepository: Repository<Organization>,
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userService: UserService,
   ) {}
 
   async create(
@@ -21,7 +22,7 @@ export class OrganizationService {
     let user: User | null = null;
 
     if (userId) {
-      user = await this.userRepository.findOne({ where: { id: userId } });
+      user = await this.userService.findOne(userId);
     }
 
     const organization = this.organizationRepository.create(data);
@@ -36,6 +37,7 @@ export class OrganizationService {
   async findByName(name: string): Promise<Organization> {
     return this.organizationRepository.findOne({
       where: { name },
+      relations: ['users'],
     });
   }
 
@@ -49,15 +51,22 @@ export class OrganizationService {
     const organization = await this.organizationRepository.findOne({
       where: {
         name: name,
-        users: { id: userId },
       },
       relations: ['users'],
     });
 
     if (!organization) {
-      throw new NotFoundException(`Organization ${name} not found`);
+      throw new OrganizationNotFoundException();
     }
 
+    await this.ensureUserInOrganization(userId, organization);
+
     return organization;
+  }
+
+  async ensureUserInOrganization(userId: string, organization: Organization) {
+    if (!organization.users.some((orgUser) => orgUser.id === userId)) {
+      throw new NotFoundException('Organization not found');
+    }
   }
 }
