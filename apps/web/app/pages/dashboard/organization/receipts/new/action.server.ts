@@ -5,24 +5,25 @@ import { requireSignedIn } from "~/session.server";
 import { createTransactionSchema } from "~/api/Transaction/transactionApi.contracts";
 import { TransactionApi } from "~/api/Transaction/TransactionApi.server";
 import { routes } from "~/routes";
+import { assert } from "~/utils/assert";
 
 export const action = actionHandler({
-  post: async ({ request }, { fetch }) => {
+  post: async ({ request, params }, { fetch }) => {
     await requireSignedIn(request);
-
+    assert(params.organizationName);
     const formData = await request.formData();
 
     const submission = parseWithZod(formData, {
       schema: createTransactionSchema,
     });
-
+    console.log(submission);
     if (submission.status !== "success") {
       return json(submission.reply());
     }
 
     const transactionApi = new TransactionApi(fetch);
 
-    await transactionApi.create(submission.value);
+    await transactionApi.create(params.organizationName, submission.value);
 
     return redirect(routes.dashboard.getPath());
   },

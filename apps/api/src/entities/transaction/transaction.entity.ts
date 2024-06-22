@@ -11,7 +11,6 @@ import { TransactionItem } from '~/entities/transaction/transactionItem.entity';
 import { TransactionType } from '~/dtos/transaction/transaction-type.enum';
 import { Organization } from '~/entities/organization/organization.entity';
 import { User } from '~/entities/user/user.entity';
-
 @Entity()
 export class Transaction {
   @PrimaryGeneratedColumn('uuid')

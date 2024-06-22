@@ -3,6 +3,7 @@ import {
   fromGetOrganizationsResponse,
   getOrganizationSchema,
 } from "~/api/Organization/organizationApi.contracts";
+import { CreateOrganizationDto } from "~/api/Organization/organizationApi.types";
 
 export class OrganizationApi {
   private readonly baseUrl = "/organizations";
@@ -15,6 +16,13 @@ export class OrganizationApi {
   getAll() {
     return this.client(fromGetOrganizationsResponse, this.baseUrl, {
       method: "get",
+    });
+  }
+
+  create(data: CreateOrganizationDto) {
+    return this.client(getOrganizationSchema, this.baseUrl, {
+      method: "post",
+      body: JSON.stringify(data),
     });
   }
 

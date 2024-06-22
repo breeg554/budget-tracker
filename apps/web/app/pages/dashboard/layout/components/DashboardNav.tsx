@@ -7,22 +7,27 @@ import { BarChartIcon } from "~/icons/BarChartIcon";
 import { DashboardIcon } from "~/icons/DashboardIcon";
 import { FileTextIcon } from "~/icons/FileTextIcon";
 import { ScanLink } from "~/dashboard/layout/components/ScanLink";
+import { useOrganizationName } from "~/utils/useOrganizationName";
 
 interface DashboardNavProps {}
 
 export const DashboardNav: React.FC<DashboardNavProps> = () => {
+  const organizationName = useOrganizationName();
   return (
     <nav className="w-full px-2 py-4">
       <ul className="grid gap-1 grid-cols-5 relative">
         <DashboardNavItem>
-          <DashboardNavLink to={routes.dashboard.getPath()}>
+          <DashboardNavLink
+            end
+            to={routes.organization.getPath(organizationName)}
+          >
             <DashboardIcon />
             <DashboardNavText>Discover</DashboardNavText>
           </DashboardNavLink>
         </DashboardNavItem>
 
         <DashboardNavItem>
-          <DashboardNavLink to={routes.receipts.getPath()}>
+          <DashboardNavLink to={routes.receipts.getPath(organizationName)}>
             <FileTextIcon />
             <DashboardNavText>Receipts</DashboardNavText>
           </DashboardNavLink>
@@ -35,14 +40,14 @@ export const DashboardNav: React.FC<DashboardNavProps> = () => {
         </DashboardNavItem>
 
         <DashboardNavItem>
-          <DashboardNavLink to={routes.statistics.getPath()}>
+          <DashboardNavLink to={routes.statistics.getPath(organizationName)}>
             <BarChartIcon />
             <DashboardNavText>Stats</DashboardNavText>
           </DashboardNavLink>
         </DashboardNavItem>
 
         <DashboardNavItem>
-          <DashboardNavLink to={routes.profile.getPath()}>
+          <DashboardNavLink to={routes.profile.getPath(organizationName)}>
             <GearIcon />
             <DashboardNavText>Profile</DashboardNavText>
           </DashboardNavLink>

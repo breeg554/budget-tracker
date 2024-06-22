@@ -22,11 +22,12 @@ export class TransactionService {
 
   async create(
     data: CreateTransactionDto,
-    organizationId: string,
+    organizationName: string,
     userId: string,
   ): Promise<GetTransactionDto> {
     const organization = await this.organizationRepository.findOne({
-      where: { id: organizationId },
+      where: { name: organizationName },
+      relations: ['users'],
     });
 
     if (!organization) {
@@ -61,12 +62,13 @@ export class TransactionService {
     return this.transactionRepository.save(transaction);
   }
 
-  async findAll(
-    organizationId: string,
+  async findAllByName(
+    organizationName: string,
     userId: string,
   ): Promise<GetTransactionDto[]> {
     const organization = await this.organizationRepository.findOne({
-      where: { id: organizationId },
+      where: { name: organizationName },
+      relations: ['users'],
     });
 
     if (!organization) {
@@ -80,8 +82,8 @@ export class TransactionService {
     }
 
     const transactions = await this.transactionRepository.find({
-      where: { organization: { id: organizationId }, author: { id: userId } },
-      relations: ['organization', 'user'],
+      where: { organization: { id: organization.id }, author: { id: user.id } },
+      relations: ['items', 'author'],
     });
 
     return this.toGetTransactionDto(transactions);

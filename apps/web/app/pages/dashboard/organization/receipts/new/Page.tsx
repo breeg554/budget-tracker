@@ -34,7 +34,7 @@ export const NewReceiptPage = () => {
   };
 
   return (
-    <main className="relative">
+    <>
       <IconButton
         onClick={backToDashboard}
         variant="ghost"
@@ -51,7 +51,7 @@ export const NewReceiptPage = () => {
       />
 
       <Outlet />
-    </main>
+    </>
   );
 };
 

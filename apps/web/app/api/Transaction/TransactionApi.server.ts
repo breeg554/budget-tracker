@@ -11,16 +11,24 @@ export class TransactionApi {
     this.client = client;
   }
 
-  create(data: CreateTransactionDto) {
-    return this.client(z.any(), this.baseUrl, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+  create(organizationName: string, data: CreateTransactionDto) {
+    return this.client(
+      z.any(),
+      `/organizations/${organizationName}/transactions`,
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      },
+    );
   }
 
-  getAll() {
-    return this.client(fromGetTransactionsResponse, this.baseUrl, {
-      method: "get",
-    });
+  getAll(organizationName: string) {
+    return this.client(
+      fromGetTransactionsResponse,
+      `/organizations/${organizationName}/transactions`,
+      {
+        method: "get",
+      },
+    );
   }
 }

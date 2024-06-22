@@ -1,4 +1,4 @@
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { loaderHandler } from "~/utils/loader.server";
 import { requireSignedIn } from "~/session.server";
 import { OrganizationApi } from "~/api/Organization/OrganizationApi.server";

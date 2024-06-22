@@ -15,6 +15,7 @@ import { TransactionItemCategory } from '~/entities/transaction/transactionItemC
 import { Transaction } from '~/entities/transaction/transaction.entity';
 import { Organization } from '~/entities/organization/organization.entity';
 import { OrganizationModule } from '~/modules/organization/organization.module';
+import { TransactionModule } from '~/modules/organization/transaction/transaction.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { OrganizationModule } from '~/modules/organization/organization.module';
     }),
     AuthModule,
     OrganizationModule,
+    TransactionModule,
   ],
   controllers: [AppController],
   providers: [
