@@ -19,11 +19,9 @@ export const ReceiptScanner: React.FC<
       <ScannerModal onScreenshot={onScan} />
 
       <IconButton
-        size="4"
         type="button"
         className="absolute top-2 right-2"
-        variant="soft"
-        radius="full"
+        variant="ghost"
         color="sky"
         onClick={onClose}
       >
@@ -93,16 +91,13 @@ function Preview({ src, onRetry, onSave }: PreviewProps) {
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 items-center">
         <IconButton
           type="button"
-          radius="full"
-          size="4"
           className="cursor-pointer bg-white text-neutral-900"
-          variant="solid"
           onClick={onRetry}
         >
           <ReloadIcon />
         </IconButton>
 
-        <Button onClick={onSave} type="button" size="3" variant="solid">
+        <Button onClick={onSave} type="button">
           Save
         </Button>
       </div>

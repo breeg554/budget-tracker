@@ -1,4 +1,4 @@
-import React, { SelectHTMLAttributes } from "react";
+import React from "react";
 import { Select } from "@radix-ui/themes";
 
 export type SelectOption = {

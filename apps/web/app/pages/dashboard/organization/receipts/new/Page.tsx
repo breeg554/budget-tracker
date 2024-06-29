@@ -38,7 +38,6 @@ export const NewReceiptPage = () => {
       <IconButton
         onClick={backToDashboard}
         variant="ghost"
-        size="3"
         className="absolute top-4 left-4"
       >
         <Cross1Icon width={20} height={20} />
