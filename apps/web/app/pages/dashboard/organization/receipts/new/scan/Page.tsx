@@ -1,7 +1,6 @@
 import React from "react";
 import type { MetaFunction } from "@remix-run/node";
 import { ReceiptRetriever } from "./components/ReceiptRetriever";
-import { Dialog } from "@radix-ui/themes";
 import { useFetcher, useNavigate } from "@remix-run/react";
 import { routes } from "~/routes";
 import { CreateTransactionItemDto } from "~/api/Transaction/transactionApi.types";
