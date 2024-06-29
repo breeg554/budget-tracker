@@ -119,13 +119,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
           <Field name="name">
             <FieldLabel>Name</FieldLabel>
-            <TextField variant="soft" placeholder="eg. Shopping mall" />
+            <TextField placeholder="eg. Shopping mall" />
             <FieldError />
           </Field>
 
           <Field name="date">
             <FieldLabel>Date</FieldLabel>
-            <DateField variant="soft" />
+            <DateField />
             <FieldError />
           </Field>
         </div>

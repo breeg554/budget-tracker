@@ -5,10 +5,8 @@ import {
   Scripts,
   ScrollRestoration,
 } from "@remix-run/react";
-import { Theme } from "@radix-ui/themes";
 import { PageProgress } from "~/progressBar/PageProgress";
 import { LinksFunction } from "@remix-run/node";
-import "@radix-ui/themes/styles.css";
 import "./style.css";
 
 export const links: LinksFunction = () => [
@@ -34,10 +32,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <Theme accentColor="purple">
-          <PageProgress />
-          {children}
-        </Theme>
+        <PageProgress />
+        {children}
         <ScrollRestoration />
         <Scripts />
       </body>

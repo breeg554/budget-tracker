@@ -1,17 +1,19 @@
 import React from "react";
-import {
-  IconButton as RadixIconButton,
-  IconButtonProps as RadixIconButtonProps,
-} from "@radix-ui/themes";
-import { cn } from "~/utils/cn";
 
-export type IconButtonProps = RadixIconButtonProps & {};
+import { cn } from "~/utils/cn";
+import { Button, ButtonProps } from "~/buttons/Button";
+
+export type IconButtonProps = ButtonProps & {};
 
 export const IconButton: React.FC<IconButtonProps> = ({
   className,
   ...props
 }) => {
   return (
-    <RadixIconButton className={cn("cursor-pointer", className)} {...props} />
+    <Button
+      size="icon"
+      className={cn("cursor-pointer", className)}
+      {...props}
+    />
   );
 };

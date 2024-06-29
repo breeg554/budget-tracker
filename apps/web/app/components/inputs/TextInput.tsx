@@ -1,47 +1,25 @@
-import { TextField } from "@radix-ui/themes";
-import React, { InputHTMLAttributes } from "react";
+import * as React from "react";
 
-export type TextInputProps = Omit<
-  InputHTMLAttributes<HTMLInputElement>,
-  "defaultValue" | "value" | "size" | "type" | "color"
-> & {
-  variant?: "classic" | "surface" | "soft";
-  value?: string | number;
-  defaultValue?: string | number;
-  size?: "1" | "2" | "3";
-  type?:
-    | "date"
-    | "datetime-local"
-    | "email"
-    | "hidden"
-    | "month"
-    | "number"
-    | "password"
-    | "search"
-    | "tel"
-    | "text"
-    | "time"
-    | "url"
-    | "week"
-    | "color"
-    | "checkbox"
-    | "radio"
-    | "file"
-    | "range";
-};
+import { cn } from "~/utils/cn";
 
-export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
-  ({ type, ...props }, ref) => {
-    if (
-      type === "color" ||
-      type === "checkbox" ||
-      type === "radio" ||
-      type === "file" ||
-      type === "range"
-    ) {
-      throw new Error("Unsupported input type");
-    }
+export interface TextInputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-    return <TextField.Root type={type} ref={ref} {...props} />;
+const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
+  ({ className, type, ...props }, ref) => {
+    return (
+      <input
+        type={type}
+        className={cn(
+          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+          className,
+        )}
+        ref={ref}
+        {...props}
+      />
+    );
   },
 );
+TextInput.displayName = "TextInput";
+
+export { TextInput };
