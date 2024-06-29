@@ -22,13 +22,13 @@ export class AuthService {
     const user: User = await this.userService.findOneByEmail(email);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new BadRequestException('Password or email does not match');
     }
 
     const isMatch: boolean = bcrypt.compareSync(password, user.password);
 
     if (!isMatch) {
-      throw new BadRequestException('Password does not match');
+      throw new BadRequestException('Password or email does not match');
     }
 
     return user;
@@ -37,7 +37,9 @@ export class AuthService {
   async signIn(payload: SignInDto) {
     const user = await this.userService.findOneByEmail(payload.email);
 
-    if (!user) throw new UnauthorizedException();
+    if (!user) {
+      throw new BadRequestException('Password or email does not match');
+    }
 
     return {
       accessToken: this.jwtService.sign({ email: user.email, id: user.id }),
