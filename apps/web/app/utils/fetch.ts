@@ -1,6 +1,7 @@
 import { z, ZodType } from "zod";
 import merge from "lodash.merge";
 import {
+  BadRequestError,
   NotFoundError,
   UnauthorizedError,
   UnknownAPIError,
@@ -35,6 +36,10 @@ export const typedFetch = async <T extends ZodType>(
       throw new UnauthorizedError();
     } else if (response.status === 404) {
       throw new NotFoundError();
+    } else if (response.status === 400) {
+      const errors = await response.json();
+
+      throw new BadRequestError(errors.message ?? "Bad request");
     } else {
       console.error(`Unknown API error ${response.status} for ${url}`);
       throw new UnknownAPIError();

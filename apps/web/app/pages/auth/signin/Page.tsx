@@ -9,13 +9,17 @@ import {
   PasswordField,
   FieldLabel,
 } from "~/components/form/fields";
-import { Link } from "@remix-run/react";
+import { Link, useActionData } from "@remix-run/react";
 import { routes } from "~/routes";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
+import { action } from "~/routes/signIn";
+import { GlobalError } from "~/form/GlobalError";
 
 export const SignInPage = () => {
+  const lastResult = useActionData<typeof action>();
   const [form] = useForm({
+    lastResult,
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
@@ -38,6 +42,8 @@ export const SignInPage = () => {
           <PasswordField />
           <FieldError />
         </Field>
+
+        <GlobalError />
 
         <SubmitButton>Sign in</SubmitButton>
 

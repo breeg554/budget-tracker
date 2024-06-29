@@ -7,6 +7,7 @@ import {
 import { serverTypedFetch } from "~/utils/fetch.server";
 import { TypedFetch } from "~/utils/fetch";
 import {
+  BadRequestError,
   NotFoundError,
   UnauthorizedError,
   UnknownAPIError,
@@ -79,6 +80,10 @@ export const actionHandler =
         return json(toSubmissionError({ global: ["Unknown API error"] }), {
           status: 500,
         });
+      } else if (e instanceof BadRequestError) {
+        return json(toSubmissionError({ global: [e.message] }), {
+          status: 400,
+        });
       }
       console.error(e);
       throw e;
@@ -87,7 +92,9 @@ export const actionHandler =
     return notFound();
   };
 
-function toSubmissionError(errors: Record<string, string[]>): SubmissionResult {
+export function toSubmissionError(
+  errors: Record<string, string[]>,
+): SubmissionResult {
   return {
     error: errors,
     status: "error",
