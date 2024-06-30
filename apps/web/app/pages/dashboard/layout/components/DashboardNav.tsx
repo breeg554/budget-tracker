@@ -65,8 +65,8 @@ function DashboardNavLink({ className, ...rest }: DashboardNavLinkProps) {
       {...rest}
       className={({ isActive }) =>
         cn(
-          "flex flex-col items-center w-fit transition hover:text-primary-600",
-          { "text-primary-600": isActive, "text-neutral-600": !isActive },
+          "flex flex-col items-center w-fit transition hover:text-primary",
+          { "text-primary": isActive, "text-muted-foreground": !isActive },
           className,
         )
       }

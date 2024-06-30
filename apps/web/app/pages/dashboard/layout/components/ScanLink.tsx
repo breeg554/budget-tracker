@@ -15,7 +15,7 @@ export function ScanLink({ size = "4" }: ScanLinkProps) {
     <Link
       to={routes.scanReceipt.getPath(organizationName)}
       className={cn(
-        "transition bg-primary hover:bg-primary/90 rounded-full text-white flex justify-center items-center shadow-lg shadow-secondary-100/50",
+        "transition bg-muted-foreground hover:bg-muted-foreground/90 rounded-full text-white flex justify-center items-center shadow-lg shadow-secondary-100/50",
         {
           "w-14 h-14": size === "4",
           "w-12 h-12": size === "3",
