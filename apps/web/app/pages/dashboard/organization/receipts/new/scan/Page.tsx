@@ -5,6 +5,13 @@ import { useFetcher, useNavigate } from "@remix-run/react";
 import { routes } from "~/routes";
 import { CreateTransactionItemDto } from "~/api/Transaction/transactionApi.types";
 import { useOrganizationName } from "~/utils/useOrganizationName";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+} from "~/ui/drawer";
 
 export const ScanPage = () => {
   const organizationName = useOrganizationName();
@@ -26,9 +33,17 @@ export const ScanPage = () => {
   };
 
   return (
-    <Dialog.Root onOpenChange={onClose} defaultOpen>
-      <Dialog.Content className="max-w-xl w-full">
-        <Dialog.Title>Take or upload photo</Dialog.Title>
+    <Drawer onOpenChange={onClose} open>
+      <DrawerContent
+        onSubmit={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+        }}
+      >
+        <DrawerHeader>
+          <DrawerTitle>Take or upload photo</DrawerTitle>
+          <DrawerDescription>This action cannot be undone.</DrawerDescription>
+        </DrawerHeader>
 
         <ReceiptRetriever
           onRetrieve={onRetrieve}
@@ -52,8 +67,8 @@ export const ScanPage = () => {
             </div>
           )}
         />
-      </Dialog.Content>
-    </Dialog.Root>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

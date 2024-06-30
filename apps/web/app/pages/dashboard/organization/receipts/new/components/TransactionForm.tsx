@@ -29,6 +29,13 @@ import {
 import { MonetaryValue } from "~/utils/MonetaryValue";
 import { FormPersistentState } from "~/components/form/FormPersistentState";
 import { ScanLink } from "~/dashboard/layout/components/ScanLink";
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "~/ui/drawer";
 
 interface TransactionFormProps {
   lastResult?: SubmissionResult | null;
@@ -150,20 +157,19 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
           })}
 
           <li>
-            <Dialog.Root open={isOpen} onOpenChange={handleOnToggle}>
-              <Dialog.Trigger>
+            <Drawer open={isOpen} onOpenChange={handleOnToggle}>
+              <DrawerTrigger asChild>
                 <InsertItemButton />
-              </Dialog.Trigger>
-
-              <Dialog.Content
-                className="max-w-xl w-full"
+              </DrawerTrigger>
+              <DrawerContent
                 onSubmit={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                 }}
               >
-                <Dialog.Title>New item</Dialog.Title>
-
+                <DrawerHeader>
+                  <DrawerTitle>New item</DrawerTitle>
+                </DrawerHeader>
                 <TransactionItemForm
                   onSubmit={editableField ? updateItem : insertItem}
                   categories={itemCategories}
@@ -171,8 +177,8 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
                     editableField?.value as CreateTransactionItemDto
                   }
                 />
-              </Dialog.Content>
-            </Dialog.Root>
+              </DrawerContent>
+            </Drawer>
           </li>
         </ul>
       </SectionWrapper>
