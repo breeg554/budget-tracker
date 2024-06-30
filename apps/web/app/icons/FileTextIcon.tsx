@@ -1,7 +1,7 @@
 import React from "react";
-import { FileTextIcon as RadixFileTextIcon } from "@radix-ui/react-icons";
-import { IconProps } from "@radix-ui/react-icons/dist/types";
+import { FileText } from "lucide-react";
+import { IconProps } from "~/icons/icon.types";
 
 export const FileTextIcon: React.FC<IconProps> = (props) => {
-  return <RadixFileTextIcon {...props} />;
+  return <FileText {...props} />;
 };

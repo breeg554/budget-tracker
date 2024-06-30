@@ -4,6 +4,7 @@ import { routes } from "~/routes";
 import { ColumnsIcon } from "~/icons/ColumnsIcon";
 import { cn } from "~/utils/cn";
 import { useOrganizationName } from "~/utils/useOrganizationName";
+import { BarcodeIcon } from "~/icons/BarcodeIcon";
 
 interface ScanLinkProps {
   size?: "1" | "2" | "3" | "4";
@@ -14,7 +15,7 @@ export function ScanLink({ size = "4" }: ScanLinkProps) {
     <Link
       to={routes.scanReceipt.getPath(organizationName)}
       className={cn(
-        "transition bg-secondary-150 hover:bg-secondary-200 rounded-full text-white flex justify-center items-center shadow-lg shadow-secondary-100/50",
+        "transition bg-primary hover:bg-primary/90 rounded-full text-white flex justify-center items-center shadow-lg shadow-secondary-100/50",
         {
           "w-14 h-14": size === "4",
           "w-12 h-12": size === "3",
@@ -23,9 +24,11 @@ export function ScanLink({ size = "4" }: ScanLinkProps) {
         },
       )}
     >
-      <ColumnsIcon
-        width={size === "4" ? 22 : 16}
-        height={size === "4" ? 22 : 16}
+      <BarcodeIcon
+        className={cn({
+          "w-6 h-6": size === "4",
+          "w-4 h-4": size !== "4",
+        })}
       />
     </Link>
   );

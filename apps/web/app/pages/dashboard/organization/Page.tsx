@@ -3,10 +3,10 @@ import { useFetcher, useLoaderData } from "@remix-run/react";
 import { routes } from "~/routes";
 import { loader } from "./loader.server";
 import { SectionWrapper } from "~/layout/SectionWrapper";
-import { MagnifyingGlassIcon } from "@radix-ui/react-icons";
 import { TransactionItemList } from "./components/TransactionItemList";
 import groupBy from "lodash.groupby";
 import dayjs from "dayjs";
+import { SearchIcon } from "~/icons/SearchIcon";
 
 export const DashboardPage = () => {
   const { transactions } = useLoaderData<typeof loader>();
@@ -31,7 +31,7 @@ export const DashboardPage = () => {
         </h1>
 
         <button className="rounded-full border border-neutral-150 w-12 h-12 bg-transparent flex justify-center items-center">
-          <MagnifyingGlassIcon width={20} height={20} />
+          <SearchIcon className="w-5 h-5" />
         </button>
       </SectionWrapper>
 

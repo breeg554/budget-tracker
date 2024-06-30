@@ -1,6 +1,5 @@
 import React from "react";
 import type { MetaFunction } from "@remix-run/node";
-import { Cross1Icon } from "@radix-ui/react-icons";
 import { IconButton } from "~/buttons/IconButton";
 import {
   Outlet,
@@ -14,6 +13,7 @@ import { TransactionForm } from "./components/TransactionForm";
 import { action } from "./action.server";
 import { routes } from "~/routes";
 import { useOrganizationName } from "~/utils/useOrganizationName";
+import { CrossIcon } from "~/icons/CrossIcon";
 
 export const NewReceiptPage = () => {
   const organizationName = useOrganizationName();
@@ -40,7 +40,7 @@ export const NewReceiptPage = () => {
         variant="ghost"
         className="absolute top-4 left-4"
       >
-        <Cross1Icon width={20} height={20} />
+        <CrossIcon className="w-5 h-5" />
       </IconButton>
 
       <TransactionForm

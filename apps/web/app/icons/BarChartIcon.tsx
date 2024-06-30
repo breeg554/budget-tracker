@@ -1,7 +1,7 @@
 import React from "react";
-import { BarChartIcon as RadixBarChartIcon } from "@radix-ui/react-icons";
-import { IconProps } from "@radix-ui/react-icons/dist/types";
+import { BarChart } from "lucide-react";
+import { IconProps } from "~/icons/icon.types";
 
 export const BarChartIcon: React.FC<IconProps> = (props) => {
-  return <RadixBarChartIcon {...props} />;
+  return <BarChart {...props} />;
 };
