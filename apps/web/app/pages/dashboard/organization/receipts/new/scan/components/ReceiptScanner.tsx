@@ -2,9 +2,10 @@ import React, { PropsWithChildren } from "react";
 import { Webcam } from "~/components/webcam/Webcam";
 import ReactWebcam from "react-webcam";
 import { IconButton } from "~/buttons/IconButton";
-import { Cross2Icon, ReloadIcon } from "@radix-ui/react-icons";
 import { assert } from "~/utils/assert";
 import { Button } from "~/buttons/Button";
+import { CrossIcon } from "~/icons/CrossIcon";
+import { ReloadIcon } from "~/icons/ReloadIcon";
 
 interface ReceiptScannerProps {
   onScan: (image: string) => void;
@@ -25,7 +26,7 @@ export const ReceiptScanner: React.FC<
         color="sky"
         onClick={onClose}
       >
-        <Cross2Icon width={24} height={24} />
+        <CrossIcon className="w-6 h-6" />
       </IconButton>
     </div>
   );

@@ -1,7 +1,6 @@
 import React, { ButtonHTMLAttributes, useEffect, useState } from "react";
 import { ValidatedForm } from "~/form/ValidatedForm";
 import { SectionWrapper } from "~/layout/SectionWrapper";
-import { PlusIcon } from "@radix-ui/react-icons";
 import {
   FieldMetadata,
   SubmissionResult,
@@ -36,6 +35,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/ui/drawer";
+import { PlusIcon } from "~/icons/PlusIcon";
 
 interface TransactionFormProps {
   lastResult?: SubmissionResult | null;

@@ -1,7 +1,7 @@
 import React from "react";
-import { ColumnsIcon as RadixColumnsIcon } from "@radix-ui/react-icons";
-import { IconProps } from "@radix-ui/react-icons/dist/types";
+import { Columns, Columns2 } from "lucide-react";
+import { IconProps } from "~/icons/icon.types";
 
 export const ColumnsIcon: React.FC<IconProps> = (props) => {
-  return <RadixColumnsIcon {...props} />;
+  return <Columns2 {...props} />;
 };

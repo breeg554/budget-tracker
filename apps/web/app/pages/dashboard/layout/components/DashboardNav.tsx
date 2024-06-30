@@ -21,14 +21,14 @@ export const DashboardNav: React.FC<DashboardNavProps> = () => {
             end
             to={routes.organization.getPath(organizationName)}
           >
-            <DashboardIcon />
+            <DashboardIcon className="w-4 h-4" />
             <DashboardNavText>Discover</DashboardNavText>
           </DashboardNavLink>
         </DashboardNavItem>
 
         <DashboardNavItem>
           <DashboardNavLink to={routes.receipts.getPath(organizationName)}>
-            <FileTextIcon />
+            <FileTextIcon className="w-4 h-4" />
             <DashboardNavText>Receipts</DashboardNavText>
           </DashboardNavLink>
         </DashboardNavItem>
@@ -41,14 +41,14 @@ export const DashboardNav: React.FC<DashboardNavProps> = () => {
 
         <DashboardNavItem>
           <DashboardNavLink to={routes.statistics.getPath(organizationName)}>
-            <BarChartIcon />
+            <BarChartIcon className="w-4 h-4" />
             <DashboardNavText>Stats</DashboardNavText>
           </DashboardNavLink>
         </DashboardNavItem>
 
         <DashboardNavItem>
           <DashboardNavLink to={routes.profile.getPath(organizationName)}>
-            <GearIcon />
+            <GearIcon className="w-4 h-4" />
             <DashboardNavText>Profile</DashboardNavText>
           </DashboardNavLink>
         </DashboardNavItem>
