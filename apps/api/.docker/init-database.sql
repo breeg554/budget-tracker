@@ -1,1 +1,1 @@
-CREATE DATABASE "budget_tracker";
+CREATE DATABASE "budget_tracker_db";
