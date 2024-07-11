@@ -17,7 +17,7 @@ export enum TransactionItemType {
 export const createTransactionItemSchema = z.object({
   name: z.string(),
   type: z.nativeEnum(TransactionItemType),
-  amount: z.number().min(0),
+  quantity: z.number().min(0),
   value: z.number().min(0),
   category: z.string(),
 });
@@ -42,7 +42,7 @@ export const getTransactionItemSchema = z.object({
   id: z.string(),
   name: z.string(),
   type: z.nativeEnum(TransactionItemType),
-  amount: z.number(),
+  quantity: z.number(),
   value: z.union([z.number(), z.string().transform((val) => Number(val))]),
   createdAt: z.string(),
   updatedAt: z.string(),
