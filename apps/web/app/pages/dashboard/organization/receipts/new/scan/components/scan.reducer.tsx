@@ -62,15 +62,19 @@ export const useScanReducer = () => {
     return buildelRef.current?.disconnect();
   };
   const sendScan = async (scan: string) => {
-    assert(runRef.current, "Run not initialized");
-    assert(runRef.current.status === "running", "Run is not running");
-    assert(state.image, "Image not uploaded");
+    try {
+      assert(runRef.current, "Run not initialized");
+      assert(runRef.current.status === "running", "Run is not running");
+      assert(state.image, "Image not uploaded");
 
-    const text = await tesseract().getText(scan);
-    console.log(text);
-    dispatch({ type: "retrieveText", payload: { text } });
+      const text = await tesseract().getText(scan);
+      console.log(text);
+      dispatch({ type: "retrieveText", payload: { text } });
 
-    runRef.current.push("text_input_1:input", text);
+      runRef.current.push("text_input_1:input", text);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const openScanner = () => {

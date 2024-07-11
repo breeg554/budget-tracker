@@ -35,7 +35,7 @@ export const useField = <T,>() => {
 
   if (!ctx) throw new Error("useField can be used only inside Field");
 
-  const [fieldMeta, formMeta] = useConformField<T>(ctx.name, {
+  const [fieldMeta] = useConformField<T>(ctx.name, {
     formId: ctx.formId,
   });
 
