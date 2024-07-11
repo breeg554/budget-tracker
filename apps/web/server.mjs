@@ -61,7 +61,7 @@ app.use(morgan(isProd ? "tiny" : "combined"));
 // handle SSR requests
 app.all("*", remixHandler);
 
-app.listen(port, (err) => {
+app.listen(port,'0.0.0.0', (err) => {
   if (err) console.log(`Error during server setup 🚨   `);
   console.log(`App listening at: ${port} ✅  `);
 });

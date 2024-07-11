@@ -43,7 +43,8 @@ COPY ./server.mjs /app/server.mjs
 COPY --from=build /app/build/server /app/build/server
 COPY --from=build /app/build/client /app/build/client
 
-# Don't run production as root
+RUN chown -R 1001:1001 /app
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 web
 USER web
