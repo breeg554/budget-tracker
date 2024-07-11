@@ -20,13 +20,13 @@ import {
 interface TransactionItemFormProps {
   onSubmit?: (values: CreateTransactionItemDto) => void;
   categories: GetTransactionItemCategoryDto[];
-  defaultValues?: Partial<CreateTransactionItemDto>
+  defaultValues?: Partial<CreateTransactionItemDto>;
 }
 
 export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
   onSubmit,
   categories,
-  defaultValues
+  defaultValues,
 }) => {
   const [form] = useForm({
     defaultValue: defaultValues,
@@ -73,8 +73,8 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         <FieldError />
       </Field>
 
-      <Field name="amount">
-        <FieldLabel>Amount</FieldLabel>
+      <Field name="quantity">
+        <FieldLabel>Quantity</FieldLabel>
         <NumberField placeholder="Amount of the item" />
         <FieldError />
       </Field>
@@ -85,7 +85,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         <FieldError />
       </Field>
 
-      <SubmitButton>{defaultValues ?"Update item" :"Add item"}</SubmitButton>
+      <SubmitButton>{defaultValues ? "Update item" : "Add item"}</SubmitButton>
     </ValidatedForm>
   );
 };

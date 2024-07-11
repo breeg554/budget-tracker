@@ -75,7 +75,7 @@ export function TransactionItemListItem({
 
       <p className="text-neutral-900 font-medium">
         {item.type === "outcome" && "-"}
-        {new MonetaryValue(item.value, item.amount).withCurrency()}
+        {new MonetaryValue(item.value, item.quantity).withCurrency()}
       </p>
     </section>
   );

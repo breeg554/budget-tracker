@@ -5,7 +5,7 @@ import { TransactionItemType } from '~/dtos/transaction/transaction-item-type.en
 export const createTransactionItemSchema = z.object({
   name: z.string(),
   type: z.nativeEnum(TransactionItemType),
-  amount: z.number(),
+  quantity: z.number(),
   value: z.number(),
   category: z.string(),
 });

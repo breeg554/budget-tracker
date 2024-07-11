@@ -16,7 +16,6 @@ export const action = actionHandler({
     const submission = parseWithZod(formData, {
       schema: createTransactionSchema,
     });
-    console.log(submission);
     if (submission.status !== "success") {
       return json(submission.reply());
     }

@@ -17,7 +17,7 @@ export class TransactionItem {
   @Column()
   name: string;
   @Column()
-  amount: number;
+  quantity: number;
   @Column({ type: 'numeric', precision: 10, scale: 3 })
   value: number;
   @Column({

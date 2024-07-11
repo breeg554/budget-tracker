@@ -221,7 +221,7 @@ function TransactionFormItem({
 
   const { value: name } = useInputControl(itemFields.name);
   const category = useInputControl(itemFields.category);
-  const amount = useInputControl(itemFields.amount);
+  const quantity = useInputControl(itemFields.quantity);
   const value = useInputControl(itemFields.value);
   useInputControl(itemFields.type);
 
@@ -239,7 +239,7 @@ function TransactionFormItem({
     <li className="bg-neutral-50 border border-neutral-150 rounded p-2 text-sm text-neutral-900">
       <p>Name: {name}</p>
       <p>Category: {findCategoryName(category.value) ?? ""}</p>
-      <p>Amount: {amount.value}</p>
+      <p>Amount: {quantity.value}</p>
       <p>Value: {value.value}</p>
 
       <button type="button" onClick={handleOnEdit}>
@@ -263,7 +263,7 @@ function TransactionFormSummaryValue({
 
     for (let item of items.values()) {
       if (item.value) {
-        value = value + Number(item.value.value) * Number(item.value.amount);
+        value = value + Number(item.value.value) * Number(item.value.quantity);
       }
     }
 

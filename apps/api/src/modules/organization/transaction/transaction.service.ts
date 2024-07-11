@@ -42,7 +42,7 @@ export class TransactionService {
       const item = new TransactionItem();
 
       item.name = itemDto.name;
-      item.amount = itemDto.amount;
+      item.quantity = itemDto.quantity;
       item.value = itemDto.value;
       item.type = itemDto.type;
       item.category = { id: itemDto.category } as TransactionItemCategory;
@@ -77,7 +77,7 @@ export class TransactionService {
     return transactions.map((transaction) => ({
       ...transaction,
       value: transaction.items.reduce(
-        (curr, item) => curr + Number(item.value) * Number(item.amount),
+        (curr, item) => curr + Number(item.value) * Number(item.quantity),
         0,
       ),
     }));
