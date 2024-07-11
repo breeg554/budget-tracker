@@ -1,18 +1,15 @@
-# fly.toml app configuration file generated for pdg-website on 2024-03-01T23:02:21+01:00
+# fly.toml app configuration file generated for web-broken-lake-5252 on 2024-07-11T21:06:20+02:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'pdg-website'
+app = 'web-broken-lake-5252'
 primary_region = 'waw'
-kill_signal = "SIGINT"
 
-[env]
-  PAGE_URL = "https://pdg-website.fly.dev"
-  API_URL = "https://jsonplaceholder.typicode.com"
+[build]
 
 [http_service]
-  internal_port = 8080
+  internal_port = 3000
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true
@@ -21,3 +18,8 @@ kill_signal = "SIGINT"
 
 [[vm]]
   size = 'shared-cpu-1x'
+
+[env]
+  PAGE_URL = 'https://web-broken-lake-5252.fly.dev'
+  API_URL = 'https://api-blue-dream-2825.fly.dev'
+  PORT = '3000'
