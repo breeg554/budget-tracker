@@ -22,7 +22,6 @@ export const ScanPage = () => {
   };
 
   const onRetrieve = (items: Partial<CreateTransactionItemDto>[]) => {
-    console.log(items);
     const formData = new FormData();
     formData.append("items", JSON.stringify(items));
 

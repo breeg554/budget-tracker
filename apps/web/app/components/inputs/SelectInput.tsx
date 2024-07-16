@@ -28,7 +28,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
   return (
     <Select value={value} defaultValue={defaultValue} {...rest}>
       <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Theme" {...triggerProps} />
+        <SelectValue {...triggerProps} />
       </SelectTrigger>
       <SelectContent {...contentProps}>
         {options.map((option) => (

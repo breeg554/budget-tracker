@@ -1,6 +1,5 @@
 import React, { ButtonHTMLAttributes, useEffect, useState } from "react";
 import { ValidatedForm } from "~/form/ValidatedForm";
-import { SectionWrapper } from "~/layout/SectionWrapper";
 import {
   FieldMetadata,
   SubmissionResult,
@@ -12,7 +11,6 @@ import { useBoolean } from "usehooks-ts";
 import { Field } from "~/form/Field";
 import { cn } from "~/utils/cn";
 import { DateField } from "~/form/fields/DateField";
-import { SubmitButton } from "~/form/SubmitButton";
 import { HiddenField } from "~/form/fields/HiddenField";
 import { FieldError, FieldLabel, TextField } from "~/form/fields";
 import { TransactionItemForm } from "./TransactionItemForm";
@@ -41,18 +39,21 @@ interface TransactionFormProps {
   lastResult?: SubmissionResult | null;
   itemCategories: GetTransactionItemCategoryDto[];
   defaultValue?: Partial<CreateTransactionDto>;
+  id?: string;
 }
 
 export const TransactionForm: React.FC<TransactionFormProps> = ({
   lastResult,
   itemCategories,
   defaultValue,
+  id,
 }) => {
   const [editableField, setEditableField] =
     useState<null | FieldMetadata<CreateTransactionItemDto>>(null);
   const { value: isOpen, setFalse, setTrue, setValue } = useBoolean(false);
 
   const [form, fields] = useForm({
+    id: id,
     lastResult,
     defaultValue,
     onValidate({ formData }) {
@@ -109,10 +110,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   };
 
   return (
-    <ValidatedForm method="POST" form={form} onSubmit={form.onSubmit}>
+    <ValidatedForm id={id} method="POST" form={form} onSubmit={form.onSubmit}>
       <FormPersistentState />
 
-      <SectionWrapper className="pb-8 pt-14">
+      <div className="pb-8 pt-14">
         <TransactionFormSummaryValue field={fields.items} />
 
         <div className="w-full flex flex-col gap-2 mt-6">
@@ -135,9 +136,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             <FieldError />
           </Field>
         </div>
-      </SectionWrapper>
+      </div>
 
-      <SectionWrapper>
+      <div>
         <header className="flex justify-between gap-2 items-center">
           <h2>Items</h2>
 
@@ -181,9 +182,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             </Drawer>
           </li>
         </ul>
-      </SectionWrapper>
-
-      <SubmitButton>Add transaction</SubmitButton>
+      </div>
     </ValidatedForm>
   );
 };
