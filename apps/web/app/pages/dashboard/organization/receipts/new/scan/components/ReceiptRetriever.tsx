@@ -1,9 +1,11 @@
-import React, { ReactNode, useRef } from "react";
-import { ReceiptScanner } from "./ReceiptScanner";
-import { useScanReducer } from "./scan.reducer";
-import { toBase64 } from "~/utils/files";
-import { CreateTransactionItemDto } from "~/api/Transaction/transactionApi.types";
-import { assert } from "~/utils/assert";
+import React, { ReactNode, useRef } from 'react';
+
+import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
+import { assert } from '~/utils/assert';
+import { toBase64 } from '~/utils/files';
+
+import { ReceiptScanner } from './ReceiptScanner';
+import { useScanReducer } from './scan.reducer';
 
 interface ReceiptRetrieverProps {
   triggers: ({
@@ -43,7 +45,7 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
   const handleOnUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const file = await toBase64(e.target.files[0]);
-      if (typeof file === "string") {
+      if (typeof file === 'string') {
         onUpload(file);
       }
     }
@@ -57,7 +59,7 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
 
   const renderStep = () => {
     switch (step) {
-      case "method":
+      case 'method':
         return (
           <>
             {triggers({
@@ -68,9 +70,9 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
             <UploadInput onChange={handleOnUpload} ref={inputRef} />
           </>
         );
-      case "scan":
+      case 'scan':
         return <ReceiptScanner onClose={closeScanner} onScan={handleOnScan} />;
-      case "preview":
+      case 'preview':
         if (error) return <p>{error}</p>;
         if (!hasText) return <p>Retrieving text from image...</p>;
         if (!receiptItems) return <p>Analyzing... Let's AI do some magic...</p>;

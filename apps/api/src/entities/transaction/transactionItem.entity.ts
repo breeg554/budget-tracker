@@ -6,9 +6,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
-import { Transaction } from '~/entities/transaction/transaction.entity';
+
 import { TransactionItemType } from '~/dtos/transaction/transaction-item-type.enum';
+import { Transaction } from '~/entities/transaction/transaction.entity';
+import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 
 @Entity()
 export class TransactionItem {

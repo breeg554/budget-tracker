@@ -1,11 +1,12 @@
-import React, { useMemo } from "react";
-import { ItemList } from "~/list/ItemList";
+import React, { useMemo } from 'react';
+
 import {
   GetTransactionDto,
   GetTransactionItemDto,
-} from "~/api/Transaction/transactionApi.types";
-import { MonetaryValue } from "~/utils/MonetaryValue";
-import { TransactionItemCategory } from "~/utils/TransactionItemCategory";
+} from '~/api/Transaction/transactionApi.types';
+import { ItemList } from '~/list/ItemList';
+import { MonetaryValue } from '~/utils/MonetaryValue';
+import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
 interface TransactionItemListProps {
   items: Record<string, GetTransactionDto[]>;
@@ -74,7 +75,7 @@ export function TransactionItemListItem({
       </header>
 
       <p className="text-neutral-900 font-medium">
-        {item.type === "outcome" && "-"}
+        {item.type === 'outcome' && '-'}
         {new MonetaryValue(item.value, item.quantity).withCurrency()}
       </p>
     </article>

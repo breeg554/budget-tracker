@@ -1,13 +1,14 @@
-import React from "react";
-import { Popover, PopoverContent, PopoverTrigger } from "~/ui/popover";
-import { Button } from "~/buttons/Button";
-import { cn } from "~/utils/cn";
-import { CalendarIcon } from "~/icons/CalendarIcon";
-import { format } from "date-fns";
-import { Calendar } from "~/ui/calendar";
-import { DayPickerSingleProps } from "react-day-picker";
+import React from 'react';
+import { DayPickerSingleProps } from 'react-day-picker';
+import { format } from 'date-fns';
 
-export type DateInputProps = Omit<DayPickerSingleProps, "mode">;
+import { Button } from '~/buttons/Button';
+import { CalendarIcon } from '~/icons/CalendarIcon';
+import { Calendar } from '~/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '~/ui/popover';
+import { cn } from '~/utils/cn';
+
+export type DateInputProps = Omit<DayPickerSingleProps, 'mode'>;
 
 export const DateInput = React.forwardRef<HTMLInputElement, DateInputProps>(
   (props) => {
@@ -15,15 +16,15 @@ export const DateInput = React.forwardRef<HTMLInputElement, DateInputProps>(
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            variant={"outline"}
+            variant={'outline'}
             className={cn(
-              "w-[240px] justify-start text-left font-normal",
-              !props.selected && "text-muted-foreground",
+              'w-[240px] justify-start text-left font-normal',
+              !props.selected && 'text-muted-foreground',
             )}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {props.selected ? (
-              format(props.selected, "PPP")
+              format(props.selected, 'PPP')
             ) : (
               <span>Pick a date</span>
             )}

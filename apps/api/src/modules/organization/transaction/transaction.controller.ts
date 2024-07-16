@@ -1,8 +1,9 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { TransactionService } from '~/modules/organization/transaction/transaction.service';
+
 import { CreateTransactionDto } from '~/dtos/transaction/create-transaction.dto';
 import { GetTransactionDto } from '~/dtos/transaction/get-transaction.dto';
 import { AuthUser, User } from '~/modules/auth/decorators/user.decorator';
+import { TransactionService } from '~/modules/organization/transaction/transaction.service';
 
 @Controller('/organizations/:organizationName/transactions')
 export class TransactionController {

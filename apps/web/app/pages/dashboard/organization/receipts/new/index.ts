@@ -1,1 +1,1 @@
-export { NewReceiptPage as page, meta } from "./Page";
+export { NewReceiptPage as page, meta } from './Page';

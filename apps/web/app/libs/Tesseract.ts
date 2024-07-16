@@ -1,17 +1,18 @@
-import { createWorker } from "tesseract.js";
-import { assert } from "~/utils/assert";
+import { createWorker } from 'tesseract.js';
+
+import { assert } from '~/utils/assert';
 
 class Tesseract {
   private worker: Tesseract.Worker | undefined;
 
-  public async createWorker(lang = "pol") {
+  public async createWorker(lang = 'pol') {
     this.worker = await createWorker(lang);
 
     return this;
   }
 
   public async recognize(image: string) {
-    assert(this.worker, "Tesseracts worker not initialised");
+    assert(this.worker, 'Tesseracts worker not initialised');
 
     const {
       data: { text },
@@ -21,7 +22,7 @@ class Tesseract {
   }
 
   public async closeWorker() {
-    assert(this.worker, "Tesseracts worker not initialised");
+    assert(this.worker, 'Tesseracts worker not initialised');
     return this.worker.terminate();
   }
 

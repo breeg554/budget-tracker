@@ -1,8 +1,9 @@
-import { z } from "zod";
+import { z } from 'zod';
+
 import {
   createOrganizationSchema,
   getOrganizationSchema,
-} from "./organizationApi.contracts";
+} from './organizationApi.contracts';
 
 export type GetOrganizationDto = z.TypeOf<typeof getOrganizationSchema>;
 

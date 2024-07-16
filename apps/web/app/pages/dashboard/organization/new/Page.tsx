@@ -1,18 +1,19 @@
-import type { MetaFunction } from "@remix-run/node";
-import { ValidatedForm } from "~/form/ValidatedForm";
-import { Field } from "~/form/Field";
-import { FieldError, FieldLabel, TextField } from "~/form/fields";
-import { SubmitButton } from "~/form/SubmitButton";
-import { useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
-import { createOrganizationSchema } from "~/api/Organization/organizationApi.contracts";
+import type { MetaFunction } from '@remix-run/node';
+import { useForm } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+
+import { createOrganizationSchema } from '~/api/Organization/organizationApi.contracts';
+import { Field } from '~/form/Field';
+import { FieldError, FieldLabel, TextField } from '~/form/fields';
+import { SubmitButton } from '~/form/SubmitButton';
+import { ValidatedForm } from '~/form/ValidatedForm';
 
 export const OrganizationNew = () => {
   const [form] = useForm({
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createOrganizationSchema });
     },
-    shouldValidate: "onSubmit",
+    shouldValidate: 'onSubmit',
   });
 
   return (
@@ -33,5 +34,5 @@ export const OrganizationNew = () => {
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: "New Organizations" }];
+  return [{ title: 'New Organizations' }];
 };

@@ -1,23 +1,25 @@
-import type { MetaFunction } from "@remix-run/node";
-import { useFetcher, useLoaderData } from "@remix-run/react";
-import { routes } from "~/routes";
-import { loader } from "./loader.server";
-import { SectionWrapper } from "~/layout/SectionWrapper";
-import { TransactionItemList } from "./components/TransactionItemList";
-import groupBy from "lodash.groupby";
-import dayjs from "dayjs";
-import { SearchIcon } from "~/icons/SearchIcon";
+import type { MetaFunction } from '@remix-run/node';
+import { useFetcher, useLoaderData } from '@remix-run/react';
+import dayjs from 'dayjs';
+import groupBy from 'lodash.groupby';
+
+import { SearchIcon } from '~/icons/SearchIcon';
+import { SectionWrapper } from '~/layout/SectionWrapper';
+import { routes } from '~/routes';
+
+import { TransactionItemList } from './components/TransactionItemList';
+import { loader } from './loader.server';
 
 export const DashboardPage = () => {
   const { transactions } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
 
   const onLogout = () => {
-    fetcher.submit(null, { action: routes.signOut.getPath(), method: "post" });
+    fetcher.submit(null, { action: routes.signOut.getPath(), method: 'post' });
   };
 
   const days = groupBy(transactions, ({ date }) =>
-    dayjs(date).format("DD MMMM"),
+    dayjs(date).format('DD MMMM'),
   );
 
   return (
@@ -26,7 +28,7 @@ export const DashboardPage = () => {
 
       <SectionWrapper className="mb-6 mt-10 flex gap-2 items-center justify-between">
         <h1 className="text-4xl text-neutral-900">
-          <span className="block">Hello,</span>{" "}
+          <span className="block">Hello,</span>{' '}
           <span className="block font-bold">Dawid</span>
         </h1>
 
@@ -55,5 +57,5 @@ export const DashboardPage = () => {
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Dashboard" }];
+  return [{ title: 'Dashboard' }];
 };

@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import { cn } from "~/utils/cn";
-import { Button, ButtonProps } from "~/buttons/Button";
+import { Button, ButtonProps } from '~/buttons/Button';
+import { cn } from '~/utils/cn';
 
 export type IconButtonProps = ButtonProps & {};
 
@@ -12,7 +12,7 @@ export const IconButton: React.FC<IconButtonProps> = ({
   return (
     <Button
       size="icon"
-      className={cn("cursor-pointer", className)}
+      className={cn('cursor-pointer', className)}
       {...props}
     />
   );

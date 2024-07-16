@@ -1,1 +1,1 @@
-export { page as default } from "~/pages/dashboard/layout";
+export { page as default } from '~/pages/dashboard/layout';

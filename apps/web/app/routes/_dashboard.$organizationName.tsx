@@ -1,13 +1,14 @@
-import { json } from "@remix-run/node";
-import { loaderHandler } from "~/utils/loader.server";
-import { requireSignedIn } from "~/session.server";
-import { assert } from "~/utils/assert";
-import { OrganizationApi } from "~/api/Organization/OrganizationApi.server";
+import { json } from '@remix-run/node';
+import { Outlet } from '@remix-run/react';
+
+import { OrganizationApi } from '~/api/Organization/OrganizationApi.server';
 import {
   DashboardNav,
   NavFloatingWrapper,
-} from "~/dashboard/layout/components/DashboardNav";
-import { Outlet } from "@remix-run/react";
+} from '~/dashboard/layout/components/DashboardNav';
+import { requireSignedIn } from '~/session.server';
+import { assert } from '~/utils/assert';
+import { loaderHandler } from '~/utils/loader.server';
 
 export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   await requireSignedIn(request);
@@ -20,7 +21,7 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   if (!organization) {
     throw new Response(null, {
       status: 404,
-      statusText: "Not Found",
+      statusText: 'Not Found',
     });
   }
 

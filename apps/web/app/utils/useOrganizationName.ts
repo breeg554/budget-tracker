@@ -1,5 +1,6 @@
-import { useParams } from "@remix-run/react";
-import { assert } from "~/utils/assert";
+import { useParams } from '@remix-run/react';
+
+import { assert } from '~/utils/assert';
 
 export const useOrganizationName = () => {
   const params = useParams();

@@ -1,11 +1,12 @@
-import { describe, expect, test } from "vitest";
-import { HomePage } from "~/pages/home/Page";
-import { render, Matcher, RenderResult } from "~/tests/render";
-import { setupRoutes, RoutesProps } from "~/tests/setupRoutes";
+import { describe, expect, test } from 'vitest';
+
+import { HomePage } from '~/pages/home/Page';
+import { Matcher, render, RenderResult } from '~/tests/render';
+import { RoutesProps, setupRoutes } from '~/tests/setupRoutes';
 
 describe.skip(HomePage.name, () => {
-  test("should render org name", async () => {
-    const page = HomePageObject.render({ initialEntries: ["/"] });
+  test('should render org name', async () => {
+    const page = HomePageObject.render({ initialEntries: ['/'] });
 
     expect(await page.findByText(/Welcome to PDG/i)).toBeTruthy();
   });
@@ -20,7 +21,7 @@ class HomePageObject {
   static render(props?: RoutesProps) {
     const Routes = setupRoutes([
       {
-        path: "/",
+        path: '/',
         Component: HomePage,
       },
     ]);

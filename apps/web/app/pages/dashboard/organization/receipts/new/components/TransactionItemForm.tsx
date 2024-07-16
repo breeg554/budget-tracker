@@ -1,21 +1,22 @@
-import React from "react";
-import { ValidatedForm } from "~/form/ValidatedForm";
-import { useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
-import { Field } from "~/form/Field";
-import { FieldError, FieldLabel, TextField } from "~/form/fields";
+import React from 'react';
+import { useForm } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+
 import {
   createTransactionItemSchema,
   TransactionItemType,
-} from "~/api/Transaction/transactionApi.contracts";
-import { SubmitButton } from "~/form/SubmitButton";
-import { HiddenField } from "~/form/fields/HiddenField";
-import { NumberField } from "~/form/fields/NumberField";
-import { SelectField } from "~/form/fields/SelectField";
+} from '~/api/Transaction/transactionApi.contracts';
 import {
   CreateTransactionItemDto,
   GetTransactionItemCategoryDto,
-} from "~/api/Transaction/transactionApi.types";
+} from '~/api/Transaction/transactionApi.types';
+import { Field } from '~/form/Field';
+import { FieldError, FieldLabel, TextField } from '~/form/fields';
+import { HiddenField } from '~/form/fields/HiddenField';
+import { NumberField } from '~/form/fields/NumberField';
+import { SelectField } from '~/form/fields/SelectField';
+import { SubmitButton } from '~/form/SubmitButton';
+import { ValidatedForm } from '~/form/ValidatedForm';
 
 interface TransactionItemFormProps {
   onSubmit?: (values: CreateTransactionItemDto) => void;
@@ -30,7 +31,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
 }) => {
   const [form] = useForm({
     defaultValue: defaultValues,
-    shouldValidate: "onSubmit",
+    shouldValidate: 'onSubmit',
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createTransactionItemSchema });
     },
@@ -67,8 +68,8 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         <FieldLabel>Category</FieldLabel>
         <SelectField
           options={categoryValues}
-          contentProps={{ position: "popper" }}
-          triggerProps={{ placeholder: "eg. Dairy" }}
+          contentProps={{ position: 'popper' }}
+          triggerProps={{ placeholder: 'eg. Dairy' }}
         />
         <FieldError />
       </Field>
@@ -85,7 +86,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         <FieldError />
       </Field>
 
-      <SubmitButton>{defaultValues ? "Update item" : "Add item"}</SubmitButton>
+      <SubmitButton>{defaultValues ? 'Update item' : 'Add item'}</SubmitButton>
     </ValidatedForm>
   );
 };

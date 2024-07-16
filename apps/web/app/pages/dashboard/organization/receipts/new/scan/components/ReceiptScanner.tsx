@@ -1,11 +1,12 @@
-import React, { PropsWithChildren } from "react";
-import { Webcam } from "~/components/webcam/Webcam";
-import ReactWebcam from "react-webcam";
-import { IconButton } from "~/buttons/IconButton";
-import { assert } from "~/utils/assert";
-import { Button } from "~/buttons/Button";
-import { CrossIcon } from "~/icons/CrossIcon";
-import { ReloadIcon } from "~/icons/ReloadIcon";
+import React, { PropsWithChildren } from 'react';
+import ReactWebcam from 'react-webcam';
+
+import { Button } from '~/buttons/Button';
+import { IconButton } from '~/buttons/IconButton';
+import { Webcam } from '~/components/webcam/Webcam';
+import { CrossIcon } from '~/icons/CrossIcon';
+import { ReloadIcon } from '~/icons/ReloadIcon';
+import { assert } from '~/utils/assert';
 
 interface ReceiptScannerProps {
   onScan: (image: string) => void;

@@ -1,8 +1,8 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren } from 'react';
 import {
   Form as RemixForm,
   FormProps as RemixFormProps,
-} from "@remix-run/react";
+} from '@remix-run/react';
 
 export type FormProps = PropsWithChildren<RemixFormProps>;
 

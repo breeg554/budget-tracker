@@ -1,7 +1,7 @@
 import {
   BuildelRunStatus,
   BuildelSocket as OriginalBuildelSocket,
-} from "@buildel/buildel";
+} from '@buildel/buildel';
 
 type RunHandlers = {
   onBlockOutput?: (
@@ -20,7 +20,7 @@ export class BuildelSocket {
 
   constructor(organizationId: number) {
     this.buildelInstance = new OriginalBuildelSocket(organizationId, {
-      authUrl: "/buildel/auth",
+      authUrl: '/buildel/auth',
     });
   }
 
@@ -44,7 +44,7 @@ export class BuildelSocket {
       },
       onBlockStatusChange: (blockId: string, isWorking: boolean) => {
         handlers?.onBlockStatusChange?.(blockId, isWorking);
-        console.log(`Block ${blockId} is ${isWorking ? "working" : "stopped"}`);
+        console.log(`Block ${blockId} is ${isWorking ? 'working' : 'stopped'}`);
       },
       onStatusChange: (status: BuildelRunStatus) => {
         handlers?.onStatusChange?.(status);

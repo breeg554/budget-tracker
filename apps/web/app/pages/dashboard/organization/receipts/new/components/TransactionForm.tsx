@@ -1,39 +1,41 @@
-import React, { ButtonHTMLAttributes, useEffect, useState } from "react";
-import { ValidatedForm } from "~/form/ValidatedForm";
+import React, { ButtonHTMLAttributes, useEffect, useState } from 'react';
 import {
   FieldMetadata,
   SubmissionResult,
   useForm,
   useInputControl,
-} from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
-import { useBoolean } from "usehooks-ts";
-import { Field } from "~/form/Field";
-import { cn } from "~/utils/cn";
-import { DateField } from "~/form/fields/DateField";
-import { HiddenField } from "~/form/fields/HiddenField";
-import { FieldError, FieldLabel, TextField } from "~/form/fields";
-import { TransactionItemForm } from "./TransactionItemForm";
+} from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+import { useBoolean } from 'usehooks-ts';
+
+import {
+  createTransactionSchema,
+  TransactionType,
+} from '~/api/Transaction/transactionApi.contracts';
 import {
   CreateTransactionDto,
   CreateTransactionItemDto,
   GetTransactionItemCategoryDto,
-} from "~/api/Transaction/transactionApi.types";
-import {
-  createTransactionSchema,
-  TransactionType,
-} from "~/api/Transaction/transactionApi.contracts";
-import { MonetaryValue } from "~/utils/MonetaryValue";
-import { FormPersistentState } from "~/components/form/FormPersistentState";
-import { ScanLink } from "~/dashboard/layout/components/ScanLink";
+} from '~/api/Transaction/transactionApi.types';
+import { FormPersistentState } from '~/components/form/FormPersistentState';
+import { ScanLink } from '~/dashboard/layout/components/ScanLink';
+import { Field } from '~/form/Field';
+import { FieldError, FieldLabel, TextField } from '~/form/fields';
+import { DateField } from '~/form/fields/DateField';
+import { HiddenField } from '~/form/fields/HiddenField';
+import { ValidatedForm } from '~/form/ValidatedForm';
+import { PlusIcon } from '~/icons/PlusIcon';
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from "~/ui/drawer";
-import { PlusIcon } from "~/icons/PlusIcon";
+} from '~/ui/drawer';
+import { cn } from '~/utils/cn';
+import { MonetaryValue } from '~/utils/MonetaryValue';
+
+import { TransactionItemForm } from './TransactionItemForm';
 
 interface TransactionFormProps {
   lastResult?: SubmissionResult | null;
@@ -59,7 +61,7 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createTransactionSchema });
     },
-    shouldValidate: "onSubmit",
+    shouldValidate: 'onSubmit',
   });
 
   useEffect(() => {
@@ -194,7 +196,7 @@ function InsertItemButton({
   return (
     <button
       className={cn(
-        "w-full bg-neutral-50 rounded p-2 text-sm text-neutral-800 border border-neutral-150 flex gap-1 items-center",
+        'w-full bg-neutral-50 rounded p-2 text-sm text-neutral-800 border border-neutral-150 flex gap-1 items-center',
         className,
       )}
       {...rest}
@@ -237,7 +239,7 @@ function TransactionFormItem({
   return (
     <li className="bg-neutral-50 border border-neutral-150 rounded p-2 text-sm text-neutral-900">
       <p>Name: {name}</p>
-      <p>Category: {findCategoryName(category.value) ?? ""}</p>
+      <p>Category: {findCategoryName(category.value) ?? ''}</p>
       <p>Amount: {quantity.value}</p>
       <p>Value: {value.value}</p>
 

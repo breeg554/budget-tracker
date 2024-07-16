@@ -1,7 +1,8 @@
-import React from "react";
-import { TextInput, TextInputProps } from "./TextInput";
+import React from 'react';
 
-export type NumberInputProps = Omit<TextInputProps, "type">;
+import { TextInput, TextInputProps } from './TextInput';
+
+export type NumberInputProps = Omit<TextInputProps, 'type'>;
 
 export const NumberInput = React.forwardRef<HTMLInputElement, NumberInputProps>(
   (props, ref) => {

@@ -1,8 +1,8 @@
 export {
   page as default,
   meta,
-} from "~/pages/dashboard/organization/receipts/new";
+} from '~/pages/dashboard/organization/receipts/new';
 export {
   loader,
   action,
-} from "~/pages/dashboard/organization/receipts/new/index.server";
+} from '~/pages/dashboard/organization/receipts/new/index.server';

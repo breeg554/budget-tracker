@@ -1,1 +1,1 @@
-export { ProfilePage as page, meta } from "./Page";
+export { ProfilePage as page, meta } from './Page';

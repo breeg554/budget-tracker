@@ -1,21 +1,23 @@
-import React from "react";
-import type { MetaFunction } from "@remix-run/node";
-import { IconButton } from "~/buttons/IconButton";
+import React from 'react';
+import type { MetaFunction } from '@remix-run/node';
 import {
   Outlet,
   useActionData,
   useLoaderData,
   useNavigate,
-} from "@remix-run/react";
-import { loader } from "./loader.server";
-import { TransactionForm } from "./components/TransactionForm";
-import { action } from "./action.server";
-import { routes } from "~/routes";
-import { useOrganizationName } from "~/utils/useOrganizationName";
-import { CrossIcon } from "~/icons/CrossIcon";
-import { SectionWrapper } from "~/layout/SectionWrapper";
-import { SubmitButton } from "~/form/SubmitButton";
-import { NavFloatingWrapper } from "~/dashboard/layout/components/DashboardNav";
+} from '@remix-run/react';
+
+import { IconButton } from '~/buttons/IconButton';
+import { NavFloatingWrapper } from '~/dashboard/layout/components/DashboardNav';
+import { SubmitButton } from '~/form/SubmitButton';
+import { CrossIcon } from '~/icons/CrossIcon';
+import { SectionWrapper } from '~/layout/SectionWrapper';
+import { routes } from '~/routes';
+import { useOrganizationName } from '~/utils/useOrganizationName';
+
+import { action } from './action.server';
+import { TransactionForm } from './components/TransactionForm';
+import { loader } from './loader.server';
 
 export const NewReceiptPage = () => {
   const organizationName = useOrganizationName();
@@ -63,5 +65,5 @@ export const NewReceiptPage = () => {
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: "New Receipt" }];
+  return [{ title: 'New Receipt' }];
 };

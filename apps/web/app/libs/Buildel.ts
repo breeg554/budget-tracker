@@ -1,22 +1,22 @@
 export class Buildel {
-  private baseUrl = "https://api.buildel.ai/api";
+  private baseUrl = 'https://api.buildel.ai/api';
 
   constructor(
     private readonly organizationId: number,
     private readonly pipelineId: number,
-    private readonly secret: string
+    private readonly secret: string,
   ) {}
 
   async createRun() {
     return fetch(
       `${this.baseUrl}/organizations/${this.organizationId}/pipelines/${this.pipelineId}/runs`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${this.secret}`,
         },
-      }
+      },
     ).then((res) => res.json());
   }
 
@@ -24,12 +24,12 @@ export class Buildel {
     return fetch(
       `${this.baseUrl}/organizations/${this.organizationId}/pipelines/${this.pipelineId}/runs/${runId}/start`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${this.secret}`,
         },
-      }
+      },
     ).then((res) => res.json());
   }
 
@@ -37,17 +37,17 @@ export class Buildel {
     return fetch(
       `${this.baseUrl}/organizations/${this.organizationId}/pipelines/${this.pipelineId}/runs/${runId}/input`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${this.secret}`,
         },
         body: JSON.stringify({
-          input_name: "input",
-          block_name: "text_input_1",
+          input_name: 'input',
+          block_name: 'text_input_1',
           data: encodeURIComponent(data),
         }),
-      }
+      },
     ).then((res) => res.json());
   }
 }

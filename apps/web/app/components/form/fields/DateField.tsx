@@ -1,11 +1,13 @@
-import React from "react";
-import { getInputProps, useInputControl } from "@conform-to/react";
-import { useField } from "../Field";
-import { DateInput, DateInputProps } from "~/inputs/DateInput";
+import React from 'react';
+import { getInputProps, useInputControl } from '@conform-to/react';
+
+import { DateInput, DateInputProps } from '~/inputs/DateInput';
+
+import { useField } from '../Field';
 
 export const DateField: React.FC<DateInputProps> = (props) => {
   const field = useField<string>();
-  const fieldProps = getInputProps(field, { type: "date" });
+  const fieldProps = getInputProps(field, { type: 'date' });
   const fieldControl = useInputControl(field);
 
   return (

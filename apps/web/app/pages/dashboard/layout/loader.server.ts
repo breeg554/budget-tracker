@@ -1,8 +1,9 @@
-import { redirect } from "@remix-run/node";
-import { loaderHandler } from "~/utils/loader.server";
-import { requireSignedIn } from "~/session.server";
-import { OrganizationApi } from "~/api/Organization/OrganizationApi.server";
-import { routes } from "~/routes";
+import { redirect } from '@remix-run/node';
+
+import { OrganizationApi } from '~/api/Organization/OrganizationApi.server';
+import { routes } from '~/routes';
+import { requireSignedIn } from '~/session.server';
+import { loaderHandler } from '~/utils/loader.server';
 
 export const loader = loaderHandler(async ({ request }, { fetch }) => {
   await requireSignedIn(request);

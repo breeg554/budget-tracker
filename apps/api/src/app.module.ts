@@ -1,17 +1,19 @@
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from '~/modules/auth/auth.module';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { LoggerModule } from 'nestjs-pino';
+
+import { DBConfig } from '~/config';
+import { AuthModule } from '~/modules/auth/auth.module';
 import { JwtGuard } from '~/modules/auth/jwt.guard';
 import { JwtStrategy } from '~/modules/auth/jwt.strategy';
-import { LoggerModule } from 'nestjs-pino';
 import { CustomZodValidationPipe } from '~/modules/errors/zodValidationPipe';
 import { OrganizationModule } from '~/modules/organization/organization.module';
 import { TransactionModule } from '~/modules/organization/transaction/transaction.module';
-import { DBConfig } from '~/config';
+
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 @Module({
   imports: [
@@ -26,7 +28,16 @@ import { DBConfig } from '~/config';
         configService.get('database'),
       inject: [ConfigService],
     }),
-    LoggerModule.forRoot(),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            singleLine: true,
+          },
+        },
+      },
+    }),
     AuthModule,
     OrganizationModule,
     TransactionModule,
