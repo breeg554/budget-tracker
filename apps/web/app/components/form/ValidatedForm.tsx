@@ -1,6 +1,7 @@
-import React, { PropsWithChildren } from "react";
-import { FormMetadata, FormProvider, getFormProps } from "@conform-to/react";
-import { Form, FormProps } from "./Form";
+import React, { PropsWithChildren } from 'react';
+import { FormMetadata, FormProvider, getFormProps } from '@conform-to/react';
+
+import { Form, FormProps } from './Form';
 
 interface ValidatedFormProps extends FormProps {
   form: FormMetadata<any, any>;

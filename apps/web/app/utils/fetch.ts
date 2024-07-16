@@ -1,16 +1,17 @@
-import { z, ZodType } from "zod";
-import merge from "lodash.merge";
+import merge from 'lodash.merge';
+import { z, ZodType } from 'zod';
+
 import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
   UnknownAPIError,
   ValidationError,
-} from "~/utils/errors";
+} from '~/utils/errors';
 
 const DefaultFetchArgs: RequestInit = {
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 };
 
@@ -39,7 +40,7 @@ export const typedFetch = async <T extends ZodType>(
     } else if (response.status === 400) {
       const errors = await response.json();
 
-      throw new BadRequestError(errors.message ?? "Bad request");
+      throw new BadRequestError(errors.message ?? 'Bad request');
     } else {
       console.error(`Unknown API error ${response.status} for ${url}`);
       throw new UnknownAPIError();
@@ -48,7 +49,7 @@ export const typedFetch = async <T extends ZodType>(
 
   if (
     response.status === 204 ||
-    response.headers.get("content-length") === "0"
+    response.headers.get('content-length') === '0'
   ) {
     return Object.assign(response, { data: {} });
   }

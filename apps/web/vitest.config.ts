@@ -1,12 +1,12 @@
 /// <reference types="vitest" />
-import { defineConfig } from "vitest/config";
-import tsconfigPaths from "vite-tsconfig-paths";
+import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    environment: "jsdom",
+    environment: 'jsdom',
     globals: true,
-    setupFiles: "./app/tests/setupTests.ts",
+    setupFiles: './app/tests/setupTests.ts',
   },
   plugins: [tsconfigPaths()],
 });

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export const transactionItemCategory = z.object({
   id: z.string(),
@@ -10,8 +10,8 @@ export const fromTransactionItemCategoriesResponse = z.array(
 );
 
 export enum TransactionItemType {
-  OUTCOME = "outcome",
-  INCOME = "income",
+  OUTCOME = 'outcome',
+  INCOME = 'income',
 }
 
 export const createTransactionItemSchema = z.object({
@@ -23,7 +23,7 @@ export const createTransactionItemSchema = z.object({
 });
 
 export enum TransactionType {
-  PURCHASE = "purchase",
+  PURCHASE = 'purchase',
 }
 
 export const createTransactionSchema = z.object({

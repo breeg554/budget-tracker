@@ -1,8 +1,8 @@
-import React from "react";
+import React from 'react';
 import {
   NavLink as RemixNavLink,
   NavLinkProps as RemixNavLinkProps,
-} from "@remix-run/react";
+} from '@remix-run/react';
 
 export interface NavLinkProps extends RemixNavLinkProps {}
 

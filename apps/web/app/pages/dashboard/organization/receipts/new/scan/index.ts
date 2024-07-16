@@ -1,1 +1,1 @@
-export { ScanPage as page, meta } from "./Page";
+export { ScanPage as page, meta } from './Page';

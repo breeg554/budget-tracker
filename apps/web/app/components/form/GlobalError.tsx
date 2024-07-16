@@ -1,6 +1,8 @@
-import React from "react";
-import { Field } from "./Field";
-import { FieldError } from "~/form/fields";
+import React from 'react';
+
+import { FieldError } from '~/form/fields';
+
+import { Field } from './Field';
 
 export const GlobalError = () => {
   return (

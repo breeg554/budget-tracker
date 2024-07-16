@@ -1,7 +1,8 @@
-import React from "react";
-import { TextInput, TextInputProps } from "./TextInput";
+import React from 'react';
 
-export type PasswordInputProps = Omit<TextInputProps, "type">;
+import { TextInput, TextInputProps } from './TextInput';
+
+export type PasswordInputProps = Omit<TextInputProps, 'type'>;
 
 export const PasswordInput = React.forwardRef<
   HTMLInputElement,

@@ -1,11 +1,12 @@
-import { json, redirect } from "@remix-run/node";
-import { parseWithZod } from "@conform-to/zod";
-import { actionHandler } from "~/utils/action.server";
-import { requireSignedIn } from "~/session.server";
-import { createTransactionSchema } from "~/api/Transaction/transactionApi.contracts";
-import { TransactionApi } from "~/api/Transaction/TransactionApi.server";
-import { routes } from "~/routes";
-import { assert } from "~/utils/assert";
+import { json, redirect } from '@remix-run/node';
+import { parseWithZod } from '@conform-to/zod';
+
+import { createTransactionSchema } from '~/api/Transaction/transactionApi.contracts';
+import { TransactionApi } from '~/api/Transaction/TransactionApi.server';
+import { routes } from '~/routes';
+import { requireSignedIn } from '~/session.server';
+import { actionHandler } from '~/utils/action.server';
+import { assert } from '~/utils/assert';
 
 export const action = actionHandler({
   post: async ({ request, params }, { fetch }) => {
@@ -16,7 +17,7 @@ export const action = actionHandler({
     const submission = parseWithZod(formData, {
       schema: createTransactionSchema,
     });
-    if (submission.status !== "success") {
+    if (submission.status !== 'success') {
       return json(submission.reply());
     }
 

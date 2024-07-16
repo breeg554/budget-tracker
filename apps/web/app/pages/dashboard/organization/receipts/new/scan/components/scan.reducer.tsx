@@ -1,23 +1,24 @@
-import { useEffect, useReducer, useRef } from "react";
-import { BuildelRun } from "@buildel/buildel";
-import { BuildelSocket } from "~/libs/BuildelSocket";
-import { assert } from "~/utils/assert";
-import { tesseract } from "~/libs/Tesseract";
-import { CreateTransactionItemDto } from "~/api/Transaction/transactionApi.types";
-import { createTransactionItemSchema } from "~/api/Transaction/transactionApi.contracts";
-import { z } from "zod";
+import { useEffect, useReducer, useRef } from 'react';
+import { BuildelRun } from '@buildel/buildel';
+import { z } from 'zod';
 
-type Step = "method" | "scan" | "preview";
+import { createTransactionItemSchema } from '~/api/Transaction/transactionApi.contracts';
+import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
+import { BuildelSocket } from '~/libs/BuildelSocket';
+import { tesseract } from '~/libs/Tesseract';
+import { assert } from '~/utils/assert';
+
+type Step = 'method' | 'scan' | 'preview';
 
 type Action =
-  | { type: "onUpload"; payload: { image: string } }
-  | { type: "scan" }
-  | { type: "retrieveText"; payload: { text: string } }
+  | { type: 'onUpload'; payload: { image: string } }
+  | { type: 'scan' }
+  | { type: 'retrieveText'; payload: { text: string } }
   | {
-      type: "retrieveItems";
+      type: 'retrieveItems';
       payload: { items: unknown };
     }
-  | { type: "closeScan" };
+  | { type: 'closeScan' };
 
 interface ScanState {
   step: Step;
@@ -32,7 +33,7 @@ export const defaultScanState: ScanState = {
   receiptText: null,
   receiptItems: null,
   error: null,
-  step: "method",
+  step: 'method',
 };
 
 export const useScanReducer = () => {
@@ -46,9 +47,9 @@ export const useScanReducer = () => {
 
     runRef.current = await buildelRef.current.run(151, {
       onBlockOutput: (blockId, _outputName, payload) => {
-        if (blockId === "text_output_1" && hasMessageOutput(payload)) {
+        if (blockId === 'text_output_1' && hasMessageOutput(payload)) {
           dispatch({
-            type: "retrieveItems",
+            type: 'retrieveItems',
             payload: { items: payload.message },
           });
         }
@@ -63,34 +64,34 @@ export const useScanReducer = () => {
   };
   const sendScan = async (scan: string) => {
     try {
-      assert(runRef.current, "Run not initialized");
-      assert(runRef.current.status === "running", "Run is not running");
-      assert(state.image, "Image not uploaded");
+      assert(runRef.current, 'Run not initialized');
+      assert(runRef.current.status === 'running', 'Run is not running');
+      assert(state.image, 'Image not uploaded');
 
       const text = await tesseract().getText(scan);
       console.log(text);
-      dispatch({ type: "retrieveText", payload: { text } });
+      dispatch({ type: 'retrieveText', payload: { text } });
 
-      runRef.current.push("text_input_1:input", text);
+      runRef.current.push('text_input_1:input', text);
     } catch (e) {
       console.error(e);
     }
   };
 
   const openScanner = () => {
-    dispatch({ type: "scan" });
+    dispatch({ type: 'scan' });
   };
 
   const closeScanner = () => {
-    dispatch({ type: "closeScan" });
+    dispatch({ type: 'closeScan' });
   };
 
   const onUpload = (image: string) => {
-    dispatch({ type: "onUpload", payload: { image } });
+    dispatch({ type: 'onUpload', payload: { image } });
   };
 
   useEffect(() => {
-    if (state.step === "preview" && state.image) {
+    if (state.step === 'preview' && state.image) {
       sendScan(state.image);
     }
   }, [state.step, state.image]);
@@ -120,28 +121,28 @@ function scanReducer(state: ScanState, action: Action): ScanState {
   const { type } = action;
 
   switch (type) {
-    case "onUpload":
+    case 'onUpload':
       return {
         ...state,
-        step: "preview",
+        step: 'preview',
         image: action.payload.image,
       };
-    case "scan": {
+    case 'scan': {
       return {
         ...state,
-        step: "scan",
+        step: 'scan',
       };
     }
-    case "retrieveText": {
+    case 'retrieveText': {
       return {
         ...state,
         receiptText: action.payload.text,
       };
     }
-    case "retrieveItems": {
+    case 'retrieveItems': {
       const result = z
         .preprocess(
-          (val) => (typeof val === "string" ? JSON.parse(val) : val),
+          (val) => (typeof val === 'string' ? JSON.parse(val) : val),
           z.array(createTransactionItemSchema.partial()),
         )
         .safeParse(action.payload.items);
@@ -158,10 +159,10 @@ function scanReducer(state: ScanState, action: Action): ScanState {
         error: result.error.message,
       };
     }
-    case "closeScan": {
+    case 'closeScan': {
       return {
         ...state,
-        step: "method",
+        step: 'method',
       };
     }
     default:

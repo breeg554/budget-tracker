@@ -1,7 +1,9 @@
-import React from "react";
-import { Label, LabelProps } from "~/components/inputs/Label";
-import { useField } from "../Field";
-import { cn } from "~/utils/cn";
+import React from 'react';
+
+import { Label, LabelProps } from '~/components/inputs/Label';
+import { cn } from '~/utils/cn';
+
+import { useField } from '../Field';
 
 export const FieldLabel: React.FC<LabelProps> = ({
   children,
@@ -11,7 +13,7 @@ export const FieldLabel: React.FC<LabelProps> = ({
   const field = useField();
 
   return (
-    <Label className={cn("mb-1", className)} htmlFor={field.name} {...rest}>
+    <Label className={cn('mb-1', className)} htmlFor={field.name} {...rest}>
       {children}
     </Label>
   );

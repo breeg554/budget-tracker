@@ -1,5 +1,6 @@
-import React, { LabelHTMLAttributes } from "react";
-import { cn } from "~/utils/cn";
+import React, { LabelHTMLAttributes } from 'react';
+
+import { cn } from '~/utils/cn';
 
 export type LabelProps = LabelHTMLAttributes<HTMLLabelElement>;
 
@@ -9,7 +10,7 @@ export const Label: React.FC<LabelProps> = ({
   ...rest
 }) => {
   return (
-    <label className={cn("text-xs", className)} {...rest}>
+    <label className={cn('text-xs', className)} {...rest}>
       {children}
     </label>
   );

@@ -1,19 +1,21 @@
-import type { MetaFunction } from "@remix-run/node";
-import { ValidatedForm } from "~/components/form/ValidatedForm";
-import { SubmitButton } from "~/components/form/SubmitButton";
-import { Field } from "~/components/form/Field";
+import type { MetaFunction } from '@remix-run/node';
+import { Link, useActionData } from '@remix-run/react';
+import { useForm } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+
+import { Field } from '~/components/form/Field';
 import {
   EmailField,
   FieldError,
-  PasswordField,
   FieldLabel,
-} from "~/components/form/fields";
-import { Link, useActionData } from "@remix-run/react";
-import { routes } from "~/routes";
-import { action } from "./action.server";
-import { useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
-import { schema } from "~/pages/auth/signin/schema";
+  PasswordField,
+} from '~/components/form/fields';
+import { SubmitButton } from '~/components/form/SubmitButton';
+import { ValidatedForm } from '~/components/form/ValidatedForm';
+import { schema } from '~/pages/auth/signin/schema';
+import { routes } from '~/routes';
+
+import { action } from './action.server';
 
 export const SignUpPage = () => {
   const lastResult = useActionData<typeof action>();
@@ -23,7 +25,7 @@ export const SignUpPage = () => {
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
-    shouldValidate: "onSubmit",
+    shouldValidate: 'onSubmit',
   });
 
   return (
@@ -46,7 +48,7 @@ export const SignUpPage = () => {
         <SubmitButton>Sign up</SubmitButton>
 
         <p>
-          Already has an account?{" "}
+          Already has an account?{' '}
           <Link to={routes.signIn.getPath()}>Go to sign in</Link>
         </p>
       </ValidatedForm>
@@ -55,5 +57,5 @@ export const SignUpPage = () => {
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: "SignUp" }];
+  return [{ title: 'SignUp' }];
 };

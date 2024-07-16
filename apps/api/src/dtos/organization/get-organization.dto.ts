@@ -1,7 +1,8 @@
-import { z } from 'nestjs-zod/z';
 import { createZodDto } from 'nestjs-zod';
-import { getUserSchema } from '~/dtos/users/get-user.dto';
+import { z } from 'nestjs-zod/z';
+
 import { getTransactionSchema } from '~/dtos/transaction/get-transaction.dto';
+import { getUserSchema } from '~/dtos/users/get-user.dto';
 
 export const getOrganizationSchema = z.object({
   id: z.string(),

@@ -1,6 +1,7 @@
-import React from "react";
-import { Button, ButtonProps } from "~/components/buttons/Button";
-import { useNavigation } from "@remix-run/react";
+import React from 'react';
+import { useNavigation } from '@remix-run/react';
+
+import { Button, ButtonProps } from '~/components/buttons/Button';
 
 export const SubmitButton: React.FC<ButtonProps> = ({
   children,
@@ -9,7 +10,7 @@ export const SubmitButton: React.FC<ButtonProps> = ({
   ...rest
 }) => {
   const { state } = useNavigation();
-  const isIdle = state === "idle";
+  const isIdle = state === 'idle';
 
   const loading = propsLoading ?? !isIdle;
   const disabled = propsDisabled ?? !isIdle;

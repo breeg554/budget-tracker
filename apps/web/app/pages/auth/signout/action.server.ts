@@ -1,12 +1,13 @@
-import { redirect } from "@remix-run/node";
-import { actionHandler } from "~/utils/action.server";
-import { logout } from "~/session.server";
-import { routes } from "~/routes";
+import { redirect } from '@remix-run/node';
+
+import { routes } from '~/routes';
+import { logout } from '~/session.server';
+import { actionHandler } from '~/utils/action.server';
 
 export const action = actionHandler({
   post: async ({ request }) => {
     return redirect(routes.signIn.getPath(), {
-      headers: { "Set-cookie": await logout(request) },
+      headers: { 'Set-cookie': await logout(request) },
     });
   },
 });

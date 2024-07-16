@@ -1,1 +1,1 @@
-export { DashboardLayout as page } from "./Page";
+export { DashboardLayout as page } from './Page';

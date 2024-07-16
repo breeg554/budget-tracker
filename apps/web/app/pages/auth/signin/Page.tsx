@@ -1,20 +1,22 @@
-import type { MetaFunction } from "@remix-run/node";
-import { schema } from "./schema";
-import { ValidatedForm } from "~/components/form/ValidatedForm";
-import { SubmitButton } from "~/components/form/SubmitButton";
-import { Field } from "~/components/form/Field";
+import type { MetaFunction } from '@remix-run/node';
+import { Link, useActionData } from '@remix-run/react';
+import { useForm } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+
+import { Field } from '~/components/form/Field';
 import {
   EmailField,
   FieldError,
-  PasswordField,
   FieldLabel,
-} from "~/components/form/fields";
-import { Link, useActionData } from "@remix-run/react";
-import { routes } from "~/routes";
-import { useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
-import { action } from "~/routes/signIn";
-import { GlobalError } from "~/form/GlobalError";
+  PasswordField,
+} from '~/components/form/fields';
+import { SubmitButton } from '~/components/form/SubmitButton';
+import { ValidatedForm } from '~/components/form/ValidatedForm';
+import { GlobalError } from '~/form/GlobalError';
+import { routes } from '~/routes';
+import { action } from '~/routes/signIn';
+
+import { schema } from './schema';
 
 export const SignInPage = () => {
   const lastResult = useActionData<typeof action>();
@@ -23,7 +25,7 @@ export const SignInPage = () => {
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
     },
-    shouldValidate: "onSubmit",
+    shouldValidate: 'onSubmit',
   });
 
   return (
@@ -48,7 +50,7 @@ export const SignInPage = () => {
         <SubmitButton>Sign in</SubmitButton>
 
         <p>
-          First time in PDG?{" "}
+          First time in PDG?{' '}
           <Link to={routes.signUp.getPath()}>Go to sign up</Link>
         </p>
       </ValidatedForm>
@@ -57,5 +59,5 @@ export const SignInPage = () => {
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: "SignIn" }];
+  return [{ title: 'SignIn' }];
 };

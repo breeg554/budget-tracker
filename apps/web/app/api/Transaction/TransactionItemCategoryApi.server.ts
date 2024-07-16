@@ -1,8 +1,8 @@
-import { typedFetch, TypedFetch } from "~/utils/fetch";
-import { fromTransactionItemCategoriesResponse } from "~/api/Transaction/transactionApi.contracts";
+import { fromTransactionItemCategoriesResponse } from '~/api/Transaction/transactionApi.contracts';
+import { typedFetch, TypedFetch } from '~/utils/fetch';
 
 export class TransactionItemCategoryApi {
-  private readonly baseUrl = "/transaction-item-categories";
+  private readonly baseUrl = '/transaction-item-categories';
   private readonly client: TypedFetch;
 
   constructor(client: TypedFetch = typedFetch) {

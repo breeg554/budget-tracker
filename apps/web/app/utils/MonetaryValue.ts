@@ -1,11 +1,11 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 export class MonetaryValue {
   private readonly value: number;
   constructor(
     value: number | string,
     private readonly quantity: number = 1,
-    private readonly currencyCode = "PLN",
+    private readonly currencyCode = 'PLN',
   ) {
     this.value = z
       .union([z.number(), z.string().transform((value) => Number(value))])
@@ -22,7 +22,7 @@ export class MonetaryValue {
 
   add(other: MonetaryValue) {
     if (this.currencyCode !== other.currencyCode) {
-      throw new Error("Cannot add MonetaryValues with different currencies");
+      throw new Error('Cannot add MonetaryValues with different currencies');
     }
 
     return new MonetaryValue(this.amount + other.amount);

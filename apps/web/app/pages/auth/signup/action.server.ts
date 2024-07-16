@@ -1,10 +1,11 @@
-import { json, redirect } from "@remix-run/node";
-import { parseWithZod } from "@conform-to/zod";
-import { actionHandler } from "~/utils/action.server";
-import { signUpSchema } from "~/api/Auth/authApi.contracts";
-import { AuthApi } from "~/api/Auth/AuthApi.server";
-import { routes } from "~/routes";
-import { setAuthSession } from "~/session.server";
+import { json, redirect } from '@remix-run/node';
+import { parseWithZod } from '@conform-to/zod';
+
+import { signUpSchema } from '~/api/Auth/authApi.contracts';
+import { AuthApi } from '~/api/Auth/AuthApi.server';
+import { routes } from '~/routes';
+import { setAuthSession } from '~/session.server';
+import { actionHandler } from '~/utils/action.server';
 
 export const action = actionHandler({
   post: async ({ request }, { fetch }) => {
@@ -12,7 +13,7 @@ export const action = actionHandler({
 
     const submission = parseWithZod(formData, { schema: signUpSchema });
 
-    if (submission.status !== "success") {
+    if (submission.status !== 'success') {
       return json(submission.reply());
     }
 
@@ -21,7 +22,7 @@ export const action = actionHandler({
     const response = await authApi.signUp(submission.value);
 
     return redirect(routes.signIn.getPath(), {
-      headers: { "Set-cookie": await setAuthSession(request, response) },
+      headers: { 'Set-cookie': await setAuthSession(request, response) },
     });
   },
 });

@@ -1,13 +1,14 @@
-import React, { PropsWithChildren } from "react";
-import { NavLink, NavLinkProps } from "~/components/link/NavLink";
-import { routes } from "~/routes";
-import { cn } from "~/utils/cn";
-import { GearIcon } from "~/icons/GearIcon";
-import { BarChartIcon } from "~/icons/BarChartIcon";
-import { DashboardIcon } from "~/icons/DashboardIcon";
-import { FileTextIcon } from "~/icons/FileTextIcon";
-import { ScanLink } from "~/dashboard/layout/components/ScanLink";
-import { useOrganizationName } from "~/utils/useOrganizationName";
+import React, { PropsWithChildren } from 'react';
+
+import { NavLink, NavLinkProps } from '~/components/link/NavLink';
+import { ScanLink } from '~/dashboard/layout/components/ScanLink';
+import { BarChartIcon } from '~/icons/BarChartIcon';
+import { DashboardIcon } from '~/icons/DashboardIcon';
+import { FileTextIcon } from '~/icons/FileTextIcon';
+import { GearIcon } from '~/icons/GearIcon';
+import { routes } from '~/routes';
+import { cn } from '~/utils/cn';
+import { useOrganizationName } from '~/utils/useOrganizationName';
 
 interface DashboardNavProps {}
 
@@ -65,8 +66,8 @@ function DashboardNavLink({ className, ...rest }: DashboardNavLinkProps) {
       {...rest}
       className={({ isActive }) =>
         cn(
-          "flex flex-col items-center w-fit transition hover:text-primary",
-          { "text-primary": isActive, "text-muted-foreground": !isActive },
+          'flex flex-col items-center w-fit transition hover:text-primary',
+          { 'text-primary': isActive, 'text-muted-foreground': !isActive },
           className,
         )
       }

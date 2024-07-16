@@ -1,5 +1,5 @@
-import React from "react";
-import { useNavigate } from "@remix-run/react";
+import React from 'react';
+import { useNavigate } from '@remix-run/react';
 
 export const useHistoryBack = () => {
   const navigate = useNavigate();

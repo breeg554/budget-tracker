@@ -1,13 +1,13 @@
-import React, { ReactNode, useState } from "react";
-import ReactWebcam, { WebcamProps } from "react-webcam";
+import React, { ReactNode, useState } from 'react';
+import ReactWebcam, { WebcamProps } from 'react-webcam';
 
-const videoConstraints: MediaStreamConstraints["video"] = {
-  facingMode: "environment",
+const videoConstraints: MediaStreamConstraints['video'] = {
+  facingMode: 'environment',
 };
 
 export const Webcam = React.forwardRef<
   ReactWebcam,
-  Partial<Omit<WebcamProps, "children"> & { children: ReactNode }>
+  Partial<Omit<WebcamProps, 'children'> & { children: ReactNode }>
 >(({ onUserMediaError, children, ...props }, ref) => {
   const [error, setError] = useState<string | DOMException | null>(null);
 

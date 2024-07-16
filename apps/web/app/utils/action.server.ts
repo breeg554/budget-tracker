@@ -1,21 +1,22 @@
 import {
   ActionFunctionArgs,
-  TypedResponse,
   json,
   redirect,
-} from "@remix-run/node";
-import { serverTypedFetch } from "~/utils/fetch.server";
-import { TypedFetch } from "~/utils/fetch";
+  TypedResponse,
+} from '@remix-run/node';
+import { SubmissionResult } from '@conform-to/react';
+
+import { routes } from '~/routes';
+import { logout } from '~/session.server';
 import {
   BadRequestError,
   NotFoundError,
   UnauthorizedError,
   UnknownAPIError,
   ValidationError,
-} from "~/utils/errors";
-import { routes } from "~/routes";
-import { logout } from "~/session.server";
-import { SubmissionResult } from "@conform-to/react";
+} from '~/utils/errors';
+import { TypedFetch } from '~/utils/fetch';
+import { serverTypedFetch } from '~/utils/fetch.server';
 
 type ActionHandler<T> = (
   args: ActionFunctionArgs,
@@ -34,31 +35,31 @@ export const actionHandler =
     const notFound = () => json(null, { status: 404 });
     try {
       switch (actionArgs.request.method) {
-        case "POST":
+        case 'POST':
           return handlers.post
             ? await handlers.post(actionArgs, {
                 fetch: await serverTypedFetch(actionArgs.request),
               })
             : notFound();
-        case "DELETE":
+        case 'DELETE':
           return handlers.delete
             ? await handlers.delete(actionArgs, {
                 fetch: await serverTypedFetch(actionArgs.request),
               })
             : notFound();
-        case "PATCH":
+        case 'PATCH':
           return handlers.patch
             ? await handlers.patch(actionArgs, {
                 fetch: await serverTypedFetch(actionArgs.request),
               })
             : notFound();
-        case "PUT":
+        case 'PUT':
           return handlers.put
             ? await handlers.put(actionArgs, {
                 fetch: await serverTypedFetch(actionArgs.request),
               })
             : notFound();
-        case "GET":
+        case 'GET':
           return handlers.get
             ? await handlers.get(actionArgs, {
                 fetch: await serverTypedFetch(actionArgs.request),
@@ -71,13 +72,13 @@ export const actionHandler =
       } else if (e instanceof UnauthorizedError) {
         throw redirect(routes.signIn.getPath(), {
           headers: {
-            "Set-cookie": await logout(actionArgs.request),
+            'Set-cookie': await logout(actionArgs.request),
           },
         });
       } else if (e instanceof NotFoundError) {
         throw notFound();
       } else if (e instanceof UnknownAPIError) {
-        return json(toSubmissionError({ global: ["Unknown API error"] }), {
+        return json(toSubmissionError({ global: ['Unknown API error'] }), {
           status: 500,
         });
       } else if (e instanceof BadRequestError) {
@@ -97,7 +98,7 @@ export function toSubmissionError(
 ): SubmissionResult {
   return {
     error: errors,
-    status: "error",
+    status: 'error',
     initialValue: {},
   };
 }

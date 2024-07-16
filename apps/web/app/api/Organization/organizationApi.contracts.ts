@@ -1,5 +1,6 @@
-import { z } from "zod";
-import { getTransactionSchema } from "~/api/Transaction/transactionApi.contracts";
+import { z } from 'zod';
+
+import { getTransactionSchema } from '~/api/Transaction/transactionApi.contracts';
 
 export const getOrganizationSchema = z.object({
   id: z.string(),
@@ -18,6 +19,6 @@ export const createOrganizationSchema = z.object({
     .min(2)
     .regex(
       /^[a-zA-Z0-9_-]+$/,
-      "Name must only contain letters, numbers, underscores, or hyphens.",
+      'Name must only contain letters, numbers, underscores, or hyphens.',
     ),
 });

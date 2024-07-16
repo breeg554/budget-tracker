@@ -1,6 +1,7 @@
-import React, { PropsWithChildren } from "react";
-import { useField as useConformField } from "@conform-to/react";
-import { cn } from "~/utils/cn";
+import React, { PropsWithChildren } from 'react';
+import { useField as useConformField } from '@conform-to/react';
+
+import { cn } from '~/utils/cn';
 
 type FieldContextProps = {
   name: string;
@@ -25,7 +26,7 @@ export const Field = ({
 }: PropsWithChildren<FieldProps>) => {
   return (
     <FieldContext.Provider value={{ name, formId }}>
-      <div className={cn("flex flex-col", className)}>{children}</div>
+      <div className={cn('flex flex-col', className)}>{children}</div>
     </FieldContext.Provider>
   );
 };
@@ -33,7 +34,7 @@ export const Field = ({
 export const useField = <T,>() => {
   const ctx = React.useContext(FieldContext);
 
-  if (!ctx) throw new Error("useField can be used only inside Field");
+  if (!ctx) throw new Error('useField can be used only inside Field');
 
   const [fieldMeta] = useConformField<T>(ctx.name, {
     formId: ctx.formId,

@@ -1,17 +1,19 @@
-import React from "react";
-import type { MetaFunction } from "@remix-run/node";
-import { ReceiptRetriever } from "./components/ReceiptRetriever";
-import { useFetcher, useNavigate } from "@remix-run/react";
-import { routes } from "~/routes";
-import { CreateTransactionItemDto } from "~/api/Transaction/transactionApi.types";
-import { useOrganizationName } from "~/utils/useOrganizationName";
+import React from 'react';
+import type { MetaFunction } from '@remix-run/node';
+import { useFetcher, useNavigate } from '@remix-run/react';
+
+import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
+import { routes } from '~/routes';
 import {
   Drawer,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-} from "~/ui/drawer";
+} from '~/ui/drawer';
+import { useOrganizationName } from '~/utils/useOrganizationName';
+
+import { ReceiptRetriever } from './components/ReceiptRetriever';
 
 export const ScanPage = () => {
   const organizationName = useOrganizationName();
@@ -23,11 +25,11 @@ export const ScanPage = () => {
 
   const onRetrieve = (items: Partial<CreateTransactionItemDto>[]) => {
     const formData = new FormData();
-    formData.append("items", JSON.stringify(items));
+    formData.append('items', JSON.stringify(items));
 
     fetcher.submit(formData, {
-      method: "POST",
-      encType: "multipart/form-data",
+      method: 'POST',
+      encType: 'multipart/form-data',
     });
   };
 
@@ -72,5 +74,5 @@ export const ScanPage = () => {
 };
 
 export const meta: MetaFunction = () => {
-  return [{ title: "Scan" }];
+  return [{ title: 'Scan' }];
 };

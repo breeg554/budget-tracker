@@ -1,17 +1,18 @@
-import { json, redirect } from "@remix-run/node";
-import { actionHandler } from "~/utils/action.server";
-import { commitSession, getSession, requireSignedIn } from "~/session.server";
-import { routes } from "~/routes";
-import { parseWithZod } from "@conform-to/zod";
-import { z } from "zod";
+import { json, redirect } from '@remix-run/node';
+import { parseWithZod } from '@conform-to/zod';
+import { z } from 'zod';
+
 import {
   createTransactionItemSchema,
   createTransactionSchema,
-} from "~/api/Transaction/transactionApi.contracts";
+} from '~/api/Transaction/transactionApi.contracts';
+import { routes } from '~/routes';
+import { commitSession, getSession, requireSignedIn } from '~/session.server';
+import { actionHandler } from '~/utils/action.server';
 
 export const extendedTransactionSchema = createTransactionSchema.extend({
   items: z.preprocess(
-    (val) => (typeof val === "string" ? JSON.parse(val) : val),
+    (val) => (typeof val === 'string' ? JSON.parse(val) : val),
     z.array(createTransactionItemSchema),
   ),
 });
@@ -26,14 +27,14 @@ export const action = actionHandler({
       schema: extendedTransactionSchema.partial(),
     });
 
-    if (submission.status !== "success") {
+    if (submission.status !== 'success') {
       return json(submission.reply());
     }
-    const session = await getSession(request.headers.get("Cookie"));
-    session.flash("TRANSACTION_FORM_STATE", submission.value);
+    const session = await getSession(request.headers.get('Cookie'));
+    session.flash('TRANSACTION_FORM_STATE', submission.value);
 
     return redirect(routes.newReceipt.getPath(), {
-      headers: { "Set-Cookie": await commitSession(session) },
+      headers: { 'Set-Cookie': await commitSession(session) },
     });
   },
 });
