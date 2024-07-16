@@ -13,7 +13,7 @@ export const ValidatedForm: React.FC<PropsWithChildren<ValidatedFormProps>> = ({
 }) => {
   return (
     <FormProvider context={form.context}>
-      <Form {...rest} {...getFormProps(form)}>
+      <Form {...getFormProps(form)} {...rest}>
         {children}
       </Form>
     </FormProvider>

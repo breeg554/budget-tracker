@@ -6,7 +6,6 @@ import {
   useActionData,
   useLoaderData,
   useNavigate,
-  useLocation,
 } from "@remix-run/react";
 import { loader } from "./loader.server";
 import { TransactionForm } from "./components/TransactionForm";
@@ -14,27 +13,23 @@ import { action } from "./action.server";
 import { routes } from "~/routes";
 import { useOrganizationName } from "~/utils/useOrganizationName";
 import { CrossIcon } from "~/icons/CrossIcon";
+import { SectionWrapper } from "~/layout/SectionWrapper";
+import { SubmitButton } from "~/form/SubmitButton";
+import { NavFloatingWrapper } from "~/dashboard/layout/components/DashboardNav";
 
 export const NewReceiptPage = () => {
   const organizationName = useOrganizationName();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const { itemCategories, receipt } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
-
-  const isOpen =
-    location.pathname === routes.scanReceipt.getPath(organizationName);
-  const onClose = () => {
-    navigate(routes.newReceipt.getPath(organizationName));
-  };
 
   const backToDashboard = () => {
     navigate(routes.organization.getPath(organizationName));
   };
 
   return (
-    <>
+    <SectionWrapper className="pb-12">
       <IconButton
         onClick={backToDashboard}
         variant="ghost"
@@ -44,13 +39,26 @@ export const NewReceiptPage = () => {
       </IconButton>
 
       <TransactionForm
+        id="transaction-form"
         lastResult={lastResult}
         itemCategories={itemCategories}
         defaultValue={receipt}
       />
 
       <Outlet />
-    </>
+
+      <NavFloatingWrapper>
+        <div className="px-4 py-2 flex justify-between">
+          <SubmitButton variant="secondary" onClick={backToDashboard}>
+            Cancel
+          </SubmitButton>
+
+          <SubmitButton type="submit" form="transaction-form">
+            Add transaction
+          </SubmitButton>
+        </div>
+      </NavFloatingWrapper>
+    </SectionWrapper>
   );
 };
 

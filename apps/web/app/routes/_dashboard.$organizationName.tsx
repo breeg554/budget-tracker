@@ -3,7 +3,10 @@ import { loaderHandler } from "~/utils/loader.server";
 import { requireSignedIn } from "~/session.server";
 import { assert } from "~/utils/assert";
 import { OrganizationApi } from "~/api/Organization/OrganizationApi.server";
-import { DashboardNav } from "~/dashboard/layout/components/DashboardNav";
+import {
+  DashboardNav,
+  NavFloatingWrapper,
+} from "~/dashboard/layout/components/DashboardNav";
 import { Outlet } from "@remix-run/react";
 
 export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
@@ -29,9 +32,9 @@ export default function OrganizationPage() {
     <>
       <Outlet />
 
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-neutral-150">
+      <NavFloatingWrapper>
         <DashboardNav />
-      </div>
+      </NavFloatingWrapper>
     </>
   );
 }

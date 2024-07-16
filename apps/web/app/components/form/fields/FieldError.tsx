@@ -5,5 +5,5 @@ import { useField } from "../Field";
 export const FieldError = () => {
   const field = useField();
 
-  return <ErrorMessage>{field.errors}</ErrorMessage>;
+  return <ErrorMessage className="mt-1">{field.errors}</ErrorMessage>;
 };
