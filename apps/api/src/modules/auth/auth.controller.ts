@@ -26,9 +26,9 @@ export class AuthController {
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { accessToken } = await this.authService.signIn(signInDto);
+    const { accessToken,refreshToken } = await this.authService.signIn(signInDto);
 
-    this.returnCookie(res, accessToken);
+     this.returnCookie(res, accessToken, refreshToken);
   }
 
   @Public()
@@ -38,19 +38,23 @@ export class AuthController {
     @Body() signUpDto: CreateUserDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { accessToken } = await this.authService.signUp(signUpDto);
+    const { accessToken, refreshToken } = await this.authService.signUp(signUpDto);
 
-    this.returnCookie(res, accessToken);
+     this.returnCookie(res, accessToken, refreshToken);
   }
 
-  private returnCookie(res: Response, token: string) {
-    res
-      .cookie('access_token', token, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-        expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
-      })
-      .send({ status: 'ok' });
+  private returnCookie(res: Response, accessToken: string, refreshToken: string) {
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 1 * 60 * 1000), // 1 minuta
+    }).cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dni
+    })
+    res.send({ status: 'ok' });
   }
 }

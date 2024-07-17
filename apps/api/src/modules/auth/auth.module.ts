@@ -8,6 +8,9 @@ import { UserModule } from '~/modules/organization/user/user.module';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import {TypeOrmModule} from "@nestjs/typeorm";
+import {Session} from "~/entities/session/session.entity";
+import {EncryptionService} from "~/modules/auth/encryption.service";
 
 @Module({
   imports: [
@@ -18,14 +21,15 @@ import { AuthService } from './auth.service';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: '10d',
+          expiresIn: '30d',
         },
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([Session])
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
-  exports: [AuthService, JwtModule],
+  providers: [AuthService, LocalStrategy, JwtStrategy, EncryptionService],
+  exports: [AuthService, JwtModule,EncryptionService],
 })
 export class AuthModule {}

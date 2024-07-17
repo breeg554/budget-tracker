@@ -25,7 +25,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    //@todo implement refresh token
     return { id: payload.id, email: payload.email };
   }
 }

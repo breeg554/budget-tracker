@@ -33,7 +33,7 @@ export const typedFetch = async <T extends ZodType>(
     if (response.status === 422) {
       const errors = await response.json();
       throw new ValidationError(errors.fieldErrors ?? {});
-    } else if (response.status === 401) {
+    } else if (response.status === 401 || response.status === 403) {
       throw new UnauthorizedError();
     } else if (response.status === 404) {
       throw new NotFoundError();
