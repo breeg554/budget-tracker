@@ -18,7 +18,7 @@ export class OrganizationController {
   }
 
   @Get()
-  findAll(@User() user: any): Promise<GetOrganizationDto> {
+  findAll(@User() user: AuthUser): Promise<GetOrganizationDto> {
     return this.organizationService.findAllByUser(user.email);
   }
 

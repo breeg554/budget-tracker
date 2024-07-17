@@ -1,4 +1,4 @@
-import { ClassSerializerInterceptor, Module } from '@nestjs/common';
+import {ClassSerializerInterceptor,  Module} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -60,4 +60,6 @@ import { AppService } from './app.service';
     JwtStrategy,
   ],
 })
-export class AppModule {}
+export class AppModule  {
+
+}
