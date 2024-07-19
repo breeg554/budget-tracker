@@ -16,11 +16,15 @@ interface ReceiptRetrieverProps {
     uploadPhoto: () => void;
   }) => ReactNode;
   onRetrieve: (items: Partial<CreateTransactionItemDto>[]) => void;
+  organizationId: number;
+  pipelineId: number;
 }
 
 export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
   triggers,
   onRetrieve,
+  organizationId,
+  pipelineId,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const {
@@ -32,7 +36,7 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
     closeScanner,
     onScan,
     onUpload,
-  } = useScanReducer();
+  } = useScanReducer({ organizationId, pipelineId });
 
   const openPicker = () => {
     inputRef.current?.click();

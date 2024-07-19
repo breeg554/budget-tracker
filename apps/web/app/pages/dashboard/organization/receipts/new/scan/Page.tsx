@@ -1,6 +1,6 @@
 import React from 'react';
 import type { MetaFunction } from '@remix-run/node';
-import { useFetcher, useNavigate } from '@remix-run/react';
+import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react';
 
 import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
 import { routes } from '~/routes';
@@ -14,11 +14,14 @@ import {
 import { useOrganizationName } from '~/utils/useOrganizationName';
 
 import { ReceiptRetriever } from './components/ReceiptRetriever';
+import { loader } from './loader.server';
 
 export const ScanPage = () => {
   const organizationName = useOrganizationName();
   const navigate = useNavigate();
   const fetcher = useFetcher();
+  const { organizationId, pipelineId } = useLoaderData<typeof loader>();
+
   const onClose = () => {
     navigate(routes.newReceipt.getPath(organizationName));
   };
@@ -47,6 +50,8 @@ export const ScanPage = () => {
         </DrawerHeader>
 
         <ReceiptRetriever
+          organizationId={organizationId}
+          pipelineId={pipelineId}
           onRetrieve={onRetrieve}
           triggers={({ takePhoto, uploadPhoto }) => (
             <div className="flex gap-2 items-center">
