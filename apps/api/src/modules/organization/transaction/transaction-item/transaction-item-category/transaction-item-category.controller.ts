@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
 import { CreateTransactionItemCategoryDto } from '~/dtos/transaction/create-transaction-item-category.dto';
 import { GetTransactionItemCategoryDto } from '~/dtos/transaction/get-transaction-item-category.dto';
@@ -18,11 +18,17 @@ export class TransactionItemCategoryController {
     return this.transactionItemCategoryService.findAll();
   }
 
-  @Post()
   @Public()
+  @Post()
   create(
     @Body() data: CreateTransactionItemCategoryDto,
   ): Promise<GetTransactionItemCategoryDto> {
     return this.transactionItemCategoryService.create(data);
+  }
+
+  @Public()
+  @Delete(':id')
+  delete(@Param('id') id: string): Promise<void> {
+    return this.transactionItemCategoryService.deleteById(id);
   }
 }
