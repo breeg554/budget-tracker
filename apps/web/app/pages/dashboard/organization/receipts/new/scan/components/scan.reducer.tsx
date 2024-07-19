@@ -36,16 +36,21 @@ export const defaultScanState: ScanState = {
   step: 'method',
 };
 
-export const useScanReducer = () => {
+interface UseScanReducerArgs {
+  organizationId: number;
+  pipelineId: number;
+}
+
+export const useScanReducer = (args: UseScanReducerArgs) => {
   const buildelRef = useRef<BuildelSocket | null>(null);
   const runRef = useRef<BuildelRun | null>(null);
   const [state, dispatch] = useReducer(scanReducer, defaultScanState);
 
   const connectBuildel = async () => {
-    buildelRef.current = new BuildelSocket(47);
+    buildelRef.current = new BuildelSocket(args.organizationId);
     await buildelRef.current.connect();
 
-    runRef.current = await buildelRef.current.run(151, {
+    runRef.current = await buildelRef.current.run(args.pipelineId, {
       onBlockOutput: (blockId, _outputName, payload) => {
         if (blockId === 'text_output_1' && hasMessageOutput(payload)) {
           dispatch({
@@ -64,13 +69,22 @@ export const useScanReducer = () => {
   };
   const sendScan = async (scan: string) => {
     try {
-      assert(runRef.current, 'Run not initialized');
-      assert(runRef.current.status === 'running', 'Run is not running');
       assert(state.image, 'Image not uploaded');
 
       const text = await tesseract().getText(scan);
-      console.log(text);
+
       dispatch({ type: 'retrieveText', payload: { text } });
+
+      return text;
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const getReceiptProducts = (text: string) => {
+    try {
+      assert(runRef.current, 'Run not initialized');
+      assert(runRef.current.status === 'running', 'Run is not running');
 
       runRef.current.push('text_input_1:input', text);
     } catch (e) {
@@ -92,7 +106,7 @@ export const useScanReducer = () => {
 
   useEffect(() => {
     if (state.step === 'preview' && state.image) {
-      sendScan(state.image);
+      sendScan(state.image).then((text) => text && getReceiptProducts(text));
     }
   }, [state.step, state.image]);
 
@@ -143,14 +157,16 @@ function scanReducer(state: ScanState, action: Action): ScanState {
       const result = z
         .preprocess(
           (val) => (typeof val === 'string' ? JSON.parse(val) : val),
-          z.array(createTransactionItemSchema.partial()),
+          z.object({
+            products: z.array(createTransactionItemSchema.partial()),
+          }),
         )
         .safeParse(action.payload.items);
 
       if (result.success) {
         return {
           ...state,
-          receiptItems: result.data,
+          receiptItems: result.data.products,
         };
       }
 

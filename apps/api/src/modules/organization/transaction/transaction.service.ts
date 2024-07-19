@@ -54,7 +54,7 @@ export class TransactionService {
     return this.transactionRepository.save(transaction);
   }
 
-  async findAllByName(
+  async findAll(
     organizationName: string,
     userId: string,
   ): Promise<GetTransactionDto[]> {
@@ -65,7 +65,7 @@ export class TransactionService {
       );
 
     const transactions = await this.transactionRepository.find({
-      where: { organization: { id: organization.id }, author: { id: userId } },
+      where: { organization: { id: organization.id } },
       relations: ['items', 'author'],
     });
 

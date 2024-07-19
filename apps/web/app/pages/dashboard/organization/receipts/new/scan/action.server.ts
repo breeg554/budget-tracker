@@ -9,6 +9,7 @@ import {
 import { routes } from '~/routes';
 import { commitSession, getSession, requireSignedIn } from '~/session.server';
 import { actionHandler } from '~/utils/action.server';
+import { assert } from '~/utils/assert';
 
 export const extendedTransactionSchema = createTransactionSchema.extend({
   items: z.preprocess(
@@ -18,7 +19,9 @@ export const extendedTransactionSchema = createTransactionSchema.extend({
 });
 
 export const action = actionHandler({
-  post: async ({ request }) => {
+  post: async ({ request, params }) => {
+    assert(params.organizationName, 'Organization Name is required');
+
     await requireSignedIn(request);
 
     const formData = await request.formData();
@@ -33,7 +36,7 @@ export const action = actionHandler({
     const session = await getSession(request.headers.get('Cookie'));
     session.flash('TRANSACTION_FORM_STATE', submission.value);
 
-    return redirect(routes.newReceipt.getPath(), {
+    return redirect(routes.newReceipt.getPath(params.organizationName), {
       headers: { 'Set-Cookie': await commitSession(session) },
     });
   },

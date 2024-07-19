@@ -14,7 +14,7 @@ export class TransactionController {
     @Param('organizationName') organizationName: string,
     @User() user: AuthUser,
   ): Promise<GetTransactionDto[]> {
-    return this.transactionService.findAllByName(organizationName, user.id);
+    return this.transactionService.findAll(organizationName, user.id);
   }
 
   @Post()
