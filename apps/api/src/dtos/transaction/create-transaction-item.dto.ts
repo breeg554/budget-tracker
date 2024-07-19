@@ -7,7 +7,7 @@ export const createTransactionItemSchema = z.object({
   name: z.string(),
   type: z.nativeEnum(TransactionItemType),
   quantity: z.number(),
-  value: z.number(),
+  price: z.number(),
   category: z.string(),
 });
 

@@ -18,7 +18,7 @@ export const createTransactionItemSchema = z.object({
   name: z.string(),
   type: z.nativeEnum(TransactionItemType),
   quantity: z.number().min(0),
-  value: z.number().min(0),
+  price: z.number().min(0),
   category: z.string(),
 });
 
@@ -43,7 +43,7 @@ export const getTransactionItemSchema = z.object({
   name: z.string(),
   type: z.nativeEnum(TransactionItemType),
   quantity: z.number(),
-  value: z.union([z.number(), z.string().transform((val) => Number(val))]),
+  price: z.union([z.number(), z.string().transform((val) => Number(val))]),
   createdAt: z.string(),
   updatedAt: z.string(),
   category: getTransactionItemCategorySchema,
@@ -57,7 +57,7 @@ export const getTransactionSchema = z.object({
   updatedAt: z.string(),
   items: z.array(getTransactionItemSchema),
   author: z.any(),
-  value: z.number(),
+  price: z.number(),
 });
 
 export const fromGetTransactionsResponse = z.array(getTransactionSchema);

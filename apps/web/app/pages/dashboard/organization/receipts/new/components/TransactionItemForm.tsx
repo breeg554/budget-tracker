@@ -80,7 +80,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         <FieldError />
       </Field>
 
-      <Field name="value">
+      <Field name="price">
         <FieldLabel>Price</FieldLabel>
         <NumberField placeholder="Price of the single item" />
         <FieldError />

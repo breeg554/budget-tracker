@@ -9,7 +9,7 @@ export const getTransactionItemSchema = z.object({
   name: z.string(),
   type: z.nativeEnum(TransactionItemType),
   quantity: z.number(),
-  value: z.number(),
+  price: z.number(),
   createdAt: z.date(),
   updatedAt: z.date(),
   category: getTransactionItemCategorySchema,

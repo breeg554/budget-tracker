@@ -12,7 +12,7 @@ export const getTransactionSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   items: z.array(getTransactionItemSchema),
-  value: z.number(),
+  price: z.number(),
   author: getUserSchema,
 });
 
