@@ -44,7 +44,7 @@ export class TransactionService {
 
       item.name = itemDto.name;
       item.quantity = itemDto.quantity;
-      item.value = itemDto.value;
+      item.price = itemDto.price;
       item.type = itemDto.type;
       item.category = { id: itemDto.category } as TransactionItemCategory;
 
@@ -77,8 +77,8 @@ export class TransactionService {
   ): GetTransactionDto[] {
     return transactions.map((transaction) => ({
       ...transaction,
-      value: transaction.items.reduce(
-        (curr, item) => curr + Number(item.value) * Number(item.quantity),
+      price: transaction.items.reduce(
+        (curr, item) => curr + Number(item.price) * Number(item.quantity),
         0,
       ),
     }));

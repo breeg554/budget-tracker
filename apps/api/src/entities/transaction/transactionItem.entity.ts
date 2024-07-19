@@ -20,7 +20,7 @@ export class TransactionItem {
   @Column()
   quantity: number;
   @Column({ type: 'numeric', precision: 10, scale: 3 })
-  value: number;
+  price: number;
   @Column({
     type: 'enum',
     enum: TransactionItemType,
