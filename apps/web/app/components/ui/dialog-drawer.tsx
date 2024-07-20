@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { HTMLAttributes } from 'react';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { useMediaQuery } from 'usehooks-ts';
 
 import { cn } from '~/utils/cn';
@@ -13,7 +14,6 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogPortal,
   DialogTitle,
   DialogTrigger,
 } from './dialog';
@@ -86,11 +86,12 @@ const DialogDrawerContent = ({
   className,
   children,
   ...props
-}: DialogDrawerProps & Pick<HTMLAttributes<HTMLDivElement>, 'onSubmit'>) => {
+}: React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>) => {
   const isDesktop = useMediaQuery(desktop);
   const Component = isDesktop ? DialogContent : DrawerContent;
 
   return (
+    //@ts-ignore
     <Component className={cn('max-h-[96vh]', className)} {...props}>
       {children}
     </Component>
@@ -121,7 +122,7 @@ const DialogDrawerHeader = ({
   const Component = isDesktop ? DialogHeader : DrawerHeader;
 
   return (
-    <Component className={cn('px-4 md:px-1', className)} {...props}>
+    <Component className={cn('px-0 md:px-1', className)} {...props}>
       {children}
     </Component>
   );
@@ -149,13 +150,10 @@ const DialogDrawerBody = ({
 }: DialogDrawerProps & React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={cn(
-        'overflow-y-auto md:max-h-[76vh] px-4 pb-4 md:px-0 md:pb-0',
-        className,
-      )}
+      className={cn('overflow-y-auto md:max-h-[76vh] md:px-0', className)}
       {...props}
     >
-      {children}
+      <div className="px-1">{children}</div>
     </div>
   );
 };

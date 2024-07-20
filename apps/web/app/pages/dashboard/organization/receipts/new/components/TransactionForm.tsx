@@ -83,6 +83,13 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     });
   };
 
+  const removeItem = (index: number) => {
+    form.remove({
+      name: fields.items.name,
+      index,
+    });
+  };
+
   const onEditItem = (updated: CreateTransactionItemDto, key?: string) => {
     form.update({
       name: fields.items.name,
@@ -124,19 +131,20 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
       <div>
         <header className="flex justify-between gap-2 items-center">
-          <h2>Items</h2>
+          <h2>Products</h2>
 
           <ScanLink size="2" />
         </header>
 
         <ul className="flex flex-col gap-2 py-4">
-          {items.map((item) => {
+          {items.map((item, index) => {
             return (
               <TransactionFormItem
                 key={item.key}
                 item={item}
                 categories={itemCategories}
                 onEdit={(updated) => onEditItem(updated, item.key)}
+                onDelete={() => removeItem(index)}
               />
             );
           })}
@@ -147,21 +155,16 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
               description="Add new receipt product"
               trigger={(open) => <InsertItemButton onClick={open} />}
             >
-              {(close) => (
+              {() => (
                 <>
                   <TransactionItemForm
                     formId="new-item-form"
-                    onSubmit={(values) => {
-                      insertItem(values);
-                      close();
-                    }}
+                    onSubmit={insertItem}
                     categories={itemCategories}
                   />
-                  <div className="px-1">
-                    <SubmitButton form="new-item-form">
-                      Add product
-                    </SubmitButton>
-                  </div>
+                  <SubmitButton form="new-item-form" className="mt-3 w-full">
+                    Add product
+                  </SubmitButton>
                 </>
               )}
             </TransactionFormItemDrawer>
@@ -194,12 +197,14 @@ interface TransactionFormItemProps {
   item: FieldMetadata<CreateTransactionItemDto>;
   categories: GetTransactionItemCategoryDto[];
   onEdit?: (item: CreateTransactionItemDto) => void;
+  onDelete: () => void;
 }
 
 function TransactionFormItem({
   item,
   categories,
   onEdit,
+  onDelete,
 }: TransactionFormItemProps) {
   const itemFields = item.getFieldset();
 
@@ -245,12 +250,16 @@ function TransactionFormItem({
               }}
             />
 
-            <div className="px-1">
-              <SubmitButton form="update-item-form">Update</SubmitButton>
-            </div>
+            <SubmitButton form="update-item-form" className="w-full mt-3">
+              Update
+            </SubmitButton>
           </>
         )}
       </TransactionFormItemDrawer>
+
+      <Button variant="destructive" onClick={onDelete}>
+        Delete
+      </Button>
     </li>
   );
 }

@@ -48,6 +48,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
       }
 
       onSubmit?.(values as CreateTransactionItemDto);
+      e.currentTarget.reset();
     },
   });
 
@@ -57,7 +58,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
   }));
 
   return (
-    <ValidatedForm form={form} className="flex flex-col gap-3 px-1">
+    <ValidatedForm form={form} className="flex flex-col gap-3">
       <HiddenField name="type" defaultValue={TransactionItemType.OUTCOME} />
 
       <Field formId={formId} name="name">

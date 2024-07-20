@@ -74,7 +74,6 @@ export const useScanReducer = (args: UseScanReducerArgs) => {
       const text = await tesseract().getText(scan);
 
       dispatch({ type: 'retrieveText', payload: { text } });
-
       return text;
     } catch (e) {
       console.error(e);

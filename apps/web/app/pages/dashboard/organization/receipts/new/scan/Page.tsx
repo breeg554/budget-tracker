@@ -48,7 +48,7 @@ export const ScanPage = () => {
         <DialogDrawerHeader>
           <DialogDrawerTitle>Take or upload photo</DialogDrawerTitle>
           <DialogDrawerDescription>
-            This action cannot be undone.
+            Send a photo of your receipt to automatically create a transaction.
           </DialogDrawerDescription>
         </DialogDrawerHeader>
 
