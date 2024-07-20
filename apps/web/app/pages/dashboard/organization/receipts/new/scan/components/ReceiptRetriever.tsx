@@ -1,4 +1,5 @@
 import React, { ReactNode, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
 import { assert } from '~/utils/assert';
@@ -75,7 +76,10 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
           </>
         );
       case 'scan':
-        return <ReceiptScanner onClose={closeScanner} onScan={handleOnScan} />;
+        return createPortal(
+          <ReceiptScanner onClose={closeScanner} onScan={handleOnScan} />,
+          document.body,
+        );
       case 'preview':
         if (error) return <p>{error}</p>;
         if (!hasText) return <p>Retrieving text from image...</p>;

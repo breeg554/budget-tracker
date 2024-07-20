@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { BarcodeIcon } from '~/icons/BarcodeIcon';
-import { ColumnsIcon } from '~/icons/ColumnsIcon';
 import { Link } from '~/link/Link';
 import { routes } from '~/routes';
 import { cn } from '~/utils/cn';

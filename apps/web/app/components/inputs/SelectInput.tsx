@@ -28,7 +28,7 @@ export const SelectInput: React.FC<SelectInputProps> = ({
 }) => {
   return (
     <Select value={value} defaultValue={defaultValue} {...rest}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger>
         <SelectValue {...triggerProps} />
       </SelectTrigger>
       <SelectContent {...contentProps}>

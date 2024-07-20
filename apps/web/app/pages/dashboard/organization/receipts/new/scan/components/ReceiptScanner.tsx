@@ -17,12 +17,12 @@ export const ReceiptScanner: React.FC<
   PropsWithChildren<ReceiptScannerProps>
 > = ({ onClose, onScan }) => {
   return (
-    <div className="fixed top-0 bottom-0 left-0 right-0 bg-black">
+    <div className="fixed top-0 bottom-0 left-0 right-0 z-[100] bg-black">
       <ScannerModal onScreenshot={onScan} />
 
       <IconButton
         type="button"
-        className="absolute top-2 right-2"
+        className="absolute top-2 right-2 z-[101]"
         variant="ghost"
         color="sky"
         onClick={onClose}
