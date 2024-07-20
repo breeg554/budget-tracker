@@ -5,12 +5,13 @@ import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react';
 import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
 import { routes } from '~/routes';
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from '~/ui/drawer';
+  DialogDrawer,
+  DialogDrawerBody,
+  DialogDrawerContent,
+  DialogDrawerDescription,
+  DialogDrawerHeader,
+  DialogDrawerTitle,
+} from '~/ui/dialog-drawer';
 import { useOrganizationName } from '~/utils/useOrganizationName';
 
 import { ReceiptRetriever } from './components/ReceiptRetriever';
@@ -37,44 +38,48 @@ export const ScanPage = () => {
   };
 
   return (
-    <Drawer onOpenChange={onClose} open>
-      <DrawerContent
+    <DialogDrawer onOpenChange={onClose} open>
+      <DialogDrawerContent
         onSubmit={(e) => {
           e.stopPropagation();
           e.preventDefault();
         }}
       >
-        <DrawerHeader>
-          <DrawerTitle>Take or upload photo</DrawerTitle>
-          <DrawerDescription>This action cannot be undone.</DrawerDescription>
-        </DrawerHeader>
+        <DialogDrawerHeader>
+          <DialogDrawerTitle>Take or upload photo</DialogDrawerTitle>
+          <DialogDrawerDescription>
+            This action cannot be undone.
+          </DialogDrawerDescription>
+        </DialogDrawerHeader>
 
-        <ReceiptRetriever
-          organizationId={organizationId}
-          pipelineId={pipelineId}
-          onRetrieve={onRetrieve}
-          triggers={({ takePhoto, uploadPhoto }) => (
-            <div className="flex gap-2 items-center">
-              <button
-                type="button"
-                className="cursor-pointer w-full p-4 border border-neutral-150 rounded"
-                onClick={uploadPhoto}
-              >
-                Upload a photo
-              </button>
+        <DialogDrawerBody>
+          <ReceiptRetriever
+            organizationId={organizationId}
+            pipelineId={pipelineId}
+            onRetrieve={onRetrieve}
+            triggers={({ takePhoto, uploadPhoto }) => (
+              <div className="flex gap-2 items-center">
+                <button
+                  type="button"
+                  className="cursor-pointer w-full p-4 border border-neutral-150 rounded"
+                  onClick={uploadPhoto}
+                >
+                  Upload a photo
+                </button>
 
-              <button
-                type="button"
-                className="cursor-pointer w-full p-4 border border-neutral-150 rounded"
-                onClick={takePhoto}
-              >
-                Take a photo
-              </button>
-            </div>
-          )}
-        />
-      </DrawerContent>
-    </Drawer>
+                <button
+                  type="button"
+                  className="cursor-pointer w-full p-4 border border-neutral-150 rounded"
+                  onClick={takePhoto}
+                >
+                  Take a photo
+                </button>
+              </div>
+            )}
+          />
+        </DialogDrawerBody>
+      </DialogDrawerContent>
+    </DialogDrawer>
   );
 };
 

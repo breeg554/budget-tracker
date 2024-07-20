@@ -19,7 +19,7 @@ export const createTransactionItemSchema = z.object({
   type: z.nativeEnum(TransactionItemType),
   quantity: z.number().min(0),
   price: z.number().min(0),
-  category: z.string(),
+  category: z.string().uuid('Incorrect category'),
 });
 
 export enum TransactionType {
