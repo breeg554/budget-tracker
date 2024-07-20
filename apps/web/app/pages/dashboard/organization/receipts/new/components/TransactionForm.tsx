@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, useEffect, useState } from 'react';
+import React, { ButtonHTMLAttributes, ReactNode, useEffect } from 'react';
 import {
   FieldMetadata,
   SubmissionResult,
@@ -17,21 +17,25 @@ import {
   CreateTransactionItemDto,
   GetTransactionItemCategoryDto,
 } from '~/api/Transaction/transactionApi.types';
+import { Button } from '~/buttons/Button';
 import { FormPersistentState } from '~/components/form/FormPersistentState';
 import { ScanLink } from '~/dashboard/layout/components/ScanLink';
 import { Field } from '~/form/Field';
 import { FieldError, FieldLabel, TextField } from '~/form/fields';
 import { DateField } from '~/form/fields/DateField';
 import { HiddenField } from '~/form/fields/HiddenField';
+import { SubmitButton } from '~/form/SubmitButton';
 import { ValidatedForm } from '~/form/ValidatedForm';
 import { PlusIcon } from '~/icons/PlusIcon';
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '~/ui/drawer';
+  DialogDrawer,
+  DialogDrawerBody,
+  DialogDrawerContent,
+  DialogDrawerDescription,
+  DialogDrawerHeader,
+  DialogDrawerTitle,
+  DialogDrawerTrigger,
+} from '~/ui/dialog-drawer';
 import { cn } from '~/utils/cn';
 import { MonetaryValue } from '~/utils/MonetaryValue';
 
@@ -50,10 +54,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   defaultValue,
   id,
 }) => {
-  const [editableField, setEditableField] =
-    useState<null | FieldMetadata<CreateTransactionItemDto>>(null);
-  const { value: isOpen, setFalse, setTrue, setValue } = useBoolean(false);
-
   const [form, fields] = useForm({
     id: id,
     lastResult,
@@ -74,11 +74,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   }, [defaultValue]);
 
   const items = fields.items.getFieldList();
-  const closeDialog = () => {
-    setFalse();
-    setEditableField(null);
-    form.validate();
-  };
 
   const insertItem = (values: CreateTransactionItemDto) => {
     form.insert({
@@ -86,29 +81,16 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       // @ts-ignore
       defaultValue: values,
     });
-    closeDialog();
   };
 
-  const updateItem = (updated: CreateTransactionItemDto) => {
-    if (!editableField) return;
-
+  const onEditItem = (updated: CreateTransactionItemDto, key?: string) => {
     form.update({
       name: fields.items.name,
       value: items.map((item) => {
-        if (item.key === editableField.key) return updated;
+        if (item.key === key) return updated;
         return item.value;
       }),
     });
-    closeDialog();
-  };
-
-  const onEditItem = (item: FieldMetadata<CreateTransactionItemDto>) => {
-    setEditableField(item);
-    setTrue();
-  };
-
-  const handleOnToggle = (value: boolean) => {
-    setValue(value);
   };
 
   return (
@@ -152,36 +134,37 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
             return (
               <TransactionFormItem
                 key={item.key}
-                field={item}
+                item={item}
                 categories={itemCategories}
-                onEdit={onEditItem}
+                onEdit={(updated) => onEditItem(updated, item.key)}
               />
             );
           })}
 
-          <li>
-            <Drawer open={isOpen} onOpenChange={handleOnToggle}>
-              <DrawerTrigger asChild>
-                <InsertItemButton />
-              </DrawerTrigger>
-              <DrawerContent
-                onSubmit={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                }}
-              >
-                <DrawerHeader>
-                  <DrawerTitle>New item</DrawerTitle>
-                </DrawerHeader>
-                <TransactionItemForm
-                  onSubmit={editableField ? updateItem : insertItem}
-                  categories={itemCategories}
-                  defaultValues={
-                    editableField?.value as CreateTransactionItemDto
-                  }
-                />
-              </DrawerContent>
-            </Drawer>
+          <li onSubmit={(e) => e.stopPropagation()}>
+            <TransactionFormItemDrawer
+              title="New product"
+              description="Add new receipt product"
+              trigger={(open) => <InsertItemButton onClick={open} />}
+            >
+              {(close) => (
+                <>
+                  <TransactionItemForm
+                    formId="new-item-form"
+                    onSubmit={(values) => {
+                      insertItem(values);
+                      close();
+                    }}
+                    categories={itemCategories}
+                  />
+                  <div className="px-1">
+                    <SubmitButton form="new-item-form">
+                      Add product
+                    </SubmitButton>
+                  </div>
+                </>
+              )}
+            </TransactionFormItemDrawer>
           </li>
         </ul>
       </div>
@@ -208,44 +191,66 @@ function InsertItemButton({
 }
 
 interface TransactionFormItemProps {
-  field: FieldMetadata<CreateTransactionItemDto>;
+  item: FieldMetadata<CreateTransactionItemDto>;
   categories: GetTransactionItemCategoryDto[];
-  onEdit?: (item: FieldMetadata<CreateTransactionItemDto>) => void;
+  onEdit?: (item: CreateTransactionItemDto) => void;
 }
 
 function TransactionFormItem({
-  field,
+  item,
   categories,
   onEdit,
 }: TransactionFormItemProps) {
-  const itemFields = field.getFieldset();
+  const itemFields = item.getFieldset();
 
   const { value: name } = useInputControl(itemFields.name);
-  const category = useInputControl(itemFields.category);
-  const quantity = useInputControl(itemFields.quantity);
-  const price = useInputControl(itemFields.price);
+  const { value: category } = useInputControl(itemFields.category);
+  const { value: quantity } = useInputControl(itemFields.quantity);
+  const { value: price } = useInputControl(itemFields.price);
   useInputControl(itemFields.type);
 
   const findCategoryName = (id?: string) => {
     return categories.find((category) => category.id === id)?.name;
   };
 
-  const handleOnEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onEdit?.(field);
-  };
-
   return (
-    <li className="bg-neutral-50 border border-neutral-150 rounded p-2 text-sm text-neutral-900">
+    <li
+      onSubmit={(e) => e.stopPropagation()}
+      className="bg-neutral-50 border border-neutral-150 rounded p-2 text-sm text-neutral-900"
+    >
       <p>Name: {name}</p>
-      <p>Category: {findCategoryName(category.value) ?? ''}</p>
-      <p>Amount: {quantity.value}</p>
-      <p>Value: {price.value}</p>
+      <p>Category: {findCategoryName(category) ?? ''}</p>
+      <p>Amount: {quantity}</p>
+      <p>Value: {price}</p>
 
-      <button type="button" onClick={handleOnEdit}>
-        Edit
-      </button>
+      <TransactionFormItemDrawer
+        title="Edit product"
+        description="Edit receipt product"
+        trigger={(open) => <Button onClick={open}>Edit</Button>}
+      >
+        {(close) => (
+          <>
+            <TransactionItemForm
+              formId="update-item-form"
+              onSubmit={(values) => {
+                onEdit?.(values);
+                close();
+              }}
+              categories={categories}
+              defaultValues={{
+                name,
+                category,
+                quantity: quantity ? Number(quantity) : undefined,
+                price: price ? Number(price) : undefined,
+              }}
+            />
+
+            <div className="px-1">
+              <SubmitButton form="update-item-form">Update</SubmitButton>
+            </div>
+          </>
+        )}
+      </TransactionFormItemDrawer>
     </li>
   );
 }
@@ -278,5 +283,40 @@ function TransactionFormSummaryValue({
       {value.amount.toFixed(2)}
       <span className="text-xl">{value.currency}</span>
     </h1>
+  );
+}
+
+interface TransactionFormItemDrawerProps {
+  title: ReactNode;
+  description: ReactNode;
+  children: (close: () => void) => ReactNode;
+  trigger: (open: () => void) => ReactNode;
+}
+
+function TransactionFormItemDrawer({
+  children,
+  title,
+  description,
+  trigger,
+}: TransactionFormItemDrawerProps) {
+  const { value: open, setFalse, setTrue } = useBoolean(false);
+
+  const close = (value: boolean) => {
+    if (value) return;
+    setFalse();
+  };
+
+  return (
+    <DialogDrawer open={open} onOpenChange={close}>
+      <DialogDrawerTrigger asChild>{trigger(setTrue)}</DialogDrawerTrigger>
+      <DialogDrawerContent>
+        <DialogDrawerHeader>
+          <DialogDrawerTitle>{title}</DialogDrawerTitle>
+          <DialogDrawerDescription>{description}</DialogDrawerDescription>
+        </DialogDrawerHeader>
+
+        <DialogDrawerBody>{children(() => close(false))}</DialogDrawerBody>
+      </DialogDrawerContent>
+    </DialogDrawer>
   );
 }

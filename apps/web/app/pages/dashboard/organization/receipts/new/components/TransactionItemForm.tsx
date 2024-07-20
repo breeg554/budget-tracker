@@ -15,21 +15,23 @@ import { FieldError, FieldLabel, TextField } from '~/form/fields';
 import { HiddenField } from '~/form/fields/HiddenField';
 import { NumberField } from '~/form/fields/NumberField';
 import { SelectField } from '~/form/fields/SelectField';
-import { SubmitButton } from '~/form/SubmitButton';
 import { ValidatedForm } from '~/form/ValidatedForm';
 
 interface TransactionItemFormProps {
   onSubmit?: (values: CreateTransactionItemDto) => void;
   categories: GetTransactionItemCategoryDto[];
   defaultValues?: Partial<CreateTransactionItemDto>;
+  formId?: string;
 }
 
 export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
   onSubmit,
   categories,
   defaultValues,
+  formId,
 }) => {
   const [form] = useForm({
+    id: formId,
     defaultValue: defaultValues,
     shouldValidate: 'onSubmit',
     onValidate({ formData }) {
@@ -55,38 +57,38 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
   }));
 
   return (
-    <ValidatedForm form={form} className="flex flex-col gap-3">
+    <ValidatedForm form={form} className="flex flex-col gap-3 px-1">
       <HiddenField name="type" defaultValue={TransactionItemType.OUTCOME} />
 
-      <Field name="name">
+      <Field formId={formId} name="name">
         <FieldLabel>Name</FieldLabel>
-        <TextField placeholder="eg. Shopping mall" />
+        <TextField placeholder="eg. Monster Energy" />
         <FieldError />
       </Field>
 
-      <Field name="category">
+      <Field formId={formId} name="category">
         <FieldLabel>Category</FieldLabel>
         <SelectField
           options={categoryValues}
           contentProps={{ position: 'popper' }}
-          triggerProps={{ placeholder: 'eg. Dairy' }}
+          triggerProps={{
+            placeholder: 'eg. Dairy',
+          }}
         />
         <FieldError />
       </Field>
 
-      <Field name="quantity">
+      <Field formId={formId} name="quantity">
         <FieldLabel>Quantity</FieldLabel>
-        <NumberField placeholder="Amount of the item" />
+        <NumberField placeholder="Product quantity" />
         <FieldError />
       </Field>
 
-      <Field name="price">
+      <Field formId={formId} name="price">
         <FieldLabel>Price</FieldLabel>
-        <NumberField placeholder="Price of the single item" />
+        <NumberField placeholder="Product price" />
         <FieldError />
       </Field>
-
-      <SubmitButton>{defaultValues ? 'Update item' : 'Add item'}</SubmitButton>
     </ValidatedForm>
   );
 };
