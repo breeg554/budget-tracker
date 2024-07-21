@@ -6,18 +6,23 @@ type AuthData = {
   tokens: string;
 };
 
-const createSession = createCookieSessionStorage<AuthData, Record<string, any>>(
-  {
-    cookie: {
-      name: '__session',
-      secrets: [process.env.SESSION_SECRET as string],
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 60 * 60 * 24 * 31,
-    },
+type SessionData = {
+  organizationName?: string;
+} & AuthData;
+
+const createSession = createCookieSessionStorage<
+  SessionData,
+  Record<string, any>
+>({
+  cookie: {
+    name: '__session',
+    secrets: [process.env.SESSION_SECRET as string],
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 31,
   },
-);
+});
 
 export const { getSession, commitSession, destroySession } = createSession;
 
@@ -55,4 +60,24 @@ export const setAuthSession = async (request: Request, response: Response) => {
   session.set('tokens', authCookie);
 
   return await commitSession(session);
+};
+
+export const setLastOrganization = async (
+  request: Request,
+  organizationName: string,
+) => {
+  const session = await getSession(request.headers.get('Cookie'));
+
+  session.set('organizationName', organizationName);
+
+  return await commitSession(session);
+};
+
+export const getLastOrganization = async (
+  request: Request,
+): Promise<string> => {
+  const cookie = request.headers.get('Cookie');
+  const session = await getSession(cookie);
+
+  return session.get('organizationName');
 };

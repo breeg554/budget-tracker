@@ -11,7 +11,7 @@ import { TransactionItemList } from './components/TransactionItemList';
 import { loader } from './loader.server';
 
 export const DashboardPage = () => {
-  const { transactions } = useLoaderData<typeof loader>();
+  const { transactions, organizationName } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
 
   const onLogout = () => {
@@ -28,8 +28,7 @@ export const DashboardPage = () => {
 
       <SectionWrapper className="mb-6 mt-10 flex gap-2 items-center justify-between">
         <h1 className="text-4xl text-neutral-900">
-          <span className="block">Hello,</span>{' '}
-          <span className="block font-bold">Dawid</span>
+          <span className="block font-bold">{organizationName}</span>
         </h1>
 
         <button className="rounded-full border border-neutral-150 w-12 h-12 bg-transparent flex justify-center items-center">

@@ -6,7 +6,7 @@ import {
   DashboardNav,
   NavFloatingWrapper,
 } from '~/dashboard/layout/components/DashboardNav';
-import { requireSignedIn } from '~/session.server';
+import { requireSignedIn, setLastOrganization } from '~/session.server';
 import { assert } from '~/utils/assert';
 import { loaderHandler } from '~/utils/loader.server';
 
@@ -25,7 +25,17 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
     });
   }
 
-  return json({});
+  return json(
+    {},
+    {
+      headers: {
+        'Set-Cookie': await setLastOrganization(
+          request,
+          organization.data.name,
+        ),
+      },
+    },
+  );
 });
 
 export default function OrganizationPage() {
