@@ -10,10 +10,10 @@ export class TransactionItemCategory {
   get icon() {
     switch (this.name) {
       case 'alcohol':
-        return '🍸';
+        return '🍻';
       case 'car':
         return '🚘';
-      case 'gasoline':
+      case 'petrol':
         return '⛽';
       case 'internet':
         return '🔗';
@@ -21,6 +21,16 @@ export class TransactionItemCategory {
         return '📚';
       case 'rent':
         return '🏠';
+      case 'eating out':
+        return '🍔';
+      case 'groceries':
+        return '🥦';
+      case 'subscriptions':
+        return '📶';
+      case 'clothes':
+        return '👕';
+      case 'sports & activities':
+        return '💪';
       default:
         return '';
     }

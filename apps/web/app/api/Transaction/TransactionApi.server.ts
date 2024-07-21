@@ -1,12 +1,13 @@
 import { z } from 'zod';
 
+import { createPaginatedSchema } from '~/api/api.types';
 import { CreateTransactionDto } from '~/api/Transaction/transactionApi.types';
 import { typedFetch, TypedFetch } from '~/utils/fetch';
+import { buildUrlWithParams, UrlQueryParams } from '~/utils/url';
 
 import { fromGetTransactionsResponse } from './transactionApi.contracts';
 
 export class TransactionApi {
-  private readonly baseUrl = '/transactions';
   private readonly client: TypedFetch;
 
   constructor(client: TypedFetch = typedFetch) {
@@ -24,10 +25,13 @@ export class TransactionApi {
     );
   }
 
-  getAll(organizationName: string) {
+  async getAll(organizationName: string, query?: UrlQueryParams) {
     return this.client(
-      fromGetTransactionsResponse,
-      `/organizations/${organizationName}/transactions`,
+      createPaginatedSchema(fromGetTransactionsResponse),
+      buildUrlWithParams(
+        `/organizations/${organizationName}/transactions`,
+        query,
+      ),
       {
         method: 'get',
       },

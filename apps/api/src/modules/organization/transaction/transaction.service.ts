@@ -9,6 +9,7 @@ import { TransactionItem } from '~/entities/transaction/transactionItem.entity';
 import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 import { OrganizationService } from '~/modules/organization/organization.service';
 import { UserService } from '~/modules/organization/user/user.service';
+import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 @Injectable()
 export class TransactionService {
@@ -55,21 +56,29 @@ export class TransactionService {
   }
 
   async findAll(
+    query: PaginateQuery,
     organizationName: string,
     userId: string,
-  ): Promise<GetTransactionDto[]> {
+  ): Promise<Paginated<GetTransactionDto>> {
     const organization =
       await this.organizationService.ensureUserInOrganization(
         userId,
         organizationName,
       );
 
-    const transactions = await this.transactionRepository.find({
-      where: { organization: { id: organization.id } },
-      relations: ['items', 'author'],
-    });
+    const { data, ...rest } = await paginate(
+      query,
+      this.transactionRepository,
+      {
+        where: { organization: { id: organization.id } },
+        relations: ['items', 'author', 'items.category'],
+        sortableColumns: ['id', 'name'],
+        defaultSortBy: [['date', 'DESC']],
+      },
+    );
 
-    return this.toGetTransactionDto(transactions);
+    //@ts-ignore
+    return { ...rest, data: this.toGetTransactionDto(data) };
   }
 
   private toGetTransactionDto(
