@@ -11,10 +11,12 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
 
   const transactionApi = new TransactionApi(fetch);
 
-  const { data } = await transactionApi.getAll(params.organizationName);
+  const { data } = await transactionApi.getAll(params.organizationName, {
+    limit: 10,
+  });
 
   return json({
-    transactions: data,
+    transactions: data.data,
     buildelSecret: process.env.BUILDEL_SECRET as string,
     organizationName: params.organizationName,
   });

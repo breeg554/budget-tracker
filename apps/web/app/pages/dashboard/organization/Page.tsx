@@ -13,7 +13,6 @@ import { loader } from './loader.server';
 export const DashboardPage = () => {
   const { transactions, organizationName } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
-
   const onLogout = () => {
     fetcher.submit(null, { action: routes.signOut.getPath(), method: 'post' });
   };
@@ -42,9 +41,7 @@ export const DashboardPage = () => {
 
       <SectionWrapper>
         <header className="flex gap-2 justify-between items-center mb-2">
-          <h2 className="text-neutral-900">Spending</h2>
-
-          <p>select</p>
+          <h2 className="text-muted-foreground">Spending</h2>
         </header>
 
         <div className="pb-20">
