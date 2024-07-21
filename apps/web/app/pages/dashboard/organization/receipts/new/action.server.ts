@@ -25,6 +25,6 @@ export const action = actionHandler({
 
     await transactionApi.create(params.organizationName, submission.value);
 
-    return redirect(routes.dashboard.getPath());
+    return redirect(routes.organization.getPath(params.organizationName));
   },
 });

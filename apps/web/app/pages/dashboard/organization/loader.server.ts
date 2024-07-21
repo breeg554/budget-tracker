@@ -16,5 +16,6 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   return json({
     transactions: data,
     buildelSecret: process.env.BUILDEL_SECRET as string,
+    organizationName: params.organizationName,
   });
 });

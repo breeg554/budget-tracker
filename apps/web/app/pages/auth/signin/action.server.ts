@@ -21,7 +21,6 @@ export const action = actionHandler({
     const authApi = new AuthApi(fetch);
 
     const response = await authApi.signIn(submission.value);
-    console.log(response);
     return redirect(routes.dashboard.getPath(), {
       headers: { 'Set-cookie': await setAuthSession(request, response) },
     });
