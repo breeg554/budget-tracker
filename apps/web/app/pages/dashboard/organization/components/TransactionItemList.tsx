@@ -4,7 +4,7 @@ import {
   GetTransactionDto,
   GetTransactionItemDto,
 } from '~/api/Transaction/transactionApi.types';
-import { ItemList } from '~/list/ItemList';
+import { EmptyMessage, ItemList } from '~/list/ItemList';
 import { MonetaryValue } from '~/utils/MonetaryValue';
 import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
@@ -25,13 +25,19 @@ export const TransactionItemList: React.FC<TransactionItemListProps> = ({
           (curr, transaction) => [...curr, ...transaction.items],
           [] as GetTransactionItemDto[],
         ),
-      }));
+      }))
+      .slice(0, 3);
   }, [items]);
 
   return (
     <ItemList
       items={days}
       className="grid grid-cols-1 gap-2"
+      emptyText={
+        <EmptyMessage className="block text-center">
+          No transactions found
+        </EmptyMessage>
+      }
       renderItem={(item) => <TransactionItemListGroup group={item} />}
     />
   );

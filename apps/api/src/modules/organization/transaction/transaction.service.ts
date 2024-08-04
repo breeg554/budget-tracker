@@ -9,7 +9,12 @@ import { TransactionItem } from '~/entities/transaction/transactionItem.entity';
 import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 import { OrganizationService } from '~/modules/organization/organization.service';
 import { UserService } from '~/modules/organization/user/user.service';
-import { paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import {
+  FilterOperator,
+  paginate,
+  Paginated,
+  PaginateQuery,
+} from 'nestjs-paginate';
 
 @Injectable()
 export class TransactionService {
@@ -72,11 +77,13 @@ export class TransactionService {
       {
         where: { organization: { id: organization.id } },
         relations: ['items', 'author', 'items.category'],
-        sortableColumns: ['id', 'name'],
+        sortableColumns: ['date', 'id', 'name'],
         defaultSortBy: [['date', 'DESC']],
+        filterableColumns: {
+          date: [FilterOperator.BTW],
+        },
       },
     );
-
     //@ts-ignore
     return { ...rest, data: this.toGetTransactionDto(data) };
   }

@@ -25,16 +25,26 @@ export class TransactionApi {
     );
   }
 
-  async getAll(organizationName: string, query?: UrlQueryParams) {
+  async getAll(organizationName: string, query?: GetAllQueryParams) {
+    const params: Record<string, any> = {};
+
+    if (query?.startDate && query?.endDate) {
+      params['filter.date'] = `$btw:${query.startDate},${query.endDate}`;
+    }
     return this.client(
       createPaginatedSchema(fromGetTransactionsResponse),
       buildUrlWithParams(
         `/organizations/${organizationName}/transactions`,
-        query,
+        params,
       ),
       {
         method: 'get',
       },
     );
   }
+}
+
+interface GetAllQueryParams extends UrlQueryParams {
+  startDate: string;
+  endDate: string;
 }

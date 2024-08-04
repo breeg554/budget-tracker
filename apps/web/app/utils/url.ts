@@ -4,7 +4,7 @@ export type UrlQueryParams = Record<string, string | number | undefined>;
 
 export function buildUrlWithParams(
   baseUrl: string,
-  params?: Record<string, string | number | undefined>,
+  params?: Record<string, string | number | undefined | string[]>,
 ) {
   let url = baseUrl;
 
