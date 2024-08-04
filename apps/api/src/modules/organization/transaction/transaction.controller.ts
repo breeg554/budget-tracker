@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import { CreateTransactionDto } from '~/dtos/transaction/create-transaction.dto';
 import { GetTransactionDto } from '~/dtos/transaction/get-transaction.dto';
 import { AuthUser, User } from '~/modules/auth/decorators/user.decorator';
 import { TransactionService } from '~/modules/organization/transaction/transaction.service';
-import { Paginated, PaginateQuery } from 'nestjs-paginate';
+import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
 @Controller('/organizations/:organizationName/transactions')
 export class TransactionController {
@@ -14,7 +14,7 @@ export class TransactionController {
   getAll(
     @Param('organizationName') organizationName: string,
     @User() user: AuthUser,
-    @Query() query: PaginateQuery,
+    @Paginate() query: PaginateQuery,
   ): Promise<Paginated<GetTransactionDto>> {
     return this.transactionService.findAll(query, organizationName, user.id);
   }
