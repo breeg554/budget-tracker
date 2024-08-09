@@ -36,5 +36,9 @@ export const ItemList = <T extends { id: number | string }>({
 export const EmptyMessage: React.FC<
   PropsWithChildren<{ className?: string }>
 > = ({ children, className }) => {
-  return <span className={cn('text-sm', className)}>{children}</span>;
+  return (
+    <span className={cn('text-sm text-muted-foreground', className)}>
+      {children}
+    </span>
+  );
 };
