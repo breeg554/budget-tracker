@@ -1,4 +1,4 @@
-import {ClassSerializerInterceptor,  Module} from '@nestjs/common';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,6 +14,7 @@ import { TransactionModule } from '~/modules/organization/transaction/transactio
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { SecretModule } from '~/modules/organization/secret/secret.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { AppService } from './app.service';
     AuthModule,
     OrganizationModule,
     TransactionModule,
+    SecretModule,
   ],
   controllers: [AppController],
   providers: [
@@ -60,6 +62,4 @@ import { AppService } from './app.service';
     JwtStrategy,
   ],
 })
-export class AppModule  {
-
-}
+export class AppModule {}

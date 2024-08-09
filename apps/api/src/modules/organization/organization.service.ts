@@ -6,6 +6,9 @@ import { CreateOrganizationDto } from '~/dtos/organization/create-organization.d
 import { Organization } from '~/entities/organization/organization.entity';
 import { User } from '~/entities/user/user.entity';
 import { UserService } from '~/modules/organization/user/user.service';
+import { SecretService } from '~/modules/organization/secret/secret.service';
+import { Secret } from '~/entities/secret/secret.entity';
+import { CreateSecretDto } from '~/dtos/secret/create-secret.dto';
 
 @Injectable()
 export class OrganizationService {
@@ -13,6 +16,7 @@ export class OrganizationService {
     @InjectRepository(Organization)
     private readonly organizationRepository: Repository<Organization>,
     private readonly userService: UserService,
+    private readonly secretService: SecretService,
   ) {}
 
   async create(
@@ -49,6 +53,38 @@ export class OrganizationService {
 
   async findByNameAndUser(name: string, userId: string): Promise<Organization> {
     return await this.ensureUserInOrganization(userId, name);
+  }
+
+  async findOrganizationSecret(
+    secretName: string,
+    organizationName: string,
+    userId: string,
+  ): Promise<Secret> {
+    const organization = await this.ensureUserInOrganization(
+      userId,
+      organizationName,
+    );
+    const secret = await this.secretService.findOne(
+      secretName,
+      organization.id,
+    );
+
+    if (!secret) throw new NotFoundException('Secret not found');
+
+    return secret;
+  }
+
+  async createSecret(
+    data: CreateSecretDto,
+    organizationName: string,
+    userId: string,
+  ): Promise<Secret> {
+    const organization = await this.ensureUserInOrganization(
+      userId,
+      organizationName,
+    );
+
+    return this.secretService.create(data, organization.id);
   }
 
   async ensureUserInOrganization(

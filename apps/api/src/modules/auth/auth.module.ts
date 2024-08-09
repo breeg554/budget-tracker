@@ -8,9 +8,9 @@ import { UserModule } from '~/modules/organization/user/user.module';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import {TypeOrmModule} from "@nestjs/typeorm";
-import {Session} from "~/entities/session/session.entity";
-import {EncryptionService} from "~/modules/auth/encryption.service";
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Session } from '~/entities/session/session.entity';
+import { EncryptionService } from '~/modules/encryption.service';
 
 @Module({
   imports: [
@@ -26,10 +26,10 @@ import {EncryptionService} from "~/modules/auth/encryption.service";
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Session])
+    TypeOrmModule.forFeature([Session]),
   ],
   controllers: [AuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy, EncryptionService],
-  exports: [AuthService, JwtModule,EncryptionService],
+  exports: [AuthService, JwtModule, EncryptionService],
 })
 export class AuthModule {}
