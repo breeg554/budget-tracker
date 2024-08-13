@@ -2,8 +2,6 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
-import { getOrganizationSchema } from '~/dtos/organization/get-organization.dto';
-
 export const User = createParamDecorator(
   (_: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
