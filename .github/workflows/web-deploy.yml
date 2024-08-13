@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     concurrency:
         group: ${{ github.workflow }}-${{ github.ref }}
+    defaults:
+      run:
+        working-directory: apps/web
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
