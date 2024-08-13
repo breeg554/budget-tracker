@@ -9,12 +9,6 @@ import {
   ValidationError,
 } from '~/utils/errors';
 
-const DefaultFetchArgs: RequestInit = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
-
 type ParsedResponse<T> = Response & { data: T };
 
 export const typedFetch = async <T extends ZodType>(
@@ -22,12 +16,23 @@ export const typedFetch = async <T extends ZodType>(
   url: string,
   args?: RequestInit,
 ): Promise<ParsedResponse<z.infer<T>>> => {
-  const response = await fetch(url, merge(args ?? {}, DefaultFetchArgs)).catch(
-    (e) => {
-      console.error(`Failed to fetch from url: ${url} - ${e}`);
-      throw new UnknownAPIError();
-    },
-  );
+  const headers =
+    args?.body instanceof FormData
+      ? {}
+      : { 'Content-Type': 'application/json' };
+
+  const response = await fetch(
+    url,
+    merge(
+      {
+        headers,
+      },
+      args ?? {},
+    ),
+  ).catch((e) => {
+    console.error(`Failed to fetch from url: ${url} - ${e}`);
+    throw new UnknownAPIError();
+  });
 
   if (!response.ok) {
     if (response.status === 422) {
