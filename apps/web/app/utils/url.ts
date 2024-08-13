@@ -14,7 +14,7 @@ export function buildUrlWithParams(
     .filter(([, value]) => isNotNil(value))
     .map(
       ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value!)}`,
+        `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`,
     )
     .join('&');
 
