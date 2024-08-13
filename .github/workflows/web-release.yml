@@ -23,7 +23,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           context: apps/web
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/bt-web:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/bt-web:latest, ${{ secrets.DOCKERHUB_USERNAME }}/bt-web:${{ github.Event.release.tag }}
           labels: |
             org.opencontainers.image.title=web
             org.opencontainers.image.description=web
