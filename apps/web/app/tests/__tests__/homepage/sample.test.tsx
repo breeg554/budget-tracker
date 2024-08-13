@@ -1,14 +1,14 @@
 import { describe, expect, test } from 'vitest';
 
-import { HomePage } from '~/pages/home/Page';
+import { SignInPage } from '~/pages/auth/signin/Page';
 import { Matcher, render, RenderResult } from '~/tests/render';
 import { RoutesProps, setupRoutes } from '~/tests/setupRoutes';
 
-describe.skip(HomePage.name, () => {
-  test('should render org name', async () => {
-    const page = HomePageObject.render({ initialEntries: ['/'] });
+describe(SignInPage.name, () => {
+  test('should render sign in page', async () => {
+    const page = HomePageObject.render({ initialEntries: ['/signIn'] });
 
-    expect(await page.findByText(/Welcome to PDG/i)).toBeTruthy();
+    expect(await page.findByText(/Login/i)).toBeTruthy();
   });
 });
 
@@ -21,8 +21,8 @@ class HomePageObject {
   static render(props?: RoutesProps) {
     const Routes = setupRoutes([
       {
-        path: '/',
-        Component: HomePage,
+        path: '/signIn',
+        Component: SignInPage,
       },
     ]);
 

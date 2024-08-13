@@ -26,7 +26,7 @@ class Tesseract {
     return this.worker.terminate();
   }
 
-  public async getText(image: string | File) {
+  public async getText(image: string) {
     await this.createWorker();
 
     const text = await this.recognize(image);
