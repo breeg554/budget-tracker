@@ -21,7 +21,6 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           context: .
-          file: apps/web/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/web:latest
           labels: |
