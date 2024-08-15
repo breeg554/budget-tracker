@@ -32,10 +32,22 @@ import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
     }),
     LoggerModule.forRoot({
       pinoHttp: {
+        redact: {
+          paths: [
+            'req.headers.cookie',
+            'req.headers.authorization',
+            'req.headers["set-cookie"]',
+            'req.headers["x-api-key"]',
+          ],
+          remove: true,
+        },
         transport: {
           target: 'pino-pretty',
           options: {
             singleLine: true,
+            colorize: true,
+            translateTime: true,
+            ignore: 'pid,hostname',
           },
         },
       },
