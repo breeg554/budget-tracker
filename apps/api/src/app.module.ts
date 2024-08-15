@@ -15,6 +15,7 @@ import { TransactionModule } from '~/modules/organization/transaction/transactio
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SecretModule } from '~/modules/organization/secret/secret.module';
+import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { SecretModule } from '~/modules/organization/secret/secret.module';
     OrganizationModule,
     TransactionModule,
     SecretModule,
+    ReceiptModule,
   ],
   controllers: [AppController],
   providers: [

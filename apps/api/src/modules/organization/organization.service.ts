@@ -64,14 +64,7 @@ export class OrganizationService {
       userId,
       organizationName,
     );
-    const secret = await this.secretService.findOne(
-      secretName,
-      organization.id,
-    );
-
-    if (!secret) throw new NotFoundException('Secret not found');
-
-    return secret;
+    return this.secretService.findOne(secretName, organization.id);
   }
 
   async createSecret(

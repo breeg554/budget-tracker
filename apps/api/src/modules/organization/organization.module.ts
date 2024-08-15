@@ -13,7 +13,6 @@ import { Secret } from '~/entities/secret/secret.entity';
   imports: [
     TypeOrmModule.forFeature([Organization, User, Secret]),
     UserModule,
-    OrganizationModule,
     SecretModule,
   ],
   controllers: [OrganizationController],

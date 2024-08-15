@@ -29,10 +29,13 @@ export const ScanPage = () => {
 
   const onRetrieve = (items: Partial<CreateTransactionItemDto>[]) => {
     const formData = new FormData();
-    formData.append('items', JSON.stringify(items));
+    formData.append(
+      'items',
+      JSON.stringify(items.map((item) => ({ ...item, type: 'outcome' }))),
+    );
 
     fetcher.submit(formData, {
-      method: 'POST',
+      method: 'PUT',
       encType: 'multipart/form-data',
     });
   };
@@ -68,8 +71,9 @@ export const ScanPage = () => {
                 </button>
 
                 <button
+                  disabled
                   type="button"
-                  className="cursor-pointer w-full p-4 border border-neutral-150 rounded"
+                  className="w-full bg-muted p-4 text-muted-foreground border border-neutral-150 rounded"
                   onClick={takePhoto}
                 >
                   Take a photo

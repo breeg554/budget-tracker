@@ -2,6 +2,8 @@ import { json, redirect } from '@remix-run/node';
 import { parseWithZod } from '@conform-to/zod';
 import { z } from 'zod';
 
+import { processReceiptSchema } from '~/api/Receipt/receiptApi.contracts';
+import { ReceiptApi } from '~/api/Receipt/ReceiptApi.server';
 import {
   createTransactionItemSchema,
   createTransactionSchema,
@@ -19,7 +21,30 @@ export const extendedTransactionSchema = createTransactionSchema.extend({
 });
 
 export const action = actionHandler({
-  post: async ({ request, params }) => {
+  post: async ({ request, params }, { fetch: superFetch }) => {
+    assert(params.organizationName, 'Organization Name is required');
+
+    await requireSignedIn(request);
+
+    const receiptApi = new ReceiptApi(superFetch);
+
+    const formData = await request.formData();
+    const submission = parseWithZod(formData, {
+      schema: processReceiptSchema,
+    });
+
+    if (submission.status !== 'success') {
+      return json(submission.reply());
+    }
+    const processReceipt = await receiptApi.processReceipt(
+      params.organizationName,
+      formData,
+    );
+
+    return json(processReceipt.data);
+  },
+
+  put: async ({ request, params }) => {
     assert(params.organizationName, 'Organization Name is required');
 
     await requireSignedIn(request);
@@ -29,10 +54,10 @@ export const action = actionHandler({
     const submission = parseWithZod(formData, {
       schema: extendedTransactionSchema.partial(),
     });
-
     if (submission.status !== 'success') {
       return json(submission.reply());
     }
+
     const session = await getSession(request.headers.get('Cookie'));
     session.flash('TRANSACTION_FORM_STATE', submission.value);
 

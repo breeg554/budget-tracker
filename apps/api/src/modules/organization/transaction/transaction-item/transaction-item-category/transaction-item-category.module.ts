@@ -10,5 +10,6 @@ import { TransactionItemCategoryService } from './transaction-item-category.serv
   imports: [TypeOrmModule.forFeature([TransactionItemCategory])],
   controllers: [TransactionItemCategoryController],
   providers: [TransactionItemCategoryService],
+  exports: [TransactionItemCategoryService],
 })
 export class TransactionItemCategoryModule {}

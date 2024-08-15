@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -19,7 +19,7 @@ export class SecretService {
     organizationId: string,
   ): Promise<Secret> {
     const encrypted = this.encryptionService.encrypt(createSecretDto.value);
-    console.log(createSecretDto, encrypted);
+
     const secret = this.secretRepository.create({
       ...createSecretDto,
       value: encrypted,
@@ -36,8 +36,14 @@ export class SecretService {
   }
 
   async findOne(name: string, organizationId: string): Promise<Secret> {
-    return this.secretRepository.findOne({
+    const secret = await this.secretRepository.findOne({
       where: { name, organization: { id: organizationId } },
     });
+
+    if (!secret) throw new NotFoundException('Secret not found');
+
+    secret.value = this.encryptionService.decrypt(secret.value);
+
+    return secret;
   }
 }

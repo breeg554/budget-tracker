@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-import { getTransactionSchema } from '~/api/Transaction/transactionApi.contracts';
-
 export const getOrganizationSchema = z.object({
   id: z.string(),
   createdAt: z.string(),

@@ -1,12 +1,11 @@
 import React, { ReactNode, useRef } from 'react';
-import { createPortal } from 'react-dom';
+import { useFetcher } from '@remix-run/react';
 
+import { isFromProcessReceiptSchema } from '~/api/Receipt/receiptApi.contracts';
 import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
-import { assert } from '~/utils/assert';
-import { toBase64 } from '~/utils/files';
+import { ItemList } from '~/list/ItemList';
 
-import { ReceiptScanner } from './ReceiptScanner';
-import { useScanReducer } from './scan.reducer';
+import { action } from '../action.server';
 
 interface ReceiptRetrieverProps {
   triggers: ({
@@ -27,74 +26,71 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
   organizationId,
   pipelineId,
 }) => {
+  const fetcher = useFetcher<typeof action>();
   const inputRef = useRef<HTMLInputElement>(null);
-  const {
-    hasText,
-    error,
-    receiptItems,
-    step,
-    openScanner,
-    closeScanner,
-    onScan,
-    onUpload,
-  } = useScanReducer({ organizationId, pipelineId });
 
   const openPicker = () => {
     inputRef.current?.click();
   };
 
-  const handleOnScan = (image: string) => {
-    onScan(image);
-  };
-
   const handleOnUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
-      const file = await toBase64(e.target.files[0]);
-      if (typeof file === 'string') {
-        onUpload(file);
-      }
+      const formData = new FormData();
+      formData.append('file', e.target.files[0]);
+      fetcher.submit(formData, {
+        method: 'post',
+        encType: 'multipart/form-data',
+      });
+
+      e.target.value = '';
     }
   };
 
-  const handleOnRetrieve = () => {
-    assert(receiptItems);
-
-    onRetrieve(receiptItems);
-  };
+  const isLoading = fetcher.state !== 'idle';
+  const data = fetcher.data;
 
   const renderStep = () => {
-    switch (step) {
-      case 'method':
-        return (
-          <>
-            {triggers({
-              takePhoto: openScanner,
-              uploadPhoto: openPicker,
-            })}
-
-            <UploadInput onChange={handleOnUpload} ref={inputRef} />
-          </>
-        );
-      case 'scan':
-        return createPortal(
-          <ReceiptScanner onClose={closeScanner} onScan={handleOnScan} />,
-          document.body,
-        );
-      case 'preview':
-        if (error) return <p>{error}</p>;
-        if (!hasText) return <p>Retrieving text from image...</p>;
-        if (!receiptItems) return <p>Analyzing... Let's AI do some magic...</p>;
-        return (
-          <div>
-            <p>found {receiptItems.length} items.</p>
-            <button type="button" onClick={handleOnRetrieve}>
-              Let's see
-            </button>
-          </div>
-        );
-      default:
-        return null;
+    if (isLoading) {
+      return <p>Loading...</p>;
     }
+
+    if (data) {
+      if (!isFromProcessReceiptSchema(data)) {
+        return <p>Ups. Something went wrong...</p>;
+      }
+      return (
+        <div>
+          <p>Found {data.products.length} products</p>
+
+          <ItemList
+            items={data.products.map((product) => ({
+              ...product,
+              id: product.name,
+            }))}
+            renderItem={(product) => (
+              <p>
+                {product.name}: {product.price} * {product.quantity}
+              </p>
+            )}
+          />
+
+          <button type="button" onClick={() => onRetrieve(data.products)}>
+            Let's see
+          </button>
+        </div>
+      );
+    }
+
+    return (
+      <>
+        {triggers({
+          takePhoto: () => {},
+          uploadPhoto: openPicker,
+        })}
+
+        <UploadInput onChange={handleOnUpload} ref={inputRef} />
+      </>
+    );
   };
 
   return <>{renderStep()}</>;
