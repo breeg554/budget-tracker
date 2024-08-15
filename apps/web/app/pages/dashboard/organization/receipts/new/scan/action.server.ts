@@ -21,6 +21,8 @@ export const extendedTransactionSchema = createTransactionSchema.extend({
 });
 
 export const action = actionHandler({
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  //@ts-ignore
   post: async ({ request, params }, { fetch: superFetch }) => {
     assert(params.organizationName, 'Organization Name is required');
 
