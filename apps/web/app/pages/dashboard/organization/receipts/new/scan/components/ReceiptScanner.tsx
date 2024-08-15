@@ -6,30 +6,38 @@ import { IconButton } from '~/buttons/IconButton';
 import { Webcam } from '~/components/webcam/Webcam';
 import { CrossIcon } from '~/icons/CrossIcon';
 import { ReloadIcon } from '~/icons/ReloadIcon';
+import { DialogPortal } from '~/ui/dialog';
 import { assert } from '~/utils/assert';
+import { base64ToFile } from '~/utils/file';
 
 interface ReceiptScannerProps {
-  onScan: (image: string) => void;
+  onScan: (file: File) => void;
   onClose: () => void;
 }
 
 export const ReceiptScanner: React.FC<
   PropsWithChildren<ReceiptScannerProps>
 > = ({ onClose, onScan }) => {
-  return (
-    <div className="fixed top-0 bottom-0 left-0 right-0 z-[100] bg-black">
-      <ScannerModal onScreenshot={onScan} />
+  const onScreenshot = (src: string) => {
+    const file = base64ToFile(src.split(',')[1], 'receipt.jpeg', 'image/jpeg');
+    onScan(file);
+  };
 
-      <IconButton
-        type="button"
-        className="absolute top-2 right-2 z-[101]"
-        variant="ghost"
-        color="sky"
-        onClick={onClose}
-      >
-        <CrossIcon className="w-6 h-6" />
-      </IconButton>
-    </div>
+  return (
+    <DialogPortal>
+      <div className="fixed top-0 bottom-0 left-0 right-0 z-[120] bg-black pointer-events-auto">
+        <ScannerModal onScreenshot={onScreenshot} />
+
+        <IconButton
+          type="button"
+          size="xxs"
+          className="absolute top-2 right-2 z-[101]"
+          variant="outline"
+          onClick={onClose}
+          icon={<CrossIcon />}
+        />
+      </div>
+    </DialogPortal>
   );
 };
 
@@ -92,12 +100,11 @@ function Preview({ src, onRetry, onSave }: PreviewProps) {
 
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2 items-center">
         <IconButton
+          variant="outline"
           type="button"
-          className="cursor-pointer bg-white text-neutral-900"
           onClick={onRetry}
-        >
-          <ReloadIcon />
-        </IconButton>
+          icon={<ReloadIcon />}
+        />
 
         <Button onClick={onSave} type="button">
           Save

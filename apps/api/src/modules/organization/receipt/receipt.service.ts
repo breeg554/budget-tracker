@@ -31,6 +31,7 @@ export class ReceiptService {
       await this.transactionItemCategoryService.findAll();
 
     const base64Image = file.buffer.toString('base64');
+
     const preparedCategories = JSON.stringify(
       productCategories.map((c) => ({ id: c.id, name: c.name })),
       null,
@@ -53,7 +54,7 @@ export class ReceiptService {
                   price: PRICE_OF_SINGLE_ITEM,
                   quantity: QUANTITY_OF_ITEMS (if you notice the same product multiple times in the receipt, sum the quantity up)
                   category: ID_OF_CATEGORY (if you can't match the product to any category, use the ID of the "Other" category)
-                  categoryName: NAME_OF_CATEGORY
+                  categoryName: NAME_OF_CATEGORY,
                 }
               ]
             }
@@ -64,7 +65,9 @@ export class ReceiptService {
               ${preparedCategories}
             ---
             
-            DO not return anything else!
+            DO not return anything else! 
+            
+            If you cannot retrieve any products or content from image, return empty array for "products" and empty string for "content".
             `,
         },
         {

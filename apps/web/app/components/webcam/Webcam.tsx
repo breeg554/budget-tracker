@@ -17,6 +17,7 @@ export const Webcam = React.forwardRef<
     onUserMediaError?.(error);
   };
 
+  // todo add error handling
   if (error) {
     return <p>Ups...{JSON.stringify(error)}</p>;
   }
@@ -26,6 +27,7 @@ export const Webcam = React.forwardRef<
       <ReactWebcam
         ref={ref}
         audio={false}
+        screenshotFormat="image/jpeg"
         videoConstraints={videoConstraints}
         onUserMediaError={handleOnUserMediaError}
         screenshotQuality={1}

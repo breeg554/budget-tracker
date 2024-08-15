@@ -1,6 +1,6 @@
 import React from 'react';
 import type { MetaFunction } from '@remix-run/node';
-import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react';
+import { useNavigate, useOutletContext } from '@remix-run/react';
 
 import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
 import { routes } from '~/routes';
@@ -15,29 +15,21 @@ import {
 import { useOrganizationName } from '~/utils/useOrganizationName';
 
 import { ReceiptRetriever } from './components/ReceiptRetriever';
-import { loader } from './loader.server';
 
 export const ScanPage = () => {
   const organizationName = useOrganizationName();
   const navigate = useNavigate();
-  const fetcher = useFetcher();
-  const { organizationId, pipelineId } = useLoaderData<typeof loader>();
+  const { onRetrieve } = useOutletContext<{
+    onRetrieve: (items: CreateTransactionItemDto[]) => void;
+  }>();
 
   const onClose = () => {
     navigate(routes.newReceipt.getPath(organizationName));
   };
 
-  const onRetrieve = (items: Partial<CreateTransactionItemDto>[]) => {
-    const formData = new FormData();
-    formData.append(
-      'items',
-      JSON.stringify(items.map((item) => ({ ...item, type: 'outcome' }))),
-    );
-
-    fetcher.submit(formData, {
-      method: 'PUT',
-      encType: 'multipart/form-data',
-    });
+  const retrieve = (items: CreateTransactionItemDto[]) => {
+    onRetrieve(items);
+    onClose();
   };
 
   return (
@@ -57,9 +49,7 @@ export const ScanPage = () => {
 
         <DialogDrawerBody>
           <ReceiptRetriever
-            organizationId={organizationId}
-            pipelineId={pipelineId}
-            onRetrieve={onRetrieve}
+            onRetrieve={retrieve}
             triggers={({ takePhoto, uploadPhoto }) => (
               <div className="flex gap-2 items-center">
                 <button
@@ -71,7 +61,6 @@ export const ScanPage = () => {
                 </button>
 
                 <button
-                  disabled
                   type="button"
                   className="w-full bg-muted p-4 text-muted-foreground border border-neutral-150 rounded"
                   onClick={takePhoto}

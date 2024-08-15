@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, ReactNode, useEffect } from 'react';
+import React, { ButtonHTMLAttributes, ReactNode } from 'react';
 import {
   FieldMetadata,
   SubmissionResult,
@@ -63,15 +63,6 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
     },
     shouldValidate: 'onSubmit',
   });
-
-  useEffect(() => {
-    if (!defaultValue) return;
-
-    form.update({
-      name: fields.items.name,
-      value: defaultValue.items,
-    });
-  }, [defaultValue]);
 
   const items = fields.items.getFieldList();
 
