@@ -13,8 +13,6 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@buildel/buildel": "^0.2.7",
-    "@buildel/buildel-auth": "^0.0.2",
     "@conform-to/react": "^1.0.2",
     "@conform-to/zod": "^1.0.2",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -44,7 +42,6 @@
     "recharts": "^2.12.7",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "tesseract.js": "^5.0.5",
     "uid": "^2.0.2",
     "usehooks-ts": "^3.1.0",
     "vaul": "^0.9.1",
