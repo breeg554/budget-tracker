@@ -1,6 +1,7 @@
 import type { MetaFunction } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 
+import { SecretForm } from '~/dashboard/organization/profile/components/SecretForm';
 import { routes } from '~/routes';
 
 import { OrganizationSelect } from './components/OrganizationSelect';
@@ -29,6 +30,10 @@ export const ProfilePage = () => {
           label: org.name,
         }))}
       />
+
+      <p>Openai secret</p>
+
+      <SecretForm />
     </div>
   );
 };

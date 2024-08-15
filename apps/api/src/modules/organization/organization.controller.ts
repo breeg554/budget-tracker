@@ -37,7 +37,7 @@ export class OrganizationController {
     @Param('name') name: string,
     @Body() data: CreateSecretDto,
     @User() user: AuthUser,
-  ): Promise<any> {
+  ): Promise<GetSecretDto> {
     return this.organizationService.createSecret(data, name, user.id);
   }
 

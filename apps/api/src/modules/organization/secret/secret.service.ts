@@ -14,7 +14,7 @@ export class SecretService {
     private readonly encryptionService: EncryptionService,
   ) {}
 
-  create(
+  async create(
     createSecretDto: CreateSecretDto,
     organizationId: string,
   ): Promise<Secret> {
@@ -26,7 +26,11 @@ export class SecretService {
       organization: { id: organizationId },
     });
 
-    return this.secretRepository.save(secret);
+    await this.secretRepository.upsert(secret, {
+      conflictPaths: ['name', 'organization'],
+    });
+
+    return this.findOne(secret.name, organizationId);
   }
 
   async findAll(organizationId: string): Promise<Secret[]> {

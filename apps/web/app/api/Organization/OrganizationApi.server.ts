@@ -1,8 +1,12 @@
 import {
   fromGetOrganizationsResponse,
+  fromGetSecretResponse,
   getOrganizationSchema,
 } from '~/api/Organization/organizationApi.contracts';
-import { CreateOrganizationDto } from '~/api/Organization/organizationApi.types';
+import {
+  CreateOrganizationDto,
+  CreateSecretDto,
+} from '~/api/Organization/organizationApi.types';
 import { typedFetch, TypedFetch } from '~/utils/fetch';
 
 export class OrganizationApi {
@@ -30,5 +34,16 @@ export class OrganizationApi {
     return this.client(getOrganizationSchema, `${this.baseUrl}/${name}`, {
       method: 'get',
     });
+  }
+
+  createSecret(organizationName: string, data: CreateSecretDto) {
+    return this.client(
+      fromGetSecretResponse,
+      `${this.baseUrl}/${organizationName}/secrets`,
+      {
+        method: 'post',
+        body: JSON.stringify(data),
+      },
+    );
   }
 }

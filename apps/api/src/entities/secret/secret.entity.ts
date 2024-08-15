@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 
@@ -11,6 +12,7 @@ import { Exclude } from 'class-transformer';
 import { Organization } from '~/entities/organization/organization.entity';
 
 @Entity()
+@Unique(['name', 'organization'])
 export class Secret {
   @PrimaryGeneratedColumn('uuid')
   id: string;
