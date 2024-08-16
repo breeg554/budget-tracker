@@ -42,7 +42,7 @@ export const DashboardPage = () => {
 
   return (
     <>
-      {/*<button onClick={onLogout}>Logout</button>*/}
+      <button onClick={onLogout}>Logout</button>
       <SectionWrapper className="mb-10 mt-8 flex gap-2 items-center justify-between">
         <h1 className="text-3xl text-neutral-900">
           <span className="block font-bold">{organizationName}</span>

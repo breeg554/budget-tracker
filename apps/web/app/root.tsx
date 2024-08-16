@@ -1,17 +1,25 @@
-import { LinksFunction } from '@remix-run/node';
+import { json, LinksFunction, LoaderFunctionArgs } from '@remix-run/node';
 import {
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from '@remix-run/react';
 
 import { PageProgress } from '~/progressBar/PageProgress';
 
 import './style.css';
 
+import { useEffect } from 'react';
+
+import { getServerToasts } from '~/session.server';
+import { errorToast } from '~/toasts/errorToast';
+import { successToast } from '~/toasts/successToast';
+import { ToastProps } from '~/toasts/Toast.interface';
 import { Toaster } from '~/toasts/Toaster';
+import { warningToast } from '~/toasts/warningToast';
 
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -46,6 +54,28 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
+export const loader = async (args: LoaderFunctionArgs) => {
+  const { cookie, toasts } = await getServerToasts(args.request);
+
+  return json({ toasts }, { headers: { 'Set-Cookie': cookie } });
+};
+
 export default function App() {
+  const { toasts } = useLoaderData<typeof loader>();
+
+  useEffect(() => {
+    if (!toasts) return;
+
+    if (toasts.success) {
+      successToast(toasts.success as ToastProps);
+    }
+    if (toasts.error) {
+      errorToast(toasts.error as ToastProps);
+    }
+    if (toasts.warning) {
+      warningToast(toasts.warning as ToastProps);
+    }
+  }, [toasts]);
+
   return <Outlet />;
 }

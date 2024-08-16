@@ -1,6 +1,7 @@
 import { createCookieSessionStorage, redirect } from '@remix-run/node';
 
 import { routes } from '~/routes';
+import { ToastProps } from '~/toasts/Toast.interface';
 
 type AuthData = {
   tokens: string;
@@ -10,10 +11,17 @@ type SessionData = {
   organizationName?: string;
 } & AuthData;
 
-const createSession = createCookieSessionStorage<
-  SessionData,
-  Record<string, any>
->({
+type Toasts = {
+  success: ToastProps | string;
+  error: ToastProps | string;
+  warning: ToastProps | string;
+};
+
+type FlushData = {
+  toasts?: Partial<Toasts>;
+};
+
+const createSession = createCookieSessionStorage<SessionData, FlushData>({
   cookie: {
     name: '__session',
     secrets: [process.env.SESSION_SECRET as string],
@@ -75,9 +83,28 @@ export const setLastOrganization = async (
 
 export const getLastOrganization = async (
   request: Request,
-): Promise<string> => {
+): Promise<string | undefined> => {
   const cookie = request.headers.get('Cookie');
   const session = await getSession(cookie);
 
   return session.get('organizationName');
+};
+
+export const setServerToasts = async (
+  request: Request,
+  toasts: Partial<Toasts>,
+) => {
+  const session = await getSession(request.headers.get('Cookie'));
+
+  session.flash('toasts', toasts);
+
+  return await commitSession(session);
+};
+
+export const getServerToasts = async (request: Request) => {
+  const session = await getSession(request.headers.get('Cookie'));
+
+  const toasts = session.get('toasts');
+
+  return { cookie: await commitSession(session), toasts };
 };

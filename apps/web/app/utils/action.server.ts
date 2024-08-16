@@ -7,7 +7,7 @@ import {
 import { SubmissionResult } from '@conform-to/react';
 
 import { routes } from '~/routes';
-import { logout } from '~/session.server';
+import { logout, setServerToasts } from '~/session.server';
 import {
   BadRequestError,
   NotFoundError,
@@ -78,12 +78,24 @@ export const actionHandler =
       } else if (e instanceof NotFoundError) {
         throw notFound();
       } else if (e instanceof UnknownAPIError) {
-        return json(toSubmissionError({ global: ['Unknown API error'] }), {
+        const errorMessage = 'Unknown API error';
+
+        return json(toSubmissionError({ global: [errorMessage] }), {
           status: 500,
+          headers: {
+            'Set-cookie': await setServerToasts(actionArgs.request, {
+              error: errorMessage,
+            }),
+          },
         });
       } else if (e instanceof BadRequestError) {
         return json(toSubmissionError({ global: [e.message] }), {
           status: 400,
+          headers: {
+            'Set-cookie': await setServerToasts(actionArgs.request, {
+              error: e.message,
+            }),
+          },
         });
       }
       console.error(e);
