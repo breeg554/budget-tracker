@@ -7,6 +7,7 @@ import { Link } from '~/link/Link';
 import { routes } from '~/routes';
 import { CustomDate } from '~/utils/CustomDate';
 
+import { OrganizationAvatar } from './components/OrganizationAvatar';
 import { TransactionItemList } from './components/TransactionItemList';
 import { TransactionModeTabs } from './components/TransactionModeTabs';
 import { loader } from './loader.server';
@@ -26,10 +27,14 @@ export const DashboardPage = () => {
 
   return (
     <>
-      <SectionWrapper className="mb-10 mt-8 flex gap-2 items-center justify-between">
-        <h1 className="text-3xl text-neutral-900">
-          <span className="block font-bold">{organizationName}</span>
-        </h1>
+      <SectionWrapper className="mt-4 mb-8 flex gap-2 items-center justify-between">
+        <p className="text-sm text-muted-foreground font-light">Welcome back</p>
+
+        <OrganizationAvatar name={organizationName} />
+      </SectionWrapper>
+
+      <SectionWrapper className="mb-6">
+        <h1 className="text-4xl">Manage your expenses</h1>
       </SectionWrapper>
 
       <TransactionModeTabs

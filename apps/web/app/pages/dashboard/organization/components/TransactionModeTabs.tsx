@@ -79,7 +79,7 @@ export const TransactionModeTabs = ({
       className={className}
       onValueChange={onValueChange}
     >
-      <SectionWrapper>
+      <SectionWrapper className="mb-2">
         <TabsList className="w-full">
           <TabsTrigger value="daily" className="w-full">
             Daily

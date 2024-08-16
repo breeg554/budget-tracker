@@ -1,5 +1,5 @@
 import type { MetaFunction } from '@remix-run/node';
-import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react';
+import { useLoaderData, useNavigate } from '@remix-run/react';
 
 import { SecretForm } from '~/dashboard/organization/profile/components/SecretForm';
 import { routes } from '~/routes';
@@ -8,7 +8,6 @@ import { OrganizationSelect } from './components/OrganizationSelect';
 import { loader } from './loader.server';
 
 export const ProfilePage = () => {
-  const fetcher = useFetcher();
   const navigate = useNavigate();
   const { organization, organizations } = useLoaderData<typeof loader>();
   const onChange = (id: string) => {
@@ -19,14 +18,8 @@ export const ProfilePage = () => {
     navigate(routes.profile.getPath(org.name));
   };
 
-  const onLogout = () => {
-    fetcher.submit(null, { action: routes.signOut.getPath(), method: 'post' });
-  };
-
   return (
     <div className="p-4">
-      <button onClick={onLogout}>Logout</button>
-
       <p>Organization</p>
       <OrganizationSelect
         value={organization.id}
