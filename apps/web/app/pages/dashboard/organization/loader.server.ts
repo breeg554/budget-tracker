@@ -16,14 +16,29 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   const startDate = new CustomDate(currentDate).startOfWeek().formatISO();
   const endDate = new CustomDate(currentDate).endOfWeek().formatISO();
 
-  const { data } = await transactionApi.getAll(params.organizationName, {
-    startDate: startDate,
-    endDate: endDate,
-  });
+  const weeklyTransactionsPromise = transactionApi.getAll(
+    params.organizationName,
+    {
+      startDate: startDate,
+      endDate: endDate,
+    },
+  );
+
+  const latestTransactionsPromise = transactionApi.getAll(
+    params.organizationName,
+    {
+      limit: 5,
+    },
+  );
+
+  const [weeklyTransactions, latestTransactions] = await Promise.all([
+    weeklyTransactionsPromise,
+    latestTransactionsPromise,
+  ]);
 
   return json({
-    transactions: data.data,
-    buildelSecret: process.env.BUILDEL_SECRET as string,
+    weeklyTransactions: weeklyTransactions.data.data,
+    latestTransactions: latestTransactions.data.data,
     organizationName: params.organizationName,
     startDate,
     endDate,

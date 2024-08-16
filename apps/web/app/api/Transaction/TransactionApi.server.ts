@@ -25,7 +25,7 @@ export class TransactionApi {
     );
   }
 
-  async getAll(organizationName: string, query?: GetAllQueryParams) {
+  async getAll(organizationName: string, query?: UrlQueryParams) {
     const params: Record<string, any> = {};
 
     if (query?.startDate && query?.endDate) {
@@ -42,9 +42,4 @@ export class TransactionApi {
       },
     );
   }
-}
-
-interface GetAllQueryParams extends UrlQueryParams {
-  startDate: string;
-  endDate: string;
 }

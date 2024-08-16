@@ -20,17 +20,22 @@ import { WeeklyTransactionChart } from './components/WeeklyTransactionChart';
 import { loader } from './loader.server';
 
 export const DashboardPage = () => {
-  const { transactions, organizationName, startDate, endDate } =
-    useLoaderData<typeof loader>();
+  const {
+    weeklyTransactions,
+    latestTransactions,
+    organizationName,
+    startDate,
+    endDate,
+  } = useLoaderData<typeof loader>();
   const fetcher = useFetcher();
   const onLogout = () => {
     fetcher.submit(null, { action: routes.signOut.getPath(), method: 'post' });
   };
 
-  const days = groupBy(transactions, ({ date }) =>
+  const days = groupBy(latestTransactions, ({ date }) =>
     new CustomDate(date).format('dd MMMM'),
   );
-  const sumPrice = transactions.reduce((acc, transaction) => {
+  const sumPrice = weeklyTransactions.reduce((acc, transaction) => {
     return acc + transaction.price;
   }, 0);
 
@@ -69,7 +74,7 @@ export const DashboardPage = () => {
           </CardHeader>
 
           <CardContent>
-            <WeeklyTransactionChart data={transactions} />
+            <WeeklyTransactionChart data={weeklyTransactions} />
           </CardContent>
         </Card>
       </SectionWrapper>
