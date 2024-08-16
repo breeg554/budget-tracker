@@ -12,6 +12,8 @@ import {
 } from '~/components/form/fields';
 import { SubmitButton } from '~/components/form/SubmitButton';
 import { ValidatedForm } from '~/components/form/ValidatedForm';
+import { AuthWrapper } from '~/pages/auth/components/AuthWrapper';
+import { FormWrapper } from '~/pages/auth/components/FormWrapper';
 import { schema } from '~/pages/auth/signin/schema';
 import { routes } from '~/routes';
 
@@ -29,30 +31,34 @@ export const SignUpPage = () => {
   });
 
   return (
-    <div>
-      <h1 className="text-xl text-pink-500 mb-10">Register</h1>
+    <AuthWrapper>
+      <h1 className="text-3xl font-semibold mb-2">Register for an account</h1>
+      <p className="mb-8 text-sm text-center">
+        Already have an account?{' '}
+        <Link to={routes.signIn.getPath()} className="font-bold">
+          Sign in
+        </Link>{' '}
+        to Your account now.
+      </p>
 
-      <ValidatedForm method="post" form={form}>
-        <Field name="email">
-          <FieldLabel>Email</FieldLabel>
-          <EmailField />
-          <FieldError />
-        </Field>
+      <FormWrapper>
+        <ValidatedForm method="post" form={form} className="w-full">
+          <Field name="email">
+            <FieldLabel>Email</FieldLabel>
+            <EmailField />
+            <FieldError />
+          </Field>
 
-        <Field name="password">
-          <FieldLabel>Password</FieldLabel>
-          <PasswordField />
-          <FieldError />
-        </Field>
+          <Field name="password">
+            <FieldLabel>Password</FieldLabel>
+            <PasswordField />
+            <FieldError />
+          </Field>
 
-        <SubmitButton>Sign up</SubmitButton>
-
-        <p>
-          Already has an account?{' '}
-          <Link to={routes.signIn.getPath()}>Go to sign in</Link>
-        </p>
-      </ValidatedForm>
-    </div>
+          <SubmitButton className="mt-4 w-full">Sign up</SubmitButton>
+        </ValidatedForm>
+      </FormWrapper>
+    </AuthWrapper>
   );
 };
 

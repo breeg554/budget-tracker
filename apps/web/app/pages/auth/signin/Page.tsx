@@ -13,6 +13,9 @@ import {
 import { SubmitButton } from '~/components/form/SubmitButton';
 import { ValidatedForm } from '~/components/form/ValidatedForm';
 import { GlobalError } from '~/form/GlobalError';
+import { SectionWrapper } from '~/layout/SectionWrapper';
+import { AuthWrapper } from '~/pages/auth/components/AuthWrapper';
+import { FormWrapper } from '~/pages/auth/components/FormWrapper';
 import { routes } from '~/routes';
 import { action } from '~/routes/signIn';
 
@@ -29,32 +32,36 @@ export const SignInPage = () => {
   });
 
   return (
-    <div>
-      <h1 className="text-xl text-pink-500 mb-10">Login</h1>
+    <AuthWrapper>
+      <h1 className="text-3xl font-semibold mb-2">Sign in to account</h1>
+      <p className="mb-8 text-sm text-center">
+        Don't have an account?{' '}
+        <Link to={routes.signUp.getPath()} className="font-bold">
+          Sign up
+        </Link>{' '}
+        for an account now.
+      </p>
 
-      <ValidatedForm method="post" form={form}>
-        <Field name="email">
-          <FieldLabel>Email</FieldLabel>
-          <EmailField />
-          <FieldError />
-        </Field>
+      <FormWrapper>
+        <ValidatedForm method="post" form={form} className="w-full">
+          <Field name="email">
+            <FieldLabel>Email</FieldLabel>
+            <EmailField />
+            <FieldError />
+          </Field>
 
-        <Field name="password">
-          <FieldLabel>Password</FieldLabel>
-          <PasswordField />
-          <FieldError />
-        </Field>
+          <Field name="password">
+            <FieldLabel>Password</FieldLabel>
+            <PasswordField />
+            <FieldError />
+          </Field>
 
-        <GlobalError />
+          <GlobalError />
 
-        <SubmitButton>Sign in</SubmitButton>
-
-        <p>
-          First time in PDG?{' '}
-          <Link to={routes.signUp.getPath()}>Go to sign up</Link>
-        </p>
-      </ValidatedForm>
-    </div>
+          <SubmitButton className="mt-4 w-full">Sign in</SubmitButton>
+        </ValidatedForm>
+      </FormWrapper>
+    </AuthWrapper>
   );
 };
 
