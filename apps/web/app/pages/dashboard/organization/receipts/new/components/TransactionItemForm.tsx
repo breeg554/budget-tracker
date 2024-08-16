@@ -71,9 +71,11 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         <FieldLabel>Category</FieldLabel>
         <SelectField
           options={categoryValues}
-          contentProps={{ position: 'popper' }}
+          contentProps={{ position: 'item-aligned' }}
           triggerProps={{
-            placeholder: 'eg. Dairy',
+            placeholder: (
+              <span className="text-muted-foreground">eg. Dairy</span>
+            ),
           }}
         />
         <FieldError />

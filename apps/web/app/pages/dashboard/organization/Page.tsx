@@ -78,7 +78,7 @@ export const DashboardPage = () => {
             {weeklyTransactions.length > 0 ? (
               <WeeklyTransactionChart data={weeklyTransactions} />
             ) : (
-              <EmptyMessage className="flex justify-center items-center min-h-[100px]">
+              <EmptyMessage className="flex justify-center items-center mb-2">
                 No transactions during current week.
               </EmptyMessage>
             )}
