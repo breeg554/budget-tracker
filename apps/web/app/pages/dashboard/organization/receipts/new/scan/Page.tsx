@@ -3,6 +3,7 @@ import type { MetaFunction } from '@remix-run/node';
 import { useNavigate, useOutletContext } from '@remix-run/react';
 
 import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
+import { Button } from '~/buttons/Button';
 import { routes } from '~/routes';
 import {
   DialogDrawer,
@@ -52,21 +53,23 @@ export const ScanPage = () => {
             onRetrieve={retrieve}
             triggers={({ takePhoto, uploadPhoto }) => (
               <div className="flex gap-2 items-center">
-                <button
+                <Button
+                  variant="outline"
                   type="button"
-                  className="cursor-pointer w-full p-4 border border-neutral-150 rounded"
+                  className="h-[58px] w-full"
                   onClick={uploadPhoto}
                 >
                   Upload a photo
-                </button>
+                </Button>
 
-                <button
+                <Button
                   type="button"
-                  className="w-full bg-muted p-4 text-muted-foreground border border-neutral-150 rounded"
+                  variant="outline"
+                  className="h-[58px] w-full"
                   onClick={takePhoto}
                 >
                   Take a photo
-                </button>
+                </Button>
               </div>
             )}
           />

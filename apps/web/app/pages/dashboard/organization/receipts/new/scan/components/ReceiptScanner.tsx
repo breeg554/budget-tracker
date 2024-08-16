@@ -74,7 +74,7 @@ function ScannerModal({ onScreenshot }: ScannerModalProps) {
       <Webcam className="h-screen w-auto mx-auto" ref={webcamRef}>
         <button
           type="button"
-          className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border-4 border-white w-12 h-12 hover:scale-110 transition"
+          className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-full border-4 border-white w-14 h-14 hover:scale-110 transition"
           onClick={capture}
         />
       </Webcam>
