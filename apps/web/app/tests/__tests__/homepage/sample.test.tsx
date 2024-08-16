@@ -8,7 +8,7 @@ describe(SignInPage.name, () => {
   test('should render sign in page', async () => {
     const page = HomePageObject.render({ initialEntries: ['/signIn'] });
 
-    expect(await page.findByText(/Login/i)).toBeTruthy();
+    expect(await page.findByText(/Sign in to account/i)).toBeTruthy();
   });
 });
 
