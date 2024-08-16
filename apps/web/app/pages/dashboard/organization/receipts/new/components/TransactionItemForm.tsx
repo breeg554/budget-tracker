@@ -12,9 +12,9 @@ import {
 } from '~/api/Transaction/transactionApi.types';
 import { Field } from '~/form/Field';
 import { FieldError, FieldLabel, TextField } from '~/form/fields';
+import { ComboboxField } from '~/form/fields/ComboboxField';
 import { HiddenField } from '~/form/fields/HiddenField';
 import { NumberField } from '~/form/fields/NumberField';
-import { SelectField } from '~/form/fields/SelectField';
 import { ValidatedForm } from '~/form/ValidatedForm';
 
 interface TransactionItemFormProps {
@@ -69,15 +69,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
 
       <Field formId={formId} name="category">
         <FieldLabel>Category</FieldLabel>
-        <SelectField
-          options={categoryValues}
-          contentProps={{ position: 'item-aligned' }}
-          triggerProps={{
-            placeholder: (
-              <span className="text-muted-foreground">eg. Dairy</span>
-            ),
-          }}
-        />
+        <ComboboxField options={categoryValues} />
         <FieldError />
       </Field>
 

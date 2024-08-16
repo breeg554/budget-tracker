@@ -25,6 +25,7 @@
     "@remix-run/react": "^2.8.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "cmdk": "1.0.0",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
     "date-fns": "^3.6.0",

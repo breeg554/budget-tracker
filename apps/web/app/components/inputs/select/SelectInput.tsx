@@ -8,10 +8,7 @@ import {
   SelectValue,
 } from '~/ui/select';
 
-export type SelectOption = {
-  value: string;
-  label: string;
-};
+import { SelectOption } from './select.types';
 
 export interface SelectInputProps extends React.ComponentProps<typeof Select> {
   options: SelectOption[];

@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { SelectInput, SelectOption } from '~/inputs/SelectInput';
+import { SelectOption } from '~/inputs/select/select.types';
+import { SelectInput } from '~/inputs/select/SelectInput';
 
 interface OrganizationSelectProps {
   options: SelectOption[];
