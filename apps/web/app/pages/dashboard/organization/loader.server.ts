@@ -11,18 +11,26 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   assert(params.organizationName);
 
   const transactionApi = new TransactionApi(fetch);
+
   const currentDate = new Date();
 
-  const startDate = new CustomDate(currentDate).startOfWeek().formatISO();
-  const endDate = new CustomDate(currentDate).endOfWeek().formatISO();
+  let startDate = new CustomDate(currentDate).startOfWeek().formatISO();
+  let endDate = new CustomDate(currentDate).endOfWeek().formatISO();
 
-  const weeklyTransactionsPromise = transactionApi.getAll(
-    params.organizationName,
-    {
-      startDate: startDate,
-      endDate: endDate,
-    },
-  );
+  const searchParams = new URL(request.url).searchParams;
+
+  const sDate = searchParams.get('startDate');
+  const eDate = searchParams.get('endDate');
+
+  if (sDate && eDate) {
+    startDate = new CustomDate(sDate).startOfDay().formatISO();
+    endDate = new CustomDate(eDate).endOfDay().formatISO();
+  }
+
+  const transactionsPromise = transactionApi.getAll(params.organizationName, {
+    startDate: startDate,
+    endDate: endDate,
+  });
 
   const latestTransactionsPromise = transactionApi.getAll(
     params.organizationName,
@@ -31,13 +39,13 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
     },
   );
 
-  const [weeklyTransactions, latestTransactions] = await Promise.all([
-    weeklyTransactionsPromise,
+  const [transactions, latestTransactions] = await Promise.all([
+    transactionsPromise,
     latestTransactionsPromise,
   ]);
 
   return json({
-    weeklyTransactions: weeklyTransactions.data.data,
+    transactions: transactions.data.data,
     latestTransactions: latestTransactions.data.data,
     organizationName: params.organizationName,
     startDate,

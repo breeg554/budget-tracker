@@ -1,3 +1,5 @@
+import { buildUrlWithParams, UrlQueryParams } from '~/utils/url';
+
 export const routes = {
   signIn: {
     pattern: '/signIn' as const,
@@ -21,7 +23,8 @@ export const routes = {
   },
   organization: {
     pattern: '/:organizationName' as const,
-    getPath: (organizationName: string) => `/${organizationName}` as const,
+    getPath: (organizationName: string, params?: UrlQueryParams) =>
+      buildUrlWithParams(`/${organizationName}`, params),
   },
   statistics: {
     pattern: '/:organizationName/statistics' as const,
