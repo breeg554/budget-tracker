@@ -4,6 +4,7 @@ import groupBy from 'lodash.groupby';
 
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { Link } from '~/link/Link';
+import { EmptyMessage } from '~/list/ItemList';
 import { routes } from '~/routes';
 import {
   Card,
@@ -74,7 +75,13 @@ export const DashboardPage = () => {
           </CardHeader>
 
           <CardContent>
-            <WeeklyTransactionChart data={weeklyTransactions} />
+            {weeklyTransactions.length > 0 ? (
+              <WeeklyTransactionChart data={weeklyTransactions} />
+            ) : (
+              <EmptyMessage className="flex justify-center items-center min-h-[100px]">
+                No transactions during current week.
+              </EmptyMessage>
+            )}
           </CardContent>
         </Card>
       </SectionWrapper>

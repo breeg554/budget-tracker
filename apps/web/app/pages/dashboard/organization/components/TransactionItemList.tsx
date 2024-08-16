@@ -48,9 +48,17 @@ interface TransactionItemListGroupProps {
 }
 
 function TransactionItemListGroup({ group }: TransactionItemListGroupProps) {
+  const groupTotal = group.items.reduce((acc, item) => {
+    return acc + item.price;
+  }, 0);
+
   return (
     <div>
-      <p className="text-muted-foreground text-sm pt-3 pb-2">{group.day}</p>
+      <div className="flex justify-between items-center gap-2">
+        <h4 className="text-muted-foreground text-sm pt-3 pb-2">{group.day}</h4>
+
+        <p className="text-xs">{new MonetaryValue(groupTotal).format()}PLN</p>
+      </div>
       <ItemList
         items={group.items}
         className="grid grid-cols-1 gap-2"
