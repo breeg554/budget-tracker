@@ -27,21 +27,27 @@ export const DashboardPage = () => {
 
   return (
     <>
-      <SectionWrapper className="mt-4 mb-8 flex gap-2 items-center justify-between">
-        <p className="text-sm text-muted-foreground font-light">Welcome back</p>
+      <div className="absolute z-0 left-0 right-0 top-0 bg-green-950 w-full h-[33vh] rounded-b-2xl" />
+
+      <SectionWrapper className="mt-4 mb-8 flex gap-2 items-center justify-between relative">
+        <p className="text-sm font-light text-primary-foreground">
+          Welcome back
+        </p>
 
         <OrganizationAvatar name={organizationName} />
       </SectionWrapper>
 
-      <SectionWrapper className="mb-6">
-        <h1 className="text-4xl">Manage your expenses</h1>
+      <SectionWrapper className="mb-6 relative">
+        <h1 className="text-4xl max-w-[300px] text-primary-foreground">
+          Manage your expenses
+        </h1>
       </SectionWrapper>
 
       <TransactionModeTabs
         transactions={transactions}
         startDate={startDate}
         endDate={endDate}
-        className="mb-8"
+        className="mb-8 relative"
       />
 
       <SectionWrapper>
