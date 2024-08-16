@@ -51,12 +51,12 @@ export const DashboardPage = () => {
       />
 
       <SectionWrapper>
-        <header className="flex gap-2 justify-between items-center">
-          <h2 className="text-base text-foreground">Recent transactions</h2>
+        <header className="flex gap-2 justify-between items-center mb-2">
+          <h2 className="text-sm text-muted-foreground">Recent transactions</h2>
 
           <Link
             to={routes.receipts.getPath(organizationName)}
-            className="text-muted-foreground"
+            className="text-muted-foreground text-sm"
           >
             See all
           </Link>

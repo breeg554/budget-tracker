@@ -55,13 +55,11 @@ function TransactionItemListGroup({ group }: TransactionItemListGroupProps) {
   return (
     <div>
       <div className="flex justify-between items-center gap-2">
-        <h4 className="text-muted-foreground text-sm pt-3 pb-2">{group.day}</h4>
-
-        <p className="text-xs">{new MonetaryValue(groupTotal).format()}PLN</p>
+        <h4 className="text-muted-foreground text-sm pt-4 pb-3">{group.day}</h4>
       </div>
       <ItemList
         items={group.items}
-        className="grid grid-cols-1 gap-2"
+        className="grid grid-cols-1 gap-3"
         renderItem={(item) => <TransactionItemListItem item={item} />}
       />
     </div>

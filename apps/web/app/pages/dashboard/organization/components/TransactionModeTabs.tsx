@@ -94,7 +94,7 @@ export const TransactionModeTabs = ({
       </SectionWrapper>
 
       <Card className="border-none shadow-none mb-8">
-        <CardHeader className="mb-6">
+        <CardHeader className="mb-6 pt-5">
           <CardDescription className="text-center">
             {headerDates()}
           </CardDescription>
