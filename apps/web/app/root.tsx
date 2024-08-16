@@ -11,6 +11,8 @@ import { PageProgress } from '~/progressBar/PageProgress';
 
 import './style.css';
 
+import { Toaster } from '~/toasts/Toaster';
+
 export const links: LinksFunction = () => [
   { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
   {
@@ -38,6 +40,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
+        <Toaster />
       </body>
     </html>
   );

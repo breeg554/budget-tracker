@@ -27,6 +27,7 @@ import { HiddenField } from '~/form/fields/HiddenField';
 import { SubmitButton } from '~/form/SubmitButton';
 import { ValidatedForm } from '~/form/ValidatedForm';
 import { PlusIcon } from '~/icons/PlusIcon';
+import { successToast } from '~/toasts/successToast';
 import {
   DialogDrawer,
   DialogDrawerBody,
@@ -72,6 +73,8 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       // @ts-ignore
       defaultValue: values,
     });
+
+    successToast('Product added');
   };
 
   const removeItem = (index: number) => {
@@ -79,6 +82,8 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       name: fields.items.name,
       index,
     });
+
+    successToast('Product removed');
   };
 
   const onEditItem = (updated: CreateTransactionItemDto, key?: string) => {
@@ -89,6 +94,8 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
         return item.value;
       }),
     });
+
+    successToast('Product updated');
   };
 
   return (
