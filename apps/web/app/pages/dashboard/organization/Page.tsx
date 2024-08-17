@@ -27,7 +27,7 @@ export const DashboardPage = () => {
 
   return (
     <>
-      <div className="absolute z-0 left-0 right-0 top-0 bg-green-950 w-full h-[33vh] rounded-b-2xl" />
+      <div className="absolute z-0 left-0 right-0 top-0 bg-green-950 w-full h-[300px] rounded-b-2xl" />
 
       <SectionWrapper className="mt-4 mb-8 flex gap-2 items-center justify-between relative">
         <p className="text-sm font-light text-primary-foreground">
