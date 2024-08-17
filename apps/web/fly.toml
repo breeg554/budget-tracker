@@ -18,6 +18,7 @@ primary_region = 'waw'
 
 [[vm]]
   size = 'shared-cpu-1x'
+  memory = 512
 
 [env]
   PAGE_URL = 'https://web-broken-lake-5252.fly.dev'
