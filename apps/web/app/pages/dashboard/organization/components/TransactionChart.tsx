@@ -64,7 +64,16 @@ export function TransactionChart({
     <ChartContainer config={chartConfig} className="h-[120px] w-full">
       <AreaChart accessibilityLayer data={chartData}>
         <CartesianGrid vertical={false} />
-        <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={8} />
+        <XAxis
+          dataKey="day"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={8}
+          tickFormatter={(value) => {
+            if (typeof window === 'undefined') return '';
+            return value;
+          }}
+        />
         <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
         <defs>
           <linearGradient id="fillDay" x1="0" y1="0" x2="0" y2="1">
@@ -79,7 +88,6 @@ export function TransactionChart({
           fill="url(#fillDay)"
           fillOpacity={0.4}
           stroke="var(--color-day)"
-          stackId="a"
         />
       </AreaChart>
     </ChartContainer>

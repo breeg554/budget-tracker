@@ -4,7 +4,9 @@ import {
   GetTransactionDto,
   GetTransactionItemDto,
 } from '~/api/Transaction/transactionApi.types';
+import { ClientDate } from '~/dates/ClientDate';
 import { EmptyMessage, ItemList } from '~/list/ItemList';
+import { Skeleton } from '~/ui/skeleton';
 import { MonetaryValue } from '~/utils/MonetaryValue';
 import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
@@ -48,14 +50,18 @@ interface TransactionItemListGroupProps {
 }
 
 function TransactionItemListGroup({ group }: TransactionItemListGroupProps) {
-  const groupTotal = group.items.reduce((acc, item) => {
-    return acc + item.price;
-  }, 0);
-
   return (
     <div>
       <div className="flex justify-between items-center gap-2">
-        <h4 className="text-muted-foreground text-sm pt-4 pb-3">{group.day}</h4>
+        <ClientDate
+          fallback={
+            <Skeleton className="w-[68px] h-[20px] rounded-2xl mt-4 mb-3" />
+          }
+        >
+          <h4 className="text-muted-foreground text-sm pt-4 pb-3">
+            {group.day}
+          </h4>
+        </ClientDate>
       </div>
       <ItemList
         items={group.items}

@@ -2,16 +2,11 @@ import React from 'react';
 import { useNavigate } from '@remix-run/react';
 
 import { GetTransactionDto } from '~/api/Transaction/transactionApi.types';
+import { ClientDate } from '~/dates/ClientDate';
 import { useOrganizationName } from '~/hooks/useOrganizationName';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { routes } from '~/routes';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '~/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '~/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/ui/tabs';
 import { CustomDate } from '~/utils/CustomDate';
 import { MonetaryValue } from '~/utils/MonetaryValue';
@@ -66,10 +61,12 @@ export const TransactionModeTabs = ({
     }
 
     return (
-      <>
-        {new CustomDate(startDate).format(format)} -{' '}
-        {new CustomDate(endDate).format(format)}
-      </>
+      <ClientDate>
+        <p className="text-sm text-muted-foreground text-center">
+          {new CustomDate(startDate).format(format)} -{' '}
+          {new CustomDate(endDate).format(format)}
+        </p>
+      </ClientDate>
     );
   };
 
@@ -95,9 +92,7 @@ export const TransactionModeTabs = ({
 
       <Card className="border-none shadow-none mb-8">
         <CardHeader className="mb-6 pt-5">
-          <CardDescription className="text-center">
-            {headerDates()}
-          </CardDescription>
+          {headerDates()}
           <CardTitle className="font-semibold text-center text-2xl">
             {new MonetaryValue(sumPrice).format()}
             <span className="text-sm">PLN</span>
@@ -107,6 +102,7 @@ export const TransactionModeTabs = ({
         <CardContent className="px-0">
           <TabsContent value="daily">
             <TransactionChart
+              key="daily"
               data={transactions}
               startDate={startDate}
               endDate={endDate}
@@ -114,6 +110,7 @@ export const TransactionModeTabs = ({
           </TabsContent>
           <TabsContent value="weekly">
             <TransactionChart
+              key="weekly"
               data={transactions}
               startDate={startDate}
               endDate={endDate}
@@ -121,6 +118,7 @@ export const TransactionModeTabs = ({
           </TabsContent>
           <TabsContent value="monthly">
             <TransactionChart
+              key="monthly"
               data={transactions}
               startDate={startDate}
               endDate={endDate}
