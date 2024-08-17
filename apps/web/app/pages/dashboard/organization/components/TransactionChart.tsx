@@ -61,7 +61,7 @@ export function TransactionChart({
   );
 
   return (
-    <ChartContainer config={chartConfig} className="h-[120px] w-full">
+    <ChartContainer config={chartConfig} className="h-[150px] w-full">
       <AreaChart accessibilityLayer data={chartData}>
         <CartesianGrid vertical={false} />
         <XAxis
