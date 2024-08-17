@@ -55,14 +55,14 @@ export function TransactionChart({
     () =>
       Object.entries(transactionsByDay).map(([day, total]) => ({
         day,
-        total: new MonetaryValue(total).format(),
+        total: Number(new MonetaryValue(total).format()),
       })),
     [transactionsByDay],
   );
 
   return (
     <ChartContainer config={chartConfig} className="h-[150px] w-full">
-      <AreaChart accessibilityLayer data={chartData}>
+      <AreaChart accessibilityLayer data={chartData} height={150}>
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey="day"
