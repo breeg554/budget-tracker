@@ -1,4 +1,5 @@
 import React from 'react';
+import startCase from 'lodash.startcase';
 import { Pie, PieChart, Sector } from 'recharts';
 import { PieSectorDataItem } from 'recharts/types/polar/Pie';
 
@@ -20,7 +21,9 @@ export const CategoriesPieChart = ({ data }: CategoriesPieChartProps) => {
     .splice(0, 5)
     .map((item, index) => ({
       ...item,
-      fill: `var(--color-${item.category})`,
+      category: startCase(item.category),
+      label: item.category,
+      fill: `var(--color-${startCase(item.category)})`,
     }));
 
   const chartConfig: Record<string, { label: string; color: string }> =
@@ -28,7 +31,7 @@ export const CategoriesPieChart = ({ data }: CategoriesPieChartProps) => {
       return {
         ...acc,
         [item.category]: {
-          label: item.category,
+          label: item.label,
           color: `hsl(var(--chart-${currentIndex + 1}))`,
         },
       };
