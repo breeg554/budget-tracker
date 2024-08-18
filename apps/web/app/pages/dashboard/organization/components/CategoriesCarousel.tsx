@@ -28,7 +28,7 @@ function CategoriesCarouselItem({ data }: CategoriesCarouselItemProps) {
   const itemCategory = new TransactionItemCategory(data);
   return (
     <article className="px-2 py-3 snap-center w-full min-w-[100px] max-w-[150px] border border-input rounded-xl">
-      <div className="text-lg w-8 h-8 bg-muted rounded-lg flex justify-center items-center mb-4">
+      <div className="text-base w-8 h-8 bg-muted rounded-lg flex justify-center items-center mb-4">
         {itemCategory.icon}
       </div>
 

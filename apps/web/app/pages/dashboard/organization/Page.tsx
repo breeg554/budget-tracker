@@ -3,15 +3,15 @@ import type { MetaFunction } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 import groupBy from 'lodash.groupby';
 
-import { CategoriesCarousel } from '~/dashboard/organization/components/CategoriesCarousel';
-import { TransactionChartCard } from '~/dashboard/organization/components/TransactionChartCard';
 import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { Link } from '~/link/Link';
 import { routes } from '~/routes';
 import { CustomDate } from '~/utils/CustomDate';
 
+import { CategoriesCarousel } from './components/CategoriesCarousel';
 import { OrganizationAvatar } from './components/OrganizationAvatar';
+import { TransactionChartCard } from './components/TransactionChartCard';
 import { TransactionItemList } from './components/TransactionItemList';
 import { TransactionModeTabs } from './components/TransactionModeTabs';
 import { loader } from './loader.server';
@@ -70,7 +70,7 @@ export const DashboardPage = () => {
       />
 
       <TransactionChartCard
-        className="mb-8"
+        className="mb-4"
         startDate={startDate}
         endDate={endDate}
         data={transactions}

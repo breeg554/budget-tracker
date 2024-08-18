@@ -31,6 +31,10 @@ export class TransactionItemCategory {
         return '👕';
       case 'sports & activities':
         return '💪';
+      case 'energy drinks':
+        return '🔋';
+      case 'others':
+        return '❓';
       default:
         return '';
     }
