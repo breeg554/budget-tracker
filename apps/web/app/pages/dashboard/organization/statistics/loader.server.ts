@@ -12,15 +12,32 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
 
   const statisticsApi = new StatisticsApi(fetch);
 
+  const currentDate = new Date();
+
+  let startDate = new CustomDate(currentDate).startOfWeek().formatISO();
+  let endDate = new CustomDate(currentDate).endOfWeek().formatISO();
+
+  const searchParams = new URL(request.url).searchParams;
+
+  const sDate = searchParams.get('startDate');
+  const eDate = searchParams.get('endDate');
+
+  if (sDate && eDate) {
+    startDate = new CustomDate(sDate).startOfDay().formatISO();
+    endDate = new CustomDate(eDate).endOfDay().formatISO();
+  }
+
   const byCategories = await statisticsApi.getStatisticsByCategories(
     params.organizationName,
     {
-      startDate: new CustomDate(new Date()).startOfMonth().formatISO(),
-      endDate: new CustomDate(new Date()).endOfMonth().formatISO(),
+      startDate,
+      endDate,
     },
   );
 
   return json({
     statsByCategories: byCategories.data,
+    startDate,
+    endDate,
   });
 });

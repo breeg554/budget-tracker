@@ -7,7 +7,7 @@ import { useOrganizationName } from '~/hooks/useOrganizationName';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { routes } from '~/routes';
 import { Card, CardContent, CardHeader, CardTitle } from '~/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/ui/tabs';
+import { Tabs, TabsList, TabsTrigger } from '~/ui/tabs';
 import { CustomDate } from '~/utils/CustomDate';
 import { MonetaryValue } from '~/utils/MonetaryValue';
 
@@ -70,9 +70,19 @@ export const TransactionModeTabs = ({
     );
   };
 
+  const getValue = () => {
+    const difference = Math.abs(
+      new CustomDate(startDate).differenceInDays(endDate),
+    );
+
+    if (difference <= 1) return 'daily';
+    if (difference <= 7) return 'weekly';
+    return 'monthly';
+  };
+
   return (
     <Tabs
-      defaultValue="weekly"
+      value={getValue()}
       className={className}
       onValueChange={onValueChange}
     >
@@ -100,45 +110,13 @@ export const TransactionModeTabs = ({
         </CardHeader>
 
         <CardContent className="px-0">
-          <TabsContent value="daily">
-            <TransactionChart
-              key="daily"
-              data={transactions}
-              startDate={startDate}
-              endDate={endDate}
-            />
-          </TabsContent>
-          <TabsContent value="weekly">
-            <TransactionChart
-              key="weekly"
-              data={transactions}
-              startDate={startDate}
-              endDate={endDate}
-            />
-          </TabsContent>
-          <TabsContent value="monthly">
-            <TransactionChart
-              key="monthly"
-              data={transactions}
-              startDate={startDate}
-              endDate={endDate}
-            />
-          </TabsContent>
-
-          {/*{weeklyTransactions.length > 0 ? (*/}
-          {/*  <WeeklyTransactionChart data={weeklyTransactions} />*/}
-          {/*) : (*/}
-          {/*  <EmptyMessage className="flex justify-center items-center mb-2">*/}
-          {/*    No transactions during current week.*/}
-          {/*  </EmptyMessage>*/}
-          {/*)}*/}
+          <TransactionChart
+            data={transactions}
+            startDate={startDate}
+            endDate={endDate}
+          />
         </CardContent>
       </Card>
-
-      {/*<TabsContent value="account">*/}
-      {/*  Make changes to your account here.*/}
-      {/*</TabsContent>*/}
-      {/*<TabsContent value="password">Change your password here.</TabsContent>*/}
     </Tabs>
   );
 };

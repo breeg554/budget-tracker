@@ -28,8 +28,11 @@ export const routes = {
   },
   statistics: {
     pattern: '/:organizationName/statistics' as const,
-    getPath: (organizationName: string) =>
-      `${routes.organization.getPath(organizationName)}/statistics` as const,
+    getPath: (organizationName: string, params?: UrlQueryParams) =>
+      buildUrlWithParams(
+        `${routes.organization.getPath(organizationName)}/statistics`,
+        params,
+      ),
   },
   profile: {
     pattern: '/:organizationName/profile' as const,
