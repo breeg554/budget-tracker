@@ -16,7 +16,7 @@ import { Secret } from '~/entities/secret/secret.entity';
     SecretModule,
   ],
   controllers: [OrganizationController],
-  providers: [OrganizationService, OrganizationService],
+  providers: [OrganizationService],
   exports: [TypeOrmModule, OrganizationService],
 })
 export class OrganizationModule {}

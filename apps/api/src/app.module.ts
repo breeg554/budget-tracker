@@ -16,6 +16,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { SecretModule } from '~/modules/organization/secret/secret.module';
 import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
+import { StatisticsModule } from '~/modules/organization/statistics/statistics.module';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
     AuthModule,
     OrganizationModule,
     TransactionModule,
+    StatisticsModule,
     SecretModule,
     ReceiptModule,
   ],

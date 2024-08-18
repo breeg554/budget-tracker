@@ -2,6 +2,7 @@ import type { MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import groupBy from 'lodash.groupby';
 
+import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { Link } from '~/link/Link';
 import { routes } from '~/routes';
@@ -27,9 +28,9 @@ export const DashboardPage = () => {
 
   return (
     <>
-      <div className="absolute z-0 left-0 right-0 top-0 bg-green-950 w-full h-[300px] rounded-b-2xl" />
+      <PageBackground />
 
-      <SectionWrapper className="mt-4 mb-8 flex gap-2 items-center justify-between relative">
+      <SectionWrapper className="mt-4 mb-8 flex gap-2 items-center justify-between">
         <p className="text-sm font-light text-primary-foreground">
           Welcome back
         </p>
@@ -37,7 +38,7 @@ export const DashboardPage = () => {
         <OrganizationAvatar name={organizationName} />
       </SectionWrapper>
 
-      <SectionWrapper className="mb-6 relative">
+      <SectionWrapper className="mb-6">
         <h1 className="text-4xl max-w-[300px] text-primary-foreground">
           Manage your expenses
         </h1>

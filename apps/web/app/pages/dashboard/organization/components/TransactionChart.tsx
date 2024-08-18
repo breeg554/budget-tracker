@@ -120,6 +120,6 @@ function getDefaultsForFormat(startDate: string, endDate: string) {
 
 function getFormatForDifference(dayDifference: number) {
   if (dayDifference <= 1) return 'HH:mm';
-  if (dayDifference <= 7) return 'EEEE';
+  if (dayDifference <= 7) return 'EEE';
   return 'dd MMM';
 }
