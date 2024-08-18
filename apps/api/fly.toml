@@ -22,6 +22,5 @@ swap_size_mb = 256
   memory = 512
 
 [env]
-  REDIS_HOST = "redis-holy-firefly-3100.fly.dev
-  REDIS_PORT = "6379"
-  REDIS_TTL = "60000"
+  REDIS_URL = 'redis://fly-redis-purple-darkness-8493.internal:6379'
+  REDIS_TTL = '60000'

@@ -37,13 +37,17 @@ import { redisStore } from 'cache-manager-redis-yet';
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        const redis = configService.get('redis');
+
+        return {
+          store: redisStore,
+          url: redis.url,
+          ttl: redis.ttl,
+          password: redis.password,
+        };
+      },
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        store: redisStore,
-        host: configService.get('redis.host'),
-        port: configService.get('redis.port'),
-        ttl: configService.get('redis.ttl'),
-      }),
     }),
     LoggerModule.forRoot({
       pinoHttp: {
