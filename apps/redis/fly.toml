@@ -1,0 +1,21 @@
+# fly.toml app configuration file generated for redis-holy-firefly-3100 on 2024-08-18T14:53:13+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'redis-holy-firefly-3100'
+primary_region = 'waw'
+
+[build]
+  image = 'flyio/redis:6.2.6'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+[[vm]]
+  size = 'shared-cpu-1x'
