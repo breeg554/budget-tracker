@@ -4,7 +4,7 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { LoggerModule } from 'nestjs-pino';
 
-import { DBConfig } from '~/config';
+import { DBConfig, RedisConfig } from '~/config';
 import { AuthModule } from '~/modules/auth/auth.module';
 import { JwtGuard } from '~/modules/auth/jwt.guard';
 import { JwtStrategy } from '~/modules/auth/jwt.strategy';
@@ -17,19 +17,33 @@ import { AppService } from './app.service';
 import { SecretModule } from '~/modules/organization/secret/secret.module';
 import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
 import { StatisticsModule } from '~/modules/organization/statistics/statistics.module';
+import { CacheModule } from '@nestjs/cache-manager';
+
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: [DBConfig],
+      load: [DBConfig, RedisConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) =>
         configService.get('database'),
       inject: [ConfigService],
+    }),
+    CacheModule.registerAsync({
+      isGlobal: true,
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        store: redisStore,
+        host: configService.get('redis.host'),
+        port: configService.get('redis.port'),
+        ttl: configService.get('redis.ttl'),
+      }),
     }),
     LoggerModule.forRoot({
       pinoHttp: {
