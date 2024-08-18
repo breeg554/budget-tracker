@@ -66,7 +66,7 @@ export const DashboardPage = () => {
         onValueChange={onTabChange}
         startDate={startDate}
         endDate={endDate}
-        className="mb-8 relative"
+        className="mb-4 relative"
       />
 
       <TransactionChartCard
@@ -76,7 +76,7 @@ export const DashboardPage = () => {
         data={transactions}
       />
 
-      <SectionWrapper className="pl-4 pr-0 mb-6">
+      <SectionWrapper className="pl-4 pr-0 mb-3">
         <header className="flex gap-2 justify-between items-center mb-3 pr-4">
           <h2 className="text-sm text-muted-foreground">Categories</h2>
 

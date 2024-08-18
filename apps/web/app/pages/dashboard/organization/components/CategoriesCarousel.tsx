@@ -14,7 +14,7 @@ export const CategoriesCarousel = ({ data }: CategoriesCarouselProps) => {
   return (
     <ItemList
       itemClassName="pr-4"
-      className="flex items-center overflow-x-auto snap-x"
+      className="flex items-center overflow-x-auto snap-x pb-3"
       items={data}
       renderItem={(item) => <CategoriesCarouselItem data={item} />}
     />
