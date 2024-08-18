@@ -1,7 +1,10 @@
+import React from 'react';
 import type { MetaFunction } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, useNavigate } from '@remix-run/react';
 import groupBy from 'lodash.groupby';
 
+import { CategoriesCarousel } from '~/dashboard/organization/components/CategoriesCarousel';
+import { TransactionChartCard } from '~/dashboard/organization/components/TransactionChartCard';
 import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { Link } from '~/link/Link';
@@ -14,9 +17,12 @@ import { TransactionModeTabs } from './components/TransactionModeTabs';
 import { loader } from './loader.server';
 
 export const DashboardPage = () => {
+  const navigate = useNavigate();
+
   const {
     transactions,
     latestTransactions,
+    statsByCategories,
     organizationName,
     startDate,
     endDate,
@@ -25,6 +31,18 @@ export const DashboardPage = () => {
   const days = groupBy(latestTransactions, ({ date }) =>
     new CustomDate(date).format('dd MMMM'),
   );
+
+  const onTabChange = ({
+    startDate,
+    endDate,
+  }: {
+    startDate: string;
+    endDate: string;
+  }) => {
+    navigate(
+      routes.organization.getPath(organizationName, { startDate, endDate }),
+    );
+  };
 
   return (
     <>
@@ -45,14 +63,36 @@ export const DashboardPage = () => {
       </SectionWrapper>
 
       <TransactionModeTabs
-        transactions={transactions}
+        onValueChange={onTabChange}
         startDate={startDate}
         endDate={endDate}
         className="mb-8 relative"
       />
 
+      <TransactionChartCard
+        className="mb-8"
+        startDate={startDate}
+        endDate={endDate}
+        data={transactions}
+      />
+
+      <SectionWrapper className="pl-4 pr-0 mb-6">
+        <header className="flex gap-2 justify-between items-center mb-3 pr-4">
+          <h2 className="text-sm text-muted-foreground">Categories</h2>
+
+          <Link
+            to={routes.statistics.getPath(organizationName)}
+            className="text-muted-foreground text-sm"
+          >
+            See all
+          </Link>
+        </header>
+
+        <CategoriesCarousel data={statsByCategories.slice(0, 8)} />
+      </SectionWrapper>
+
       <SectionWrapper>
-        <header className="flex gap-2 justify-between items-center mb-2">
+        <header className="flex gap-2 justify-between items-center">
           <h2 className="text-sm text-muted-foreground">Recent transactions</h2>
 
           <Link

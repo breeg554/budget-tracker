@@ -18,7 +18,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-interface TransactionChartProps {
+export interface TransactionChartProps {
   data: GetTransactionDto[];
   startDate: string;
   endDate: string;

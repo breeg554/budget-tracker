@@ -36,9 +36,11 @@ export class StatisticsService {
         startDate: query.startDate,
         endDate: query.endDate,
       })
-      .select('category.name', 'category')
+      .select('category.name', 'name')
+      .addSelect('category.id', 'id')
       .addSelect('SUM(items.price * items.quantity)', 'total')
       .groupBy('category.name')
+      .addGroupBy('category.id')
       .getRawMany();
   }
 }

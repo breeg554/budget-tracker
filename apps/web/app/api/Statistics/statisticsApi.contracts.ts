@@ -1,7 +1,8 @@
 import { z } from 'zod';
 
 export const getStatisticsByCategorySchema = z.object({
-  category: z.string(),
+  name: z.string(),
+  id: z.string(),
   total: z.union([
     z.number(),
     z.string().transform((value) => parseFloat(value)),
