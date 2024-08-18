@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -14,6 +15,7 @@ import { TransactionItem } from '~/entities/transaction/transactionItem.entity';
 import { User } from '~/entities/user/user.entity';
 
 @Entity()
+@Index(['organization', 'date'])
 export class Transaction {
   @PrimaryGeneratedColumn('uuid')
   id: string;
