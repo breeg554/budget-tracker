@@ -1,4 +1,5 @@
 import React from 'react';
+import kebabCase from 'lodash.kebabcase';
 import startCase from 'lodash.startcase';
 import { Pie, PieChart, Sector } from 'recharts';
 import { PieSectorDataItem } from 'recharts/types/polar/Pie';
@@ -21,9 +22,9 @@ export const CategoriesPieChart = ({ data }: CategoriesPieChartProps) => {
     .splice(0, 5)
     .map((item, index) => ({
       ...item,
-      category: startCase(item.category),
-      label: item.category,
-      fill: `var(--color-${startCase(item.category)})`,
+      category: kebabCase(item.category),
+      label: startCase(item.category),
+      fill: `var(--color-${kebabCase(item.category)})`,
     }));
 
   const chartConfig: Record<string, { label: string; color: string }> =
