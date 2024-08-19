@@ -36,15 +36,15 @@ export class CustomDate {
   }
 
   format(format: string): string {
-    return fnsFormat(this.date, format);
+    return fnsFormat(this.toLocaleDate(), format);
   }
 
   formatISO(): string {
     return new Date(this.date).toISOString();
   }
 
-  formatLocale(): string {
-    return new Date(this.date).toLocaleString();
+  toLocaleDate(): Date {
+    return new Date(this.date);
   }
 
   formatISO9075(): string {
