@@ -57,18 +57,10 @@ export class CustomDate {
   }
 
   addWeeks(weeks: number): CustomDate {
-    console.log('WEEKS', weeks, this.date, addWeeks(this.date, weeks));
     return new CustomDate(addWeeks(this.date, weeks));
   }
 
   addMonths(months: number): CustomDate {
-    console.log(
-      'MONTHS',
-      months,
-      this.date,
-      addMonths(this.date, months),
-      new CustomDate(addMonths(this.date, months)).formatISO(),
-    );
     return new CustomDate(addMonths(this.date, months));
   }
 

@@ -30,11 +30,6 @@ export const TransactionModeTabs = ({
         .formatISO();
     }
 
-    console.log(
-      'CHANGE',
-      startDate,
-      new CustomDate(new Date()).startOfMonth().formatISO(),
-    );
     onValueChange?.({ startDate, endDate });
   };
 

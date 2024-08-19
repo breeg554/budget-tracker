@@ -15,7 +15,7 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   const statisticsApi = new StatisticsApi(fetch);
 
   const { startDate, endDate } = getPaginationFromUrl(request.url);
-  console.log(startDate, endDate);
+
   const transactionsPromise = transactionApi.getAll(params.organizationName, {
     startDate: startDate,
     endDate: endDate,
