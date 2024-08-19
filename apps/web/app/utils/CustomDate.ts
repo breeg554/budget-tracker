@@ -8,7 +8,7 @@ import {
   endOfISOWeek,
   endOfMonth,
   format as fnsFormat,
-  formatISO as fnsFormatISO,
+  formatISO9075,
   getDaysInMonth,
   isValid,
   parseISO,
@@ -40,7 +40,15 @@ export class CustomDate {
   }
 
   formatISO(): string {
-    return fnsFormatISO(this.date);
+    return new Date(this.date).toISOString();
+  }
+
+  formatLocale(): string {
+    return new Date(this.date).toLocaleString();
+  }
+
+  formatISO9075(): string {
+    return formatISO9075(this.date);
   }
 
   addDays(days: number): CustomDate {

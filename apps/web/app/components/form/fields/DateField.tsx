@@ -15,9 +15,7 @@ export const DateField: React.FC<DateInputProps> = (props) => {
     <DateInput
       selected={field.value ? new Date(field.value) : undefined}
       onSelect={(date) => {
-        const newDate = date
-          ? new CustomDate(date).setHours(12).formatISO()
-          : '';
+        const newDate = date ? new CustomDate(date).formatISO() : '';
 
         return fieldControl.change(newDate);
       }}
