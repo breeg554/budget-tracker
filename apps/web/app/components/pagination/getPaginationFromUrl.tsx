@@ -16,11 +16,11 @@ export const getPaginationFromUrl = (url: string) => {
     .formatISO();
 
   if (urlStartDate && CustomDate.isStringValidDate(urlStartDate)) {
-    startDate = new CustomDate(urlStartDate).startOfDay().formatISO();
+    startDate = new CustomDate(urlStartDate).formatISO();
   }
 
   if (urlEndDate && CustomDate.isStringValidDate(urlEndDate)) {
-    endDate = new CustomDate(urlEndDate).endOfDay().formatISO();
+    endDate = new CustomDate(urlEndDate).formatISO();
   }
 
   return {

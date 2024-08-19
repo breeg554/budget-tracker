@@ -77,7 +77,7 @@ export const TransactionChartCard = ({
     const difference = Math.abs(
       new CustomDate(startDate).differenceInDays(endDate),
     );
-    console.log(startDate, endDate, difference);
+    console.log('COMPOENNT ', startDate, endDate, difference);
     let format = 'dd MMM yyyy';
 
     if (difference <= 1) {
