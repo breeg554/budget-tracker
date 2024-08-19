@@ -16,6 +16,9 @@ import { ComboboxField } from '~/form/fields/ComboboxField';
 import { HiddenField } from '~/form/fields/HiddenField';
 import { NumberField } from '~/form/fields/NumberField';
 import { ValidatedForm } from '~/form/ValidatedForm';
+import { CheckIcon } from '~/icons/CheckIcon';
+import { cn } from '~/utils/cn';
+import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
 interface TransactionItemFormProps {
   onSubmit?: (values: CreateTransactionItemDto) => void;
@@ -69,7 +72,20 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
 
       <Field formId={formId} name="category">
         <FieldLabel>Category</FieldLabel>
-        <ComboboxField options={categoryValues} />
+        <ComboboxField
+          options={categoryValues}
+          renderOption={(option, isSelected) => (
+            <CategoryOption
+              isSelected={isSelected}
+              data={
+                new TransactionItemCategory({
+                  id: option.value,
+                  name: option.label,
+                })
+              }
+            />
+          )}
+        />
         <FieldError />
       </Field>
 
@@ -87,3 +103,24 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
     </ValidatedForm>
   );
 };
+
+function CategoryOption({
+  data,
+  isSelected,
+}: {
+  data: TransactionItemCategory;
+  isSelected: boolean;
+}) {
+  return (
+    <div className="w-full flex items-center gap-2 justify-between">
+      <div className="flex items-center gap-2">
+        {data.icon}
+        <p>{data.name}</p>
+      </div>
+
+      <CheckIcon
+        className={cn('h-4 w-4', isSelected ? 'opacity-100' : 'opacity-0')}
+      />
+    </div>
+  );
+}

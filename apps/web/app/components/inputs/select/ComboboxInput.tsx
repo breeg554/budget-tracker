@@ -1,5 +1,5 @@
 import React, { ReactNode, useMemo, useState } from 'react';
-import { useBoolean, useMediaQuery } from 'usehooks-ts';
+import { useBoolean } from 'usehooks-ts';
 
 import { Button, ButtonProps } from '~/buttons/Button';
 import {
@@ -15,13 +15,15 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '~/components/ui/popover';
+import { useBreakpoints } from '~/hooks/useBreakpoints';
 import { CheckIcon } from '~/icons/CheckIcon';
 import { ChevronsUpDownIcon } from '~/icons/ChevronsUpDownIcon';
 import { SelectOption } from '~/inputs/select/select.types';
 import { Drawer, DrawerContent, DrawerTrigger } from '~/ui/drawer';
 import { cn } from '~/utils/cn';
 
-export interface ComboboxInputProps<T> {
+export interface ComboboxInputProps<T>
+  extends Pick<OptionsListProps<T>, 'renderOption'> {
   options: SelectOption<T>[];
   placeholder?: ReactNode;
   defaultValue?: string;
@@ -35,9 +37,10 @@ export const ComboboxInput = <T,>({
   options,
   placeholder = 'Select...',
   defaultValue,
+  renderOption,
   ...rest
 }: ComboboxInputProps<T>) => {
-  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const { isDesktop } = useBreakpoints();
   const { value: open, setValue: setOpen } = useBoolean(false);
   const [value, setValue] = useState(defaultValue ?? '');
 
@@ -71,6 +74,7 @@ export const ComboboxInput = <T,>({
               value={finalValue}
               options={options}
               onSelect={onSelect}
+              renderOption={renderOption}
             />
           </div>
         </DrawerContent>
@@ -86,7 +90,12 @@ export const ComboboxInput = <T,>({
         </ComboboxTrigger>
       </PopoverTrigger>
       <PopoverContent className="p-0" align="start">
-        <OptionsList value={finalValue} options={options} onSelect={onSelect} />
+        <OptionsList
+          value={finalValue}
+          options={options}
+          onSelect={onSelect}
+          renderOption={renderOption}
+        />
       </PopoverContent>
     </Popover>
   );
@@ -126,9 +135,15 @@ interface OptionsListProps<T> {
   options: ComboboxInputProps<T>['options'];
   value: string;
   onSelect: (value: string) => void;
+  renderOption?: (option: SelectOption<T>, isSelected: boolean) => ReactNode;
 }
 
-function OptionsList<T>({ value, options, onSelect }: OptionsListProps<T>) {
+function OptionsList<T>({
+  value,
+  options,
+  onSelect,
+  renderOption,
+}: OptionsListProps<T>) {
   return (
     <Command
       filter={(value, search) => {
@@ -151,18 +166,38 @@ function OptionsList<T>({ value, options, onSelect }: OptionsListProps<T>) {
               value={option.value}
               onSelect={onSelect}
             >
-              <CheckIcon
-                className={cn(
-                  'mr-2 h-4 w-4',
-                  value === option.value ? 'opacity-100' : 'opacity-0',
-                )}
-              />
-              {option.label}
+              {renderOption ? (
+                renderOption(option, option.value === value)
+              ) : (
+                <ComboboxOption
+                  value={option.value}
+                  label={option.label}
+                  isSelected={option.value === value}
+                />
+              )}
             </CommandItem>
           ))}
         </CommandGroup>
       </CommandList>
     </Command>
+  );
+}
+
+export type ComboboxOptionProps<T> = SelectOption<T> & {
+  isSelected: boolean;
+};
+
+export function ComboboxOption<T>({
+  label,
+  isSelected,
+}: ComboboxOptionProps<T>) {
+  return (
+    <>
+      <CheckIcon
+        className={cn('mr-2 h-4 w-4', isSelected ? 'opacity-100' : 'opacity-0')}
+      />
+      {label}
+    </>
   );
 }
 

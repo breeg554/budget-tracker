@@ -76,20 +76,22 @@ export const DashboardPage = () => {
         data={transactions}
       />
 
-      <SectionWrapper className="pl-4 pr-0 mb-3">
-        <header className="flex gap-2 justify-between items-center mb-3 pr-4">
-          <h2 className="text-sm text-muted-foreground">Categories</h2>
+      {statsByCategories.length > 0 && (
+        <SectionWrapper className="pl-4 pr-0 mb-3">
+          <header className="flex gap-2 justify-between items-center mb-3 pr-4">
+            <h2 className="text-sm text-muted-foreground">Categories</h2>
 
-          <Link
-            to={routes.statistics.getPath(organizationName)}
-            className="text-muted-foreground text-sm"
-          >
-            See all
-          </Link>
-        </header>
+            <Link
+              to={routes.statistics.getPath(organizationName)}
+              className="text-muted-foreground text-sm"
+            >
+              See all
+            </Link>
+          </header>
 
-        <CategoriesCarousel data={statsByCategories.slice(0, 8)} />
-      </SectionWrapper>
+          <CategoriesCarousel data={statsByCategories.slice(0, 8)} />
+        </SectionWrapper>
+      )}
 
       <SectionWrapper>
         <header className="flex gap-2 justify-between items-center">
