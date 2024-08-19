@@ -11,9 +11,8 @@ export const getPaginationFromUrl = (url: string) => {
   let startDate = new CustomDate(new Date().toISOString())
     .startOfWeek()
     .formatISO();
-  let endDate = new CustomDate(new Date().toISOString())
-    .endOfWeek()
-    .formatISO();
+
+  let endDate = new CustomDate(startDate).endOfWeek().formatISO();
 
   if (urlStartDate && CustomDate.isStringValidDate(urlStartDate)) {
     startDate = new CustomDate(urlStartDate).formatISO();
