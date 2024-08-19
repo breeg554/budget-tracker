@@ -32,10 +32,10 @@ export const TransactionChartCard = ({
     } else if (difference <= 7) {
       onDateChange({
         startDate: new CustomDate(startDate)
-          .addDays(7)
+          .addWeeks(1)
           .startOfWeek()
           .formatISO(),
-        endDate: new CustomDate(endDate).addDays(7).endOfWeek().formatISO(),
+        endDate: new CustomDate(endDate).addWeeks(1).endOfWeek().formatISO(),
       });
     } else {
       onDateChange({
@@ -57,10 +57,10 @@ export const TransactionChartCard = ({
     } else if (difference <= 7) {
       onDateChange({
         startDate: new CustomDate(startDate)
-          .addDays(-7)
+          .addWeeks(-1)
           .startOfWeek()
           .formatISO(),
-        endDate: new CustomDate(endDate).addDays(-7).endOfWeek().formatISO(),
+        endDate: new CustomDate(endDate).addWeeks(-1).endOfWeek().formatISO(),
       });
     } else {
       onDateChange({

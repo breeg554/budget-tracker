@@ -1,6 +1,7 @@
 import {
   addDays,
   addMonths,
+  addWeeks,
   differenceInDays,
   eachDayOfInterval,
   eachHourOfInterval,
@@ -55,8 +56,20 @@ export class CustomDate {
     return new CustomDate(addDays(this.date, days));
   }
 
-  addMonths(days: number): CustomDate {
-    return new CustomDate(addMonths(this.date, days));
+  addWeeks(weeks: number): CustomDate {
+    console.log('WEEKS', weeks, this.date, addWeeks(this.date, weeks));
+    return new CustomDate(addWeeks(this.date, weeks));
+  }
+
+  addMonths(months: number): CustomDate {
+    console.log(
+      'MONTHS',
+      months,
+      this.date,
+      addMonths(this.date, months),
+      new CustomDate(addMonths(this.date, months)).formatISO(),
+    );
+    return new CustomDate(addMonths(this.date, months));
   }
 
   startOfWeek(): CustomDate {
