@@ -26,7 +26,7 @@ export class TransactionApi {
   }
 
   async getAll(organizationName: string, query?: UrlQueryParams) {
-    const params: Record<string, any> = {};
+    const params: Record<string, any> = { ...query };
 
     if (query?.startDate && query?.endDate) {
       params['filter.date'] = `$btw:${query.startDate},${query.endDate}`;

@@ -10,6 +10,7 @@ import {
   formatISO as fnsFormatISO,
   getDaysInMonth,
   isValid,
+  setHours,
   startOfDay,
   startOfISOWeek,
   startOfMonth,
@@ -74,5 +75,9 @@ export class CustomDate {
 
   eachHourOfInterval(date: DateType): Date[] {
     return eachHourOfInterval({ start: this.date, end: date });
+  }
+
+  setHours(hours: number): CustomDate {
+    return new CustomDate(setHours(this.date, hours));
   }
 }
