@@ -22,9 +22,19 @@ export const TransactionModeTabs = ({
     let endDate = new CustomDate(new Date()).endOfWeek().formatISO();
 
     if (value === 'monthly') {
-      startDate = new CustomDate(new Date()).startOfMonth().formatISO();
-      endDate = new CustomDate(new Date()).endOfMonth().formatISO();
+      startDate = new CustomDate(new Date().toISOString())
+        .startOfMonth()
+        .formatISO();
+      endDate = new CustomDate(new Date().toISOString())
+        .endOfMonth()
+        .formatISO();
     }
+
+    console.log(
+      'CHANGE',
+      startDate,
+      new CustomDate(new Date()).startOfMonth().formatISO(),
+    );
     onValueChange?.({ startDate, endDate });
   };
 
