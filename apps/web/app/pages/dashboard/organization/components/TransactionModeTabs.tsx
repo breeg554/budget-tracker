@@ -21,10 +21,7 @@ export const TransactionModeTabs = ({
     let startDate = new CustomDate(new Date()).startOfWeek().formatISO();
     let endDate = new CustomDate(new Date()).endOfWeek().formatISO();
 
-    if (value === 'daily') {
-      startDate = new CustomDate(new Date()).startOfDay().formatISO();
-      endDate = new CustomDate(new Date()).endOfDay().formatISO();
-    } else if (value === 'monthly') {
+    if (value === 'monthly') {
       startDate = new CustomDate(new Date()).startOfMonth().formatISO();
       endDate = new CustomDate(new Date()).endOfMonth().formatISO();
     }
@@ -36,7 +33,6 @@ export const TransactionModeTabs = ({
       new CustomDate(startDate).differenceInDays(endDate),
     );
 
-    if (difference <= 1) return 'daily';
     if (difference <= 7) return 'weekly';
     return 'monthly';
   };
@@ -45,9 +41,6 @@ export const TransactionModeTabs = ({
     <Tabs value={getValue()} className={className} onValueChange={onChange}>
       <SectionWrapper className="mb-4">
         <TabsList className="w-full">
-          <TabsTrigger value="daily" className="w-full">
-            Daily
-          </TabsTrigger>
           <TabsTrigger value="weekly" className="w-full">
             Weekly
           </TabsTrigger>
