@@ -10,6 +10,7 @@ import {
   formatISO as fnsFormatISO,
   getDaysInMonth,
   isValid,
+  parseISO,
   setHours,
   startOfDay,
   startOfISOWeek,
@@ -21,8 +22,16 @@ type DateType = string | Date | number;
 export class CustomDate {
   constructor(private readonly date: DateType) {}
 
+  static parseIso(date: string): CustomDate {
+    return new CustomDate(parseISO(date));
+  }
+
   static isValid(date: unknown): boolean {
     return isValid(date);
+  }
+
+  static isStringValidDate(value: string): boolean {
+    return isValid(parseISO(value));
   }
 
   format(format: string): string {
