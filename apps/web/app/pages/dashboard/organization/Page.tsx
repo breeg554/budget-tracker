@@ -74,6 +74,7 @@ export const DashboardPage = () => {
         startDate={startDate}
         endDate={endDate}
         data={transactions}
+        onDateChange={onTabChange}
       />
 
       {statsByCategories.length > 0 && (

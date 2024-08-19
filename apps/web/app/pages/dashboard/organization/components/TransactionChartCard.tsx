@@ -1,6 +1,9 @@
 import React from 'react';
 
+import { IconButton } from '~/buttons/IconButton';
 import { ClientDate } from '~/dates/ClientDate';
+import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
+import { ChevronRightIcon } from '~/icons/ChevronRightIcon';
 import { Card, CardContent, CardHeader, CardTitle } from '~/ui/card';
 import { cn } from '~/utils/cn';
 import { CustomDate } from '~/utils/CustomDate';
@@ -9,6 +12,7 @@ import { MonetaryValue } from '~/utils/MonetaryValue';
 import { TransactionChart, TransactionChartProps } from './TransactionChart';
 
 interface TransactionChartCardProps extends TransactionChartProps {
+  onDateChange: (args: { startDate: string; endDate: string }) => void;
   className?: string;
 }
 
@@ -17,7 +21,58 @@ export const TransactionChartCard = ({
   startDate,
   endDate,
   data,
+  onDateChange,
 }: TransactionChartCardProps) => {
+  const onNext = (difference: number) => {
+    if (difference <= 1) {
+      onDateChange({
+        startDate: new CustomDate(startDate).addDays(1).formatISO(),
+        endDate: new CustomDate(endDate).addDays(1).formatISO(),
+      });
+    } else if (difference <= 7) {
+      onDateChange({
+        startDate: new CustomDate(startDate)
+          .addDays(7)
+          .startOfWeek()
+          .formatISO(),
+        endDate: new CustomDate(endDate).addDays(7).endOfWeek().formatISO(),
+      });
+    } else {
+      onDateChange({
+        startDate: new CustomDate(startDate)
+          .addMonths(1)
+          .startOfMonth()
+          .formatISO(),
+        endDate: new CustomDate(endDate).addMonths(1).endOfMonth().formatISO(),
+      });
+    }
+  };
+
+  const onPrevious = (difference: number) => {
+    if (difference <= 1) {
+      onDateChange({
+        startDate: new CustomDate(startDate).addDays(-1).formatISO(),
+        endDate: new CustomDate(endDate).addDays(-1).formatISO(),
+      });
+    } else if (difference <= 7) {
+      onDateChange({
+        startDate: new CustomDate(startDate)
+          .addDays(-7)
+          .startOfWeek()
+          .formatISO(),
+        endDate: new CustomDate(endDate).addDays(-7).endOfWeek().formatISO(),
+      });
+    } else {
+      onDateChange({
+        startDate: new CustomDate(startDate)
+          .addMonths(-1)
+          .startOfMonth()
+          .formatISO(),
+        endDate: new CustomDate(endDate).addMonths(-1).endOfMonth().formatISO(),
+      });
+    }
+  };
+
   const headerDates = () => {
     const difference = Math.abs(
       new CustomDate(startDate).differenceInDays(endDate),
@@ -30,12 +85,28 @@ export const TransactionChartCard = ({
     }
 
     return (
-      <ClientDate>
-        <p className="text-sm text-muted-foreground text-center">
-          {new CustomDate(startDate).format(format)} -{' '}
-          {new CustomDate(endDate).format(format)}
-        </p>
-      </ClientDate>
+      <div className="flex items-center gap-2 justify-center">
+        <IconButton
+          className="text-muted-foreground"
+          variant="ghost"
+          size="xxs"
+          icon={<ChevronLeftIcon />}
+          onClick={() => onPrevious(difference)}
+        />
+        <ClientDate>
+          <p className="text-sm text-muted-foreground text-center w-fit">
+            {new CustomDate(startDate).format(format)} -{' '}
+            {new CustomDate(endDate).format(format)}
+          </p>
+        </ClientDate>
+        <IconButton
+          className="text-muted-foreground"
+          variant="ghost"
+          size="xxs"
+          icon={<ChevronRightIcon />}
+          onClick={() => onNext(difference)}
+        />
+      </div>
     );
   };
 

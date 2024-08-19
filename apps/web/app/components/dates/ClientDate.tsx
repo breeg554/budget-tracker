@@ -9,7 +9,7 @@ interface ClientDateProps {
 
 export const ClientDate = ({
   children,
-  fallback = <Skeleton className="w-[200px] h-[20px] rounded-2xl mx-auto" />,
+  fallback = <Skeleton className="w-[178px] h-[20px] rounded-2xl" />,
 }: PropsWithChildren<ClientDateProps>) => {
   return <ClientOnly fallback={fallback}>{() => children}</ClientOnly>;
 };
