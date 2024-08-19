@@ -30,20 +30,24 @@ export const TransactionChartCard = ({
         endDate: new CustomDate(endDate).addDays(1).formatISO(),
       });
     } else if (difference <= 7) {
+      const newStartDate = new CustomDate(startDate)
+        .addWeeks(1)
+        .startOfWeek()
+        .formatISO();
+      const newEndDate = new CustomDate(newStartDate).endOfWeek().formatISO();
       onDateChange({
-        startDate: new CustomDate(startDate)
-          .addWeeks(1)
-          .startOfWeek()
-          .formatISO(),
-        endDate: new CustomDate(endDate).addWeeks(1).endOfWeek().formatISO(),
+        startDate: newStartDate,
+        endDate: newEndDate,
       });
     } else {
+      const newStartDate = new CustomDate(startDate)
+        .addMonths(1)
+        .startOfMonth()
+        .formatISO();
+      const newEndDate = new CustomDate(newStartDate).endOfMonth().formatISO();
       onDateChange({
-        startDate: new CustomDate(startDate)
-          .addMonths(1)
-          .startOfMonth()
-          .formatISO(),
-        endDate: new CustomDate(endDate).addMonths(1).endOfMonth().formatISO(),
+        startDate: newStartDate,
+        endDate: newEndDate,
       });
     }
   };
@@ -55,20 +59,25 @@ export const TransactionChartCard = ({
         endDate: new CustomDate(endDate).addDays(-1).formatISO(),
       });
     } else if (difference <= 7) {
+      const newStartDate = new CustomDate(startDate)
+        .addWeeks(-1)
+        .startOfWeek()
+        .formatISO();
+      const newEndDate = new CustomDate(newStartDate).endOfWeek().formatISO();
+
       onDateChange({
-        startDate: new CustomDate(startDate)
-          .addWeeks(-1)
-          .startOfWeek()
-          .formatISO(),
-        endDate: new CustomDate(endDate).addWeeks(-1).endOfWeek().formatISO(),
+        startDate: newStartDate,
+        endDate: newEndDate,
       });
     } else {
+      const newStartDate = new CustomDate(startDate)
+        .addMonths(-1)
+        .startOfMonth()
+        .formatISO();
+      const newEndDate = new CustomDate(newStartDate).endOfMonth().formatISO();
       onDateChange({
-        startDate: new CustomDate(startDate)
-          .addMonths(-1)
-          .startOfMonth()
-          .formatISO(),
-        endDate: new CustomDate(endDate).addMonths(-1).endOfMonth().formatISO(),
+        startDate: newStartDate,
+        endDate: newEndDate,
       });
     }
   };
