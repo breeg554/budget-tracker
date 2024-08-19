@@ -54,9 +54,9 @@ export class ReceiptService {
               products: [
                 {
                   name: PRODUCT_NAME,
-                  price: PRICE_OF_SINGLE_ITEM,
-                  quantity: QUANTITY_OF_ITEMS (if you notice the same product multiple times in the receipt, sum the quantity up)
-                  category: ID_OF_CATEGORY (if you can't match the product to any category, use the ID of the "other" category). Always use the most matching category for the product! The "other" category is the last resort.
+                  price: PRICE_OF_ITEM
+                  quantity: QUANTITY_OF_ITEMS 
+                  category: ID_OF_CATEGORY 
                   categoryName: NAME_OF_CATEGORY,
                 }
               ]
@@ -69,11 +69,14 @@ export class ReceiptService {
             ---
          
             Remember that:
-            1. When you see product weight multiplied by price (e.g. 0.5kg x 3.00LN), you should look for the final price (that should be listed somewhere on the right side). In this case, the final price is 1.50PLN and quantity is 1!        
+            1. When you see a product that is a weighable item (like fruits, vegetables, etc.), always use weight as quantity (in kilograms). Example could be  ---  0.708(Weight) x 1.49(Price per kg) 1.05(Final price) ---
             2. Always get as many products as you can and try to not miss any.
             3. At the beginning of the receipt, there is always a shop name and address. You can ignore it. The same goes for the footer of the receipt. Products should be in the middle of the receipt.
             4. If you cannot retrieve any products or content from image, return empty array for "products" and empty string for "content".
             5. DO NOT return anything else than products and content. 
+            6. If there is a discount, use the final price. Always use the price for one item (eg. 3x 1.99, use 1.99 as price and 3 as quantity, 0.708 x1.49, use 1.49 as price and 0.708 as quantity).
+            7. If you notice the same product (products are the same when have the same name and price!) multiple times in the receipt, sum the quantity up.
+            8. If you can't match the product to any category, use the ID of the "other" category. Always use the most matching category for the product!!! The "other" category is the last resort!!!. Select matching category only from the list above. Do not create new categories!
             `,
         },
         {

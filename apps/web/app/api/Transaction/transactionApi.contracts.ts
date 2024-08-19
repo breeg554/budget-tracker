@@ -42,7 +42,7 @@ export const getTransactionItemSchema = z.object({
   id: z.string(),
   name: z.string(),
   type: z.nativeEnum(TransactionItemType),
-  quantity: z.number(),
+  quantity: z.union([z.number(), z.string().transform((val) => Number(val))]),
   price: z.union([z.number(), z.string().transform((val) => Number(val))]),
   createdAt: z.string(),
   updatedAt: z.string(),

@@ -17,7 +17,7 @@ export class TransactionItem {
   id: string;
   @Column()
   name: string;
-  @Column()
+  @Column({ type: 'numeric', precision: 10, scale: 3 })
   quantity: number;
   @Column({ type: 'numeric', precision: 10, scale: 3 })
   price: number;
