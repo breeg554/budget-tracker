@@ -7,32 +7,31 @@ export type IconButtonProps = Omit<ButtonProps, 'children'> & {
   icon: ReactNode;
 };
 
-export const IconButton: React.FC<IconButtonProps> = ({
-  className,
-  icon,
-  ...props
-}) => {
-  const clonedIcon = isValidElement(icon)
-    ? React.cloneElement(icon, {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        className: cn(
-          getIconSize(props.size),
-          (icon as ReactElement).props.className,
-        ),
-      })
-    : icon;
+export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
+  ({ className, icon, ...props }, ref) => {
+    const clonedIcon = isValidElement(icon)
+      ? React.cloneElement(icon, {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          className: cn(
+            getIconSize(props.size),
+            (icon as ReactElement).props.className,
+          ),
+        })
+      : icon;
 
-  return (
-    <Button
-      size="icon"
-      className={cn('p-0', getButtonSize(props.size), className)}
-      {...props}
-    >
-      {clonedIcon}
-    </Button>
-  );
-};
+    return (
+      <Button
+        ref={ref}
+        size="icon"
+        className={cn('p-0', getButtonSize(props.size), className)}
+        {...props}
+      >
+        {clonedIcon}
+      </Button>
+    );
+  },
+);
 
 function getButtonSize(size?: string | null) {
   switch (size) {
@@ -49,7 +48,7 @@ function getButtonSize(size?: string | null) {
   }
 }
 
-function getIconSize(size?: string | null) {
+export function getIconSize(size?: string | null) {
   switch (size) {
     case 'xxs':
       return 'h-3.5 w-3.5';

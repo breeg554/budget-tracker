@@ -20,13 +20,20 @@ import {
 import { Button } from '~/buttons/Button';
 import { FormPersistentState } from '~/components/form/FormPersistentState';
 import { ScanLink } from '~/dashboard/layout/components/ScanLink';
+import {
+  Dropdown,
+  DropdownContent,
+  DropdownItem,
+  DropdownTrigger,
+} from '~/dropdowns/Dropdown';
 import { Field } from '~/form/Field';
 import { FieldError, FieldLabel, TextField } from '~/form/fields';
 import { DateField } from '~/form/fields/DateField';
 import { HiddenField } from '~/form/fields/HiddenField';
 import { SubmitButton } from '~/form/SubmitButton';
 import { ValidatedForm } from '~/form/ValidatedForm';
-import { PlusIcon } from '~/icons/PlusIcon';
+import { TrashIcon } from '~/icons/TrashIcon';
+import { confirm } from '~/modals/confirm';
 import { successToast } from '~/toasts/successToast';
 import {
   DialogDrawer,
@@ -39,6 +46,7 @@ import {
 } from '~/ui/dialog-drawer';
 import { cn } from '~/utils/cn';
 import { MonetaryValue } from '~/utils/MonetaryValue';
+import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
 import { TransactionItemForm } from './TransactionItemForm';
 
@@ -129,29 +137,32 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
 
       <div>
         <header className="flex justify-between gap-2 items-center">
-          <h2>Products</h2>
+          <h2 className="text-muted-foreground text-sm">Transaction Items</h2>
 
           <ScanLink size="2" />
         </header>
 
-        <ul className="flex flex-col gap-2 py-4">
+        <ul className="flex flex-col gap-3 py-4">
           {items.map((item, index) => {
             return (
-              <TransactionFormItem
-                key={item.key}
-                item={item}
-                categories={itemCategories}
-                onEdit={(updated) => onEditItem(updated, item.key)}
-                onDelete={() => removeItem(index)}
-              />
+              <li key={item.key} onSubmit={(e) => e.stopPropagation()}>
+                <TransactionFormItem
+                  item={item}
+                  categories={itemCategories}
+                  onEdit={(updated) => onEditItem(updated, item.key)}
+                  onDelete={() => removeItem(index)}
+                />
+              </li>
             );
           })}
 
           <li onSubmit={(e) => e.stopPropagation()}>
             <TransactionFormItemDrawer
-              title="New product"
-              description="Add new receipt product"
-              trigger={(open) => <InsertItemButton onClick={open} />}
+              title="New"
+              description="Add a new product to the list"
+              trigger={(open) => (
+                <InsertItemButton onClick={open} className="mt-2" />
+              )}
             >
               {() => (
                 <>
@@ -178,16 +189,13 @@ function InsertItemButton({
   ...rest
 }: ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
-    <button
-      className={cn(
-        'w-full bg-neutral-50 rounded p-2 text-sm text-neutral-800 border border-neutral-150 flex gap-1 items-center',
-        className,
-      )}
+    <Button
+      variant="outline"
+      className={cn(className, 'w-full text-sm')}
       {...rest}
     >
-      <PlusIcon />
-      <span>Add new item</span>
-    </button>
+      <span>Add New</span>
+    </Button>
   );
 }
 
@@ -207,58 +215,105 @@ function TransactionFormItem({
   const itemFields = item.getFieldset();
 
   const { value: name } = useInputControl(itemFields.name);
-  const { value: category } = useInputControl(itemFields.category);
+  const { value: categoryId } = useInputControl(itemFields.category);
   const { value: quantity } = useInputControl(itemFields.quantity);
   const { value: price } = useInputControl(itemFields.price);
   useInputControl(itemFields.type);
 
-  const findCategoryName = (id?: string) => {
-    return categories.find((category) => category.id === id)?.name;
+  const findCategory = (id?: string) => {
+    return categories.find((category) => category.id === id);
   };
 
+  const category = findCategory(categoryId);
+  const categoryItem = category ? new TransactionItemCategory(category) : null;
+  const monetaryValue = new MonetaryValue(price ?? 0, quantity ?? 1);
+
   return (
-    <li
-      onSubmit={(e) => e.stopPropagation()}
-      className="bg-neutral-50 border border-neutral-150 rounded p-2 text-sm text-neutral-900"
-    >
-      <p>Name: {name}</p>
-      <p>Category: {findCategoryName(category) ?? ''}</p>
-      <p>Amount: {quantity}</p>
-      <p>Value: {price}</p>
+    <article className="flex gap-2 justify-between items-center">
+      <header className="flex items-center gap-3">
+        <div className="w-12 h-12 rounded-xl text-xl bg-neutral-100 flex justify-center items-center shrink-0">
+          {categoryItem ? categoryItem.icon : ''}
+        </div>
 
-      <TransactionFormItemDrawer
-        title="Edit product"
-        description="Edit receipt product"
-        trigger={(open) => <Button onClick={open}>Edit</Button>}
-      >
-        {(close) => (
-          <>
-            <TransactionItemForm
-              formId="update-item-form"
-              onSubmit={(values) => {
-                onEdit?.(values);
-                close();
+        <div className="flex flex-col">
+          <h4 className="text-foreground line-clamp-1" title={name}>
+            {name}
+          </h4>
+          <p className="text-sm text-muted-foreground">
+            {categoryItem ? categoryItem.name : categoryId}
+          </p>
+        </div>
+      </header>
+
+      <div className="flex gap-6 justify-end items-center">
+        <div className="flex flex-col items-center">
+          <p className="text-foreground">
+            -{monetaryValue.format()}
+            <span className="text-xs">{monetaryValue.currency}</span>
+          </p>
+          <p className="text-muted-foreground text-xs">
+            ({monetaryValue.quantity} * {monetaryValue.amount})
+          </p>
+        </div>
+
+        <Dropdown>
+          <DropdownTrigger />
+
+          <DropdownContent>
+            <TransactionFormItemDrawer
+              title="Edit"
+              description="Edit product details"
+              trigger={(open) => (
+                <DropdownItem
+                  onClick={(e) => {
+                    e.preventDefault();
+                    open();
+                  }}
+                >
+                  Edit
+                </DropdownItem>
+              )}
+            >
+              {(close) => (
+                <>
+                  <TransactionItemForm
+                    formId="update-item-form"
+                    onSubmit={(values) => {
+                      onEdit?.(values);
+                      close();
+                    }}
+                    categories={categories}
+                    defaultValues={{
+                      name,
+                      category: categoryId,
+                      quantity: quantity ? Number(quantity) : undefined,
+                      price: price ? Number(price) : undefined,
+                    }}
+                  />
+
+                  <SubmitButton form="update-item-form" className="w-full mt-3">
+                    Update
+                  </SubmitButton>
+                </>
+              )}
+            </TransactionFormItemDrawer>
+
+            <DropdownItem
+              variant="destructive"
+              icon={<TrashIcon />}
+              onClick={() => {
+                confirm({
+                  children: 'Are you sure you want to delete this product?',
+                  onConfirm: onDelete,
+                });
               }}
-              categories={categories}
-              defaultValues={{
-                name,
-                category,
-                quantity: quantity ? Number(quantity) : undefined,
-                price: price ? Number(price) : undefined,
-              }}
-            />
-
-            <SubmitButton form="update-item-form" className="w-full mt-3">
-              Update
-            </SubmitButton>
-          </>
-        )}
-      </TransactionFormItemDrawer>
-
-      <Button variant="destructive" onClick={onDelete}>
-        Delete
-      </Button>
-    </li>
+            >
+              Delete
+            </DropdownItem>
+          </DropdownContent>
+        </Dropdown>
+      </div>
+    </article>
   );
 }
 
