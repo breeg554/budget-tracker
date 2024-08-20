@@ -82,7 +82,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       defaultValue: values,
     });
 
-    successToast('Product added');
+    successToast({
+      title: 'Product added to the list',
+      description: 'Close dialog or add more products.',
+    });
   };
 
   const removeItem = (index: number) => {
@@ -91,7 +94,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       index,
     });
 
-    successToast('Product removed');
+    successToast({
+      title: 'Product removed',
+    });
   };
 
   const onEditItem = (updated: CreateTransactionItemDto, key?: string) => {
@@ -103,7 +108,9 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
       }),
     });
 
-    successToast('Product updated');
+    successToast({
+      title: 'Product updated',
+    });
   };
 
   return (

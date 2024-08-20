@@ -4,7 +4,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { createTransactionSchema } from '~/api/Transaction/transactionApi.contracts';
 import { TransactionApi } from '~/api/Transaction/TransactionApi.server';
 import { routes } from '~/routes';
-import { requireSignedIn } from '~/session.server';
+import { requireSignedIn, setServerToasts } from '~/session.server';
 import { actionHandler } from '~/utils/action.server';
 import { assert } from '~/utils/assert';
 
@@ -17,6 +17,7 @@ export const action = actionHandler({
     const submission = parseWithZod(formData, {
       schema: createTransactionSchema,
     });
+
     if (submission.status !== 'success') {
       return json(submission.reply());
     }
@@ -25,6 +26,15 @@ export const action = actionHandler({
 
     await transactionApi.create(params.organizationName, submission.value);
 
-    return redirect(routes.organization.getPath(params.organizationName));
+    return redirect(routes.organization.getPath(params.organizationName), {
+      headers: {
+        'Set-Cookie': await setServerToasts(request, {
+          success: {
+            title: 'Transaction created',
+            description: `You've successfully created the transaction`,
+          },
+        }),
+      },
+    });
   },
 });
