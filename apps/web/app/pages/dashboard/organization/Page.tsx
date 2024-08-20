@@ -7,7 +7,7 @@ import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { Link } from '~/link/Link';
 import { routes } from '~/routes';
-import { CustomDate } from '~/utils/CustomDate';
+import { CustomDate, DateRange } from '~/utils/CustomDate';
 
 import { CategoriesCarousel } from './components/CategoriesCarousel';
 import { OrganizationAvatar } from './components/OrganizationAvatar';
@@ -32,13 +32,7 @@ export const DashboardPage = () => {
     new CustomDate(date).format('dd MMMM'),
   );
 
-  const onTabChange = ({
-    startDate,
-    endDate,
-  }: {
-    startDate: string;
-    endDate: string;
-  }) => {
+  const onTabChange = ({ startDate, endDate }: DateRange) => {
     navigate(
       routes.organization.getPath(organizationName, { startDate, endDate }),
     );

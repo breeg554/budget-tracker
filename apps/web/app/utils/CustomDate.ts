@@ -19,7 +19,12 @@ import {
   startOfMonth,
 } from 'date-fns';
 
-type DateType = string | Date | number;
+export type DateType = string | Date | number;
+
+export type DateRange = {
+  startDate: string;
+  endDate: string;
+};
 
 export class CustomDate {
   constructor(private readonly date: DateType) {}
@@ -36,14 +41,59 @@ export class CustomDate {
     return isValid(parseISO(value));
   }
 
+  static getDayRange(date: DateType, offset = 0): DateRange {
+    const startDate = new CustomDate(date)
+      .addDays(offset)
+      .startOfDay()
+      .formatISO();
+
+    const endDate = new CustomDate(startDate).endOfDay().formatISO();
+
+    return {
+      startDate,
+      endDate,
+    };
+  }
+
+  static getWeekRange(date: DateType, offset = 0): DateRange {
+    const startDate = new CustomDate(date)
+      .addWeeks(offset)
+      .startOfWeek()
+      .formatISO();
+
+    const endDate = new CustomDate(startDate).endOfWeek().formatISO();
+
+    return {
+      startDate,
+      endDate,
+    };
+  }
+
+  static getMonthRange(date: DateType, offset = 0): DateRange {
+    const startDate = new CustomDate(date)
+      .addMonths(offset)
+      .startOfMonth()
+      .formatISO();
+
+    const endDate = new CustomDate(startDate).endOfMonth().formatISO();
+
+    return {
+      startDate,
+      endDate,
+    };
+  }
+
+  // utc tz
+  formatISO(): string {
+    return this.toLocaleDate().toISOString();
+  }
+
+  // local tz
   format(format: string): string {
     return fnsFormat(this.toLocaleDate(), format);
   }
 
-  formatISO(): string {
-    return new Date(this.date).toISOString();
-  }
-
+  // local tz
   toLocaleDate(): Date {
     return new Date(this.date);
   }

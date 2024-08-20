@@ -25,60 +25,25 @@ export const TransactionChartCard = ({
 }: TransactionChartCardProps) => {
   const onNext = (difference: number) => {
     if (difference <= 1) {
-      onDateChange({
-        startDate: new CustomDate(startDate).addDays(1).formatISO(),
-        endDate: new CustomDate(endDate).addDays(1).formatISO(),
-      });
+      onDateChange(CustomDate.getDayRange(startDate, 1));
     } else if (difference <= 7) {
-      const newStartDate = new CustomDate(startDate)
-        .addWeeks(1)
-        .startOfWeek()
-        .formatISO();
-      const newEndDate = new CustomDate(newStartDate).endOfWeek().formatISO();
-      onDateChange({
-        startDate: newStartDate,
-        endDate: newEndDate,
-      });
+      const dateRange = CustomDate.getWeekRange(startDate, 1);
+      onDateChange(dateRange);
     } else {
-      const newStartDate = new CustomDate(startDate)
-        .addMonths(1)
-        .startOfMonth()
-        .formatISO();
-      const newEndDate = new CustomDate(newStartDate).endOfMonth().formatISO();
-      onDateChange({
-        startDate: newStartDate,
-        endDate: newEndDate,
-      });
+      const dateRange = CustomDate.getMonthRange(startDate, 1);
+      onDateChange(dateRange);
     }
   };
 
   const onPrevious = (difference: number) => {
     if (difference <= 1) {
-      onDateChange({
-        startDate: new CustomDate(startDate).addDays(-1).formatISO(),
-        endDate: new CustomDate(endDate).addDays(-1).formatISO(),
-      });
+      onDateChange(CustomDate.getDayRange(startDate, -1));
     } else if (difference <= 7) {
-      const newStartDate = new CustomDate(startDate)
-        .addWeeks(-1)
-        .startOfWeek()
-        .formatISO();
-      const newEndDate = new CustomDate(newStartDate).endOfWeek().formatISO();
-
-      onDateChange({
-        startDate: newStartDate,
-        endDate: newEndDate,
-      });
+      const dateRange = CustomDate.getWeekRange(startDate, -1);
+      onDateChange(dateRange);
     } else {
-      const newStartDate = new CustomDate(startDate)
-        .addMonths(-1)
-        .startOfMonth()
-        .formatISO();
-      const newEndDate = new CustomDate(newStartDate).endOfMonth().formatISO();
-      onDateChange({
-        startDate: newStartDate,
-        endDate: newEndDate,
-      });
+      const dateRange = CustomDate.getMonthRange(startDate, -1);
+      onDateChange(dateRange);
     }
   };
 

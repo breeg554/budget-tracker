@@ -18,19 +18,13 @@ export const TransactionModeTabs = ({
   onValueChange,
 }: TransactionModeTabsProps) => {
   const onChange = (value: string) => {
-    let startDate = new CustomDate(new Date()).startOfWeek().formatISO();
-    let endDate = new CustomDate(new Date()).endOfWeek().formatISO();
+    let dateRange = CustomDate.getWeekRange(new Date());
 
     if (value === 'monthly') {
-      startDate = new CustomDate(new Date().toISOString())
-        .startOfMonth()
-        .formatISO();
-      endDate = new CustomDate(new Date().toISOString())
-        .endOfMonth()
-        .formatISO();
+      dateRange = CustomDate.getMonthRange(new Date());
     }
 
-    onValueChange?.({ startDate, endDate });
+    onValueChange?.(dateRange);
   };
 
   const getValue = () => {
