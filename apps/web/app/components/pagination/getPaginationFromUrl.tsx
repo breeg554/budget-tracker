@@ -2,7 +2,9 @@ import { CustomDate } from '~/utils/CustomDate';
 
 import { Pagination, PAGINATION_DEFAULTS } from './pagination.utils';
 
-export const getPaginationFromUrl = (url: string): Pagination => {
+export const getPaginationFromUrl = (
+  url: string,
+): Pagination & { startDate: string; endDate: string } => {
   const searchParams = new URL(url).searchParams;
 
   const urlStartDate = searchParams.get('startDate');

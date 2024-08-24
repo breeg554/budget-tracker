@@ -15,7 +15,7 @@ interface ReceiptsFilterProps {
 
 export const ReceiptsFilter = ({ onFilter }: ReceiptsFilterProps) => {
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const [form, a] = useForm({
+  const [form] = useForm({
     onSubmit: (e, { formData }) => {
       e.preventDefault();
 
