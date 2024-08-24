@@ -56,8 +56,12 @@ export const getTransactionSchema = z.object({
   createdAt: z.string(),
   updatedAt: z.string(),
   items: z.array(getTransactionItemSchema),
-  author: z.any(),
+  author: z.object({
+    email: z.string(),
+    id: z.string(),
+  }),
   price: z.number(),
+  name: z.string(),
 });
 
 export const fromGetTransactionsResponse = z.array(getTransactionSchema);

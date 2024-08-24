@@ -94,6 +94,10 @@ export class TransactionService {
   ): GetTransactionDto[] {
     return transactions.map((transaction) => ({
       ...transaction,
+      author: {
+        email: transaction.author.email,
+        id: transaction.author.id,
+      },
       price: transaction.items.reduce(
         (curr, item) => curr + Number(item.price) * Number(item.quantity),
         0,
