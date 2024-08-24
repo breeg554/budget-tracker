@@ -24,7 +24,7 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       <Button
         ref={ref}
         size="icon"
-        className={cn('p-0', getButtonSize(props.size), className)}
+        className={cn('p-0 shrink-0', getButtonSize(props.size), className)}
         {...props}
       >
         {clonedIcon}

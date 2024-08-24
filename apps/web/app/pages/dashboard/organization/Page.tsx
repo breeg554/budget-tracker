@@ -42,7 +42,7 @@ export const DashboardPage = () => {
     <>
       <PageBackground />
 
-      <SectionWrapper className="mt-4 mb-8 flex gap-2 items-center justify-between">
+      <SectionWrapper className="pt-4 mb-8 flex gap-2 items-center justify-between">
         <p className="text-sm font-light text-primary-foreground">
           Welcome back
         </p>

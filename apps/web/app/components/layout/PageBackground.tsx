@@ -13,6 +13,8 @@ export const PageBackground = ({
         className,
       )}
       {...rest}
-    />
+    >
+      <div className="w-full h-[55px] absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl" />
+    </div>
   );
 };
