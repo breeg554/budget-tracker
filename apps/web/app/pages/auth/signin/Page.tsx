@@ -13,7 +13,6 @@ import {
 import { SubmitButton } from '~/components/form/SubmitButton';
 import { ValidatedForm } from '~/components/form/ValidatedForm';
 import { GlobalError } from '~/form/GlobalError';
-import { SectionWrapper } from '~/layout/SectionWrapper';
 import { AuthWrapper } from '~/pages/auth/components/AuthWrapper';
 import { FormWrapper } from '~/pages/auth/components/FormWrapper';
 import { routes } from '~/routes';

@@ -23,23 +23,16 @@ export const ReceiptsPage = () => {
     pagination: initialPagination,
   } = useLoaderData<typeof loader>();
 
-  const {
-    data,
-    fetchNextPage,
-    filterPages,
-    hasNextPage,
-    totalPages,
-    page,
-    isFetchingNextPage,
-  } = useInfiniteFetcher<GetTransactionDto, typeof loader>({
-    initialPagination,
-    initialData: transactions,
-    loaderUrl: routes.receipts.getPath(organizationName),
-    dataExtractor: (response) => ({
-      data: response.data?.transactions,
-      pagination: response.data?.pagination,
-    }),
-  });
+  const { data, fetchNextPage, filterPages, hasNextPage, isFetchingNextPage } =
+    useInfiniteFetcher<GetTransactionDto, typeof loader>({
+      initialPagination,
+      initialData: transactions,
+      loaderUrl: routes.receipts.getPath(organizationName),
+      dataExtractor: (response) => ({
+        data: response.data?.transactions,
+        pagination: response.data?.pagination,
+      }),
+    });
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -66,7 +59,7 @@ export const ReceiptsPage = () => {
 
         <ReceiptsFilter onFilter={filterPages} />
 
-        <div className="mt-6 flex flex-col gap-3 justify-center">
+        <div className="mt-6 flex flex-col gap-2 justify-center">
           <ReceiptsList transactions={data} />
 
           <Button
