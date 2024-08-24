@@ -9,15 +9,16 @@ export const createPaginatedSchema = <T extends z.ZodTypeAny>(schema: T) => {
         totalItems: z.number(),
         currentPage: z.number(),
         totalPages: z.number(),
+        search: z.string().optional(),
       }),
     })
     .transform((res) => ({
       ...res,
       meta: {
-        totalItems: res.meta.totalItems,
-        totalPages: res.meta.totalPages,
         page: res.meta.currentPage,
         limit: res.meta.itemsPerPage,
+        search: res.meta.search,
+        ...res.meta,
       },
     }));
 };

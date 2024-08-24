@@ -41,8 +41,11 @@ export const routes = {
   },
   receipts: {
     pattern: '/:organizationName/receipts' as const,
-    getPath: (organizationName: string) =>
-      `${routes.organization.getPath(organizationName)}/receipts` as const,
+    getPath: (organizationName: string, params?: UrlQueryParams) =>
+      buildUrlWithParams(
+        `${routes.organization.getPath(organizationName)}/receipts`,
+        params,
+      ),
   },
   newReceipt: {
     pattern: '/:organizationName/receipts/new' as const,

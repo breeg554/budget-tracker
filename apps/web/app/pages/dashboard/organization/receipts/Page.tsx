@@ -2,14 +2,13 @@ import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import type { MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
-import { FilterIcon } from 'lucide-react';
 
 import { GetTransactionDto } from '~/api/Transaction/transactionApi.types';
-import { IconButton } from '~/buttons/IconButton';
+import { Button } from '~/buttons/Button';
 import { OrganizationAvatar } from '~/dashboard/organization/components/OrganizationAvatar';
+import { ReceiptsFilter } from '~/dashboard/organization/receipts/components/ReceiptsFilter';
 import { ReceiptsList } from '~/dashboard/organization/receipts/components/ReceiptsList';
 import { useInfiniteFetcher } from '~/hooks/useInfiniteFetcher';
-import { TextInput } from '~/inputs/TextInput';
 import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { routes } from '~/routes';
@@ -18,24 +17,35 @@ import { loader } from './loader.server';
 
 export const ReceiptsPage = () => {
   const { ref: fetchNextRef, inView } = useInView();
-  const { organizationName, transactions, pagination } =
-    useLoaderData<typeof loader>();
+  const {
+    organizationName,
+    transactions,
+    pagination: initialPagination,
+  } = useLoaderData<typeof loader>();
 
-  const { data, fetchNextPage } = useInfiniteFetcher<
-    GetTransactionDto,
-    typeof loader
-  >({
-    pagination,
+  const {
+    data,
+    fetchNextPage,
+    filterPages,
+    hasNextPage,
+    totalPages,
+    page,
+    isFetchingNextPage,
+  } = useInfiniteFetcher<GetTransactionDto, typeof loader>({
+    initialPagination,
     initialData: transactions,
     loaderUrl: routes.receipts.getPath(organizationName),
-    dataExtractor: (response) => response.data?.transactions,
+    dataExtractor: (response) => ({
+      data: response.data?.transactions,
+      pagination: response.data?.pagination,
+    }),
   });
 
   useEffect(() => {
-    if (inView) {
+    if (inView && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView]);
+  }, [inView, hasNextPage]);
 
   return (
     <>
@@ -51,20 +61,24 @@ export const ReceiptsPage = () => {
         </div>
       </SectionWrapper>
 
-      <SectionWrapper className="pb-20">
+      <SectionWrapper className="pb-24">
         <p className="mx-auto mb-4 text-center">Transactions</p>
 
-        <div className="flex gap-1 items-center mb-4">
-          <TextInput placeholder="Search..." />
-          <IconButton icon={<FilterIcon />} variant="secondary" />
+        <ReceiptsFilter onFilter={filterPages} />
+
+        <div className="mt-6 flex flex-col gap-3 justify-center">
+          <ReceiptsList transactions={data} />
+
+          <Button
+            ref={fetchNextRef}
+            size="xxs"
+            variant="ghost"
+            className="text-xs text-muted-foreground"
+            disabled={!hasNextPage}
+          >
+            {isFetchingNextPage ? 'Loading...' : 'Load more'}
+          </Button>
         </div>
-
-        <ReceiptsList transactions={data} />
-
-        <div
-          ref={fetchNextRef}
-          className="w-10 h-10 pointer-events-none opacity-0"
-        />
       </SectionWrapper>
     </>
   );

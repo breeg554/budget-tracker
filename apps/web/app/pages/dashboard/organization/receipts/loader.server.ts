@@ -11,12 +11,12 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
 
   assert(params.organizationName);
 
-  const { page } = getPaginationFromUrl(request.url);
+  const { page, search } = getPaginationFromUrl(request.url);
 
   const transactionApi = new TransactionApi(fetch);
   const { data: transactions } = await transactionApi.getAll(
     params.organizationName,
-    { page, limit: 10 },
+    { page, search, limit: 10 },
   );
 
   return json({

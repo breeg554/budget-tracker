@@ -79,6 +79,7 @@ export class TransactionService {
         relations: ['items', 'author', 'items.category'],
         sortableColumns: ['date', 'id', 'name'],
         defaultSortBy: [['date', 'DESC']],
+        searchableColumns: ['name'],
         filterableColumns: {
           date: [FilterOperator.BTW],
         },

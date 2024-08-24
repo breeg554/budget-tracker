@@ -1,4 +1,4 @@
-export type Pagination = {
+export type Pagination<P = {}> = P & {
   page: number;
   limit: number;
   totalItems: number;
