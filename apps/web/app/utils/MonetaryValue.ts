@@ -25,6 +25,10 @@ export class MonetaryValue {
     return this.currencyCode;
   }
 
+  get amountPerUnit() {
+    return this.value;
+  }
+
   get quantity() {
     return this.quantityValue;
   }

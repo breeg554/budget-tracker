@@ -259,7 +259,8 @@ function TransactionFormItem({
             <span className="text-xs">{monetaryValue.currency}</span>
           </p>
           <p className="text-muted-foreground text-xs">
-            ({monetaryValue.quantity} * {monetaryValue.amount})
+            ({monetaryValue.quantity.toFixed()} *{' '}
+            {monetaryValue.amountPerUnit.toFixed(2)})
           </p>
         </div>
 
