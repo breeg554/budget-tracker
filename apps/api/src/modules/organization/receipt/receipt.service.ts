@@ -42,42 +42,55 @@ export class ReceiptService {
       [
         {
           role: 'system',
-          content: `You are a receipt processing bot. 
-            I will send you shop receipt in base64 format and your job is to get products from it.
-            
-            The most common receipt language is Polish, but you can also get receipts in other languages.
-            
-            Return them in json format of that shape
+          content: `
+          You are an expert in extracting information from receipts. I will send you a shop receipt in image format ( image is taken vertically ) in Polish, and your task is to accurately retrieve all product details.
+
+          Remember to:
+          1. Extract as many products as possible from the receipt. Ensure each product's name, price, and quantity are correctly identified.
+          2. Read the receipt line by line for correctly matching product name, price and quantity:
+            - Do not go to the next line until you are sure you have extracted all the necessary information.
+            - Remember that Price appear after the quantity.
+            - In most cases product name is at the beginning of the line when the quantity and price are at the end.
+            - Quantity is a number with a comma or a dot (e.g., 0.5, 0.75, 1, 1.5, 2).
+            - Price is a number with a comma or a dot (e.g., 3.5, 1.75, 1.22, 1.21, 22.12).
+            - The default quantity is 1.
+          3. For items sold by weight (e.g., fruits, vegetables):
+            - Use the weight as the quantity.
+            - Extract the price per 1 kg.
+            - Example format: "0.836 x9.99 = 8.35" where 0.836 is the quantity, 9.99 is the price per kg.
+          4. If you notice the same products (products are the same when have the same name and price) multiple times in the receipt, sum the quantity up!
+          6. Assign the most appropriate category ID from the "Available Categories" list to each product. If no category fits, use the ID of "other" category as a last resort.
+          7. Ensure that the "category" field contains only the ID (UUID format) from the "Available Categories" list and not the name. The "categoryName" should contain the actual name from the same list.
+          
+          --- Available Categories ---
+       
+          ${preparedCategories}
+        
+          ---
+
+          Return json format of that shape
+          
             ---
             {
               content: ALL TEXT FROM RECEIPT THAT YOU USED TO GET PRODUCTS,
               products: [
-                {
-                  name: PRODUCT_NAME,
-                  price: PRICE_OF_ITEM
-                  quantity: QUANTITY_OF_ITEMS 
-                  category: ID_OF_CATEGORY 
-                  categoryName: NAME_OF_CATEGORY,
+                { 
+                  name: PRODUCT_NAME ( e.g. "Apple" ),
+                  price: PRICE_OF_ITEM ( e.g. 2.99 ),
+                  quantity: QUANTITY_OF_ITEM ( e.g. 1 ),
+                  category: ID_OF_CATEGORY ( e.g. "c1b1b1b1-1b1b-1b1b-1b1b-1b1b1b1b1b1b" ),
+                  categoryName: NAME_OF_CATEGORY, ( e.g. "Vegetables" )
                 }
               ]
             }
             ---
             
-            CATEGORIES:
-            ---
-              ${preparedCategories}
-            ---
-         
-            Remember that:
-            1. When you see a product that is a weighable item (like fruits, vegetables, etc.), always use weight as quantity (in kilograms). Example could be  ---  0.708(Weight) x 1.49(Price per kg) 1.05(Final price) ---
-            2. Always get as many products as you can and try to not miss any.
-            3. At the beginning of the receipt, there is always a shop name and address. You can ignore it. The same goes for the footer of the receipt. Products should be in the middle of the receipt.
-            4. If you cannot retrieve any products or content from image, return empty array for "products" and empty string for "content".
-            5. DO NOT return anything else than products and content. 
-            6. If there is a discount, use the final price. Always use the price for one item (eg. 3x 1.99, use 1.99 as price and 3 as quantity, 0.708 x1.49, use 1.49 as price and 0.708 as quantity).
-            7. If you notice the same product (products are the same when have the same name and price!) multiple times in the receipt, sum the quantity up.
-            8. If you can't match the product to any category, use the ID of the "other" category. Always use the most matching category for the product!!! The "other" category is the last resort!!!. Select matching category only from the list above. Do not create new categories!
-            `,
+          If you cannot retrieve any products or content from image, return empty array for "products" and empty string for "content".
+          
+          Check two, three times that name, quantity, and price are correctly matched. Ensure that price refers to the price per unit or kg and not the total line price!!!
+          
+          Ignore addresses, dates, and other irrelevant information that are above and below the product list.
+          `,
         },
         {
           role: 'user',
