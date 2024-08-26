@@ -35,7 +35,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
 }) => {
   const [form] = useForm({
     id: formId,
-    defaultValue: defaultValues,
+    defaultValue: { ...defaultValues, quantity: 1 },
     shouldValidate: 'onSubmit',
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createTransactionItemSchema });
@@ -89,17 +89,19 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         <FieldError />
       </Field>
 
-      <Field formId={formId} name="quantity">
-        <FieldLabel>Quantity</FieldLabel>
-        <NumberField placeholder="Product quantity" />
-        <FieldError />
-      </Field>
+      <div className="grid grid-cols-2 gap-2">
+        <Field formId={formId} name="price">
+          <FieldLabel>Price</FieldLabel>
+          <NumberField placeholder="e.g. 9.99" />
+          <FieldError />
+        </Field>
 
-      <Field formId={formId} name="price">
-        <FieldLabel>Price</FieldLabel>
-        <NumberField placeholder="Product price" />
-        <FieldError />
-      </Field>
+        <Field formId={formId} name="quantity">
+          <FieldLabel>Quantity</FieldLabel>
+          <NumberField placeholder="e.g. 2" />
+          <FieldError />
+        </Field>
+      </div>
     </ValidatedForm>
   );
 };

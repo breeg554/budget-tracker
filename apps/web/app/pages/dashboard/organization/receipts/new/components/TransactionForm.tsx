@@ -66,7 +66,10 @@ export const TransactionForm: React.FC<TransactionFormProps> = ({
   const [form, fields] = useForm({
     id: id,
     lastResult,
-    defaultValue,
+    defaultValue: {
+      date: new Date().toISOString(),
+      ...defaultValue,
+    },
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createTransactionSchema });
     },
@@ -259,7 +262,7 @@ function TransactionFormItem({
             <span className="text-xs">{monetaryValue.currency}</span>
           </p>
           <p className="text-muted-foreground text-xs">
-            ({monetaryValue.quantity.toFixed()} *{' '}
+            ({monetaryValue.quantity.toFixed(2)} *{' '}
             {monetaryValue.amountPerUnit.toFixed(2)})
           </p>
         </div>

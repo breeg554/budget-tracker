@@ -86,7 +86,8 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
             }))}
             renderItem={(product) => (
               <p>
-                {product.name}: {product.price} * {product.quantity}
+                {product.name}: {product.quantity.toFixed(2)} *{' '}
+                {product.price.toFixed(2)}
               </p>
             )}
           />
