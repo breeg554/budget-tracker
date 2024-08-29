@@ -20,19 +20,26 @@ export const ReceiptsPage = () => {
   const {
     organizationName,
     transactions,
+    categories,
     pagination: initialPagination,
   } = useLoaderData<typeof loader>();
 
-  const { data, fetchNextPage, filterPages, hasNextPage, isFetchingNextPage } =
-    useInfiniteFetcher<GetTransactionDto, typeof loader>({
-      initialPagination,
-      initialData: transactions,
-      loaderUrl: routes.receipts.getPath(organizationName),
-      dataExtractor: (response) => ({
-        data: response.data?.transactions,
-        pagination: response.data?.pagination,
-      }),
-    });
+  const {
+    data,
+    filters,
+    filterPages,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteFetcher<GetTransactionDto, typeof loader>({
+    initialPagination,
+    initialData: transactions,
+    loaderUrl: routes.receipts.getPath(organizationName),
+    dataExtractor: (response) => ({
+      data: response.data?.transactions,
+      pagination: response.data?.pagination,
+    }),
+  });
 
   useEffect(() => {
     if (inView && hasNextPage) {
@@ -57,7 +64,11 @@ export const ReceiptsPage = () => {
       <SectionWrapper className="pb-24">
         <p className="mx-auto mb-4 text-center">Transactions</p>
 
-        <ReceiptsFilter onFilter={filterPages} />
+        <ReceiptsFilter
+          onFilter={filterPages}
+          categories={categories}
+          defaultValues={filters}
+        />
 
         <div className="mt-6 flex flex-col gap-2 justify-center">
           <ReceiptsList transactions={data} />
@@ -68,6 +79,7 @@ export const ReceiptsPage = () => {
             variant="ghost"
             className="text-xs text-muted-foreground"
             disabled={!hasNextPage}
+            onClick={fetchNextPage}
           >
             {isFetchingNextPage ? 'Loading...' : 'Load more'}
           </Button>

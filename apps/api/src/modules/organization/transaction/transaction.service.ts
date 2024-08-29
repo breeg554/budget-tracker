@@ -70,7 +70,6 @@ export class TransactionService {
         userId,
         organizationName,
       );
-
     const { data, ...rest } = await paginate(
       query,
       this.transactionRepository,
@@ -82,6 +81,7 @@ export class TransactionService {
         searchableColumns: ['name'],
         filterableColumns: {
           date: [FilterOperator.BTW],
+          'items.category.id': [FilterOperator.IN],
         },
       },
     );

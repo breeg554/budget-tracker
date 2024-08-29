@@ -61,6 +61,7 @@ export class ReceiptService {
           4. If you notice the same products (products are the same when have the same name and price) multiple times in the receipt, sum the quantity up!
           6. Assign the most appropriate category ID from the "Available Categories" list to each product. If no category fits, use the ID of "other" category as a last resort.
           7. Ensure that the "category" field contains only the ID (UUID format) from the "Available Categories" list and not the name. The "categoryName" should contain the actual name from the same list.
+          8. Product names shouldn't be capitalized.
           
           --- Available Categories ---
        

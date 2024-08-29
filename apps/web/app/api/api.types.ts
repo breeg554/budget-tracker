@@ -12,13 +12,17 @@ export const createPaginatedSchema = <T extends z.ZodTypeAny>(schema: T) => {
         search: z.string().optional(),
       }),
     })
-    .transform((res) => ({
-      ...res,
-      meta: {
-        page: res.meta.currentPage,
-        limit: res.meta.itemsPerPage,
-        search: res.meta.search,
-        ...res.meta,
-      },
-    }));
+    .transform((res) => {
+      const { currentPage, itemsPerPage, ...metaRest } = res.meta;
+
+      return {
+        ...res,
+        meta: {
+          page: currentPage,
+          limit: itemsPerPage,
+          search: res.meta.search,
+          ...metaRest,
+        },
+      };
+    });
 };

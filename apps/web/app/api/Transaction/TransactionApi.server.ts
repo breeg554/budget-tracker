@@ -31,6 +31,10 @@ export class TransactionApi {
     if (query?.startDate && query?.endDate) {
       params['filter.date'] = `$btw:${query.startDate},${query.endDate}`;
     }
+    if (query?.category) {
+      params['filter.items.category.id'] = `$in:${query.category}`;
+    }
+
     return this.client(
       createPaginatedSchema(fromGetTransactionsResponse),
       buildUrlWithParams(

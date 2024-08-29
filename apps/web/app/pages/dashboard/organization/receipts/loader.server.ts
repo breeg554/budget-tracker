@@ -1,6 +1,7 @@
 import { json } from '@remix-run/node';
 
 import { TransactionApi } from '~/api/Transaction/TransactionApi.server';
+import { TransactionItemCategoryApi } from '~/api/Transaction/TransactionItemCategoryApi.server';
 import { getPaginationFromUrl } from '~/pagination/getPaginationFromUrl';
 import { requireSignedIn } from '~/session.server';
 import { assert } from '~/utils/assert';
@@ -14,14 +15,31 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   const { page, search } = getPaginationFromUrl(request.url);
 
   const transactionApi = new TransactionApi(fetch);
-  const { data: transactions } = await transactionApi.getAll(
-    params.organizationName,
-    { page, search, limit: 10 },
-  );
+  const categoryApi = new TransactionItemCategoryApi(fetch);
+
+  const categoriesPromise = categoryApi.getTransactionItemCategories();
+
+  const categoriesQuery =
+    new URL(request.url).searchParams.get('categories') ?? undefined;
+  const transactionsPromise = transactionApi.getAll(params.organizationName, {
+    page,
+    search,
+    category: categoriesQuery,
+    limit: 10,
+  });
+
+  const [categories, transactions] = await Promise.all([
+    categoriesPromise,
+    transactionsPromise,
+  ]);
 
   return json({
     organizationName: params.organizationName,
-    transactions: transactions.data,
-    pagination: transactions.meta,
+    transactions: transactions.data.data,
+    pagination: {
+      ...transactions.data.meta,
+      category: categoriesQuery ? categoriesQuery.split(',') : undefined,
+    },
+    categories: categories.data,
   });
 });

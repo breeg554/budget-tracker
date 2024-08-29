@@ -1,5 +1,9 @@
 import { fromTransactionItemCategoriesResponse } from '~/api/Transaction/transactionApi.contracts';
-import { typedFetch, TypedFetch } from '~/utils/fetch';
+import { GetTransactionItemCategoryDto } from '~/api/Transaction/transactionApi.types';
+import { ParsedResponse, typedFetch, TypedFetch } from '~/utils/fetch';
+
+let categoryCache: ParsedResponse<GetTransactionItemCategoryDto[]> | undefined =
+  undefined;
 
 export class TransactionItemCategoryApi {
   private readonly baseUrl = '/transaction-item-categories';
@@ -9,7 +13,18 @@ export class TransactionItemCategoryApi {
     this.client = client;
   }
 
-  getTransactionItemCategories() {
-    return this.client(fromTransactionItemCategoriesResponse, this.baseUrl);
+  async getTransactionItemCategories() {
+    if (categoryCache && process.env.NODE_ENV === 'production') {
+      return Promise.resolve(categoryCache);
+    }
+
+    const categories = await this.client(
+      fromTransactionItemCategoriesResponse,
+      this.baseUrl,
+    );
+
+    categoryCache = categories;
+
+    return categories;
   }
 }

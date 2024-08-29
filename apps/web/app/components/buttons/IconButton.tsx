@@ -55,7 +55,7 @@ export function getIconSize(size?: string | null) {
     case 'xs':
       return 'h-4 w-4';
     case 'sm':
-      return 'h-5 w-5';
+      return 'h-[18px] w-[18px]';
     case 'lg':
       return 'h-6 w-6';
     default:

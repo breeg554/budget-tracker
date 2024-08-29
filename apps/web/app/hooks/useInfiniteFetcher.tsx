@@ -61,7 +61,7 @@ export const useInfiniteFetcher = <T, R>(
     const urlWithParams = buildUrlWithParams(args.loaderUrl, {
       page: 1,
       limit: actualPagination.limit,
-      search: params.search,
+      ...params,
     });
 
     fetcher.load(urlWithParams);
@@ -95,19 +95,27 @@ export const useInfiniteFetcher = <T, R>(
   }, [data, actualPagination]);
 
   const hasNextPage = actualPagination.totalPages > actualPagination.page;
+  const splitedPagination = splitPagination(actualPagination);
 
   return {
-    ...actualPagination,
     fetchNextPage,
     filterPages,
     hasNextPage,
     isFetchingNextPage: fetcher.state !== 'idle',
     data: mergedData,
+    filters: splitedPagination.filters,
+    ...splitedPagination.meta,
   };
 };
 
 function getDataPageKey(pagination: Partial<Pagination>) {
-  const { search, limit } = pagination;
+  return hashString(
+    Object.values(splitPagination(pagination).filters).join('-'),
+  );
+}
 
-  return hashString(Object.values({ search, limit }).join('-'));
+function splitPagination(pagination: Partial<Pagination>) {
+  const { totalPages, totalItems, page, ...rest } = pagination;
+
+  return { filters: rest, meta: { totalPages, totalItems, page } };
 }

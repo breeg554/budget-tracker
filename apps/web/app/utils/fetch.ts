@@ -9,7 +9,7 @@ import {
   ValidationError,
 } from '~/utils/errors';
 
-type ParsedResponse<T> = Response & { data: T };
+export type ParsedResponse<T> = Response & { data: T };
 
 export const typedFetch = async <T extends ZodType>(
   schema: T,

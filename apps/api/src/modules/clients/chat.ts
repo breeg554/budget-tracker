@@ -17,7 +17,7 @@ export class ChatClient {
 
     const chatCompletion = await client.chat.completions.create({
       messages: messages,
-      model: args.model ?? 'gpt-4o-mini-2024-07-18',
+      model: args.model ?? 'gpt-4o-2024-08-06',
       response_format: args.response_format,
     });
 
