@@ -24,3 +24,10 @@ export function buildUrlWithParams(
 
   return url;
 }
+
+export function getUrlArrayParam(value: string | string[] | null | undefined) {
+  if (!value) return undefined;
+
+  const arr = typeof value === 'string' ? value.split(',') : value;
+  return arr.filter(Boolean);
+}

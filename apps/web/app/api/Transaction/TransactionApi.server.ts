@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 import { createPaginatedSchema } from '~/api/api.types';
 import { CreateTransactionDto } from '~/api/Transaction/transactionApi.types';
+import { PAGINATION_DEFAULTS } from '~/pagination/pagination.utils';
 import { typedFetch, TypedFetch } from '~/utils/fetch';
 import { buildUrlWithParams, UrlQueryParams } from '~/utils/url';
 
@@ -26,13 +27,19 @@ export class TransactionApi {
   }
 
   async getAll(organizationName: string, query?: UrlQueryParams) {
-    const params: Record<string, any> = { ...query };
+    const params: Record<string, any> = {
+      limit: query?.limit ?? PAGINATION_DEFAULTS.limit,
+      page: query?.page ?? PAGINATION_DEFAULTS.page,
+    };
 
     if (query?.startDate && query?.endDate) {
       params['filter.date'] = `$btw:${query.startDate},${query.endDate}`;
     }
     if (query?.category) {
       params['filter.items.category.id'] = `$in:${query.category}`;
+    }
+    if (query?.search) {
+      params['search'] = query.search;
     }
 
     return this.client(

@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SerializeFrom } from '@remix-run/node';
-import { useFetcher } from '@remix-run/react';
-import type { FetcherWithComponents } from '@remix-run/react';
+import { useLoaderData, useNavigate, useNavigation } from '@remix-run/react';
 
 import { Pagination } from '~/pagination/pagination.utils';
 import { hashString } from '~/utils/stringHash';
@@ -9,99 +8,96 @@ import { buildUrlWithParams } from '~/utils/url';
 
 interface UseInfiniteFetcherProps<T, R, P = {}> {
   loaderUrl: string;
-  initialPagination: Pagination<P>;
-  initialData?: T[];
-  dataExtractor: (
-    response: FetcherWithComponents<SerializeFrom<R>>,
-  ) => { data?: T[]; pagination?: Pagination<P> } | undefined;
+  dataExtractor: (response: SerializeFrom<R>) => {
+    data: T[];
+    pagination: Pagination<P>;
+  };
 }
-
+//@todo handle case when user is on different page than 1 and he refreshes the page
 export const useInfiniteFetcher = <T, R>(
   args: UseInfiniteFetcherProps<T, R>,
 ) => {
-  const fetcher = useFetcher<R>();
-  const { page: initialPage, ...initialState } = args.initialPagination;
+  const { state } = useNavigation();
+  const navigate = useNavigate();
+  const loader = useLoaderData<R>();
+  const { pagination, data: freshData } = args.dataExtractor(loader);
+  const isIdle = state === 'idle';
 
   const [data, setData] = useState<Record<number, Record<number, T[]>>>({
-    [getDataPageKey(initialState)]: {
-      [initialPage]: args?.initialData ?? [],
+    [getDataPageKey(pagination)]: {
+      [pagination.page]: freshData ?? [],
     },
   });
+  useEffect(() => {
+    const key = getDataPageKey(pagination);
+    const page = pagination.page;
 
-  const actualPagination = useMemo(() => {
-    const data = args.dataExtractor(fetcher);
+    if (data[key]?.[page]) return;
 
-    return {
-      ...initialState,
-      ...data?.pagination,
-      page: data?.pagination?.page ?? initialPage,
-    };
-  }, [initialState, fetcher.data]);
+    setData((prev) => ({
+      ...prev,
+      [key]: {
+        ...prev[key],
+        [page]: freshData ?? [],
+      },
+    }));
+  }, [pagination, data]);
 
-  const fetchNextPage = () => {
-    if (fetcher.state !== 'idle') return;
-    const newPage = actualPagination.page + 1;
+  const fetchNextPage = useCallback(() => {
+    if (!isIdle) return;
 
-    const key = getDataPageKey(initialState);
+    const newPage = pagination.page + 1;
+
+    const key = getDataPageKey(pagination);
 
     if (data?.[key]?.[newPage] !== undefined) return;
 
+    const params = splitPagination(pagination).filters;
+
     const urlWithParams = buildUrlWithParams(args.loaderUrl, {
+      ...params,
       page: newPage,
-      limit: actualPagination.limit,
-      search: actualPagination.search,
     });
 
-    fetcher.load(urlWithParams);
-  };
+    navigate(urlWithParams, { preventScrollReset: true });
+  }, [pagination, args.loaderUrl, data]);
 
   const filterPages = (params: Partial<Pagination>) => {
-    if (fetcher.state !== 'idle') return;
+    if (!isIdle) return;
 
     const urlWithParams = buildUrlWithParams(args.loaderUrl, {
       page: 1,
-      limit: actualPagination.limit,
+      limit: pagination.limit,
       ...params,
     });
 
-    fetcher.load(urlWithParams);
+    const key = getDataPageKey({ ...pagination, ...params });
+
+    setData((prev) => ({
+      ...prev,
+      [key]: {},
+    }));
+
+    navigate(urlWithParams, { preventScrollReset: true });
   };
 
-  useEffect(() => {
-    const newData = args.dataExtractor(fetcher);
-
-    if (newData?.data && newData.data.length > 0 && fetcher.state === 'idle') {
-      const meta = actualPagination;
-
-      const key = getDataPageKey(meta ?? {});
-
-      setData((prev) => ({
-        ...prev,
-        [key]: {
-          ...prev[key],
-          [meta.page ?? 1]: newData.data ?? [],
-        },
-      }));
-    }
-  }, [fetcher.state]);
-
   const mergedData = useMemo(() => {
-    const key = getDataPageKey(actualPagination);
+    const key = getDataPageKey(pagination);
 
     return Object.values(data?.[key] ?? {}).reduce(
       (acc, curr) => [...acc, ...curr],
       [] as T[],
     );
-  }, [data, actualPagination]);
+  }, [data, pagination]);
 
-  const hasNextPage = actualPagination.totalPages > actualPagination.page;
-  const splitedPagination = splitPagination(actualPagination);
+  const hasNextPage = pagination.totalPages > pagination.page;
+  const splitedPagination = splitPagination(pagination);
 
   return {
     fetchNextPage,
     filterPages,
     hasNextPage,
-    isFetchingNextPage: fetcher.state !== 'idle',
+    isFetchingNextPage: !isIdle,
     data: mergedData,
     filters: splitedPagination.filters,
     ...splitedPagination.meta,
