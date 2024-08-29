@@ -2,23 +2,22 @@ import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { LoggerModule } from 'nestjs-pino';
+import { RouterModule } from '~/modules/router/router.module';
 
+import { LoggerModule } from 'nestjs-pino';
 import { DBConfig, RedisConfig } from '~/config';
 import { AuthModule } from '~/modules/auth/auth.module';
 import { JwtGuard } from '~/modules/auth/jwt.guard';
 import { JwtStrategy } from '~/modules/auth/jwt.strategy';
 import { CustomZodValidationPipe } from '~/modules/errors/zodValidationPipe';
 import { OrganizationModule } from '~/modules/organization/organization.module';
-import { TransactionModule } from '~/modules/organization/transaction/transaction.module';
 
+import { TransactionModule } from '~/modules/organization/transaction/transaction.module';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { SecretModule } from '~/modules/organization/secret/secret.module';
 import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
 import { StatisticsModule } from '~/modules/organization/statistics/statistics.module';
 import { CacheModule } from '@nestjs/cache-manager';
-
 import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
@@ -71,6 +70,8 @@ import { redisStore } from 'cache-manager-redis-yet';
         },
       },
     }),
+    RouterModule,
+
     AuthModule,
     OrganizationModule,
     TransactionModule,
@@ -88,7 +89,6 @@ import { redisStore } from 'cache-manager-redis-yet';
       provide: APP_PIPE,
       useClass: CustomZodValidationPipe,
     },
-    AppService,
     {
       provide: APP_GUARD,
       useClass: JwtGuard,

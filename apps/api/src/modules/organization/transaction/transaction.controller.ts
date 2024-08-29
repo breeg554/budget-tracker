@@ -2,11 +2,11 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 
 import { CreateTransactionDto } from '~/dtos/transaction/create-transaction.dto';
 import { GetTransactionDto } from '~/dtos/transaction/get-transaction.dto';
-import { AuthUser, User } from '~/modules/auth/decorators/user.decorator';
+import { AuthUser, User } from '~/modules/decorators/user.decorator';
 import { TransactionService } from '~/modules/organization/transaction/transaction.service';
 import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 
-@Controller('/organizations/:organizationName/transactions')
+@Controller()
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 

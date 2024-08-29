@@ -7,10 +7,10 @@ import {
 } from '@nestjs/common';
 
 import { ReceiptService } from '~/modules/organization/receipt/receipt.service';
-import { AuthUser, User } from '~/modules/auth/decorators/user.decorator';
+import { AuthUser, User } from '~/modules/decorators/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('organizations/:organizationName/receipts')
+@Controller()
 export class ReceiptController {
   constructor(private readonly receiptService: ReceiptService) {}
 

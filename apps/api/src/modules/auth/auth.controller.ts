@@ -13,7 +13,7 @@ import { Response } from 'express';
 import { SignInDto } from '~/dtos/auth/sign-in.dto';
 import { CreateUserDto } from '~/dtos/users/create-user.dto';
 import { AuthService } from '~/modules/auth/auth.service';
-import { Public } from '~/modules/auth/public.decorator';
+import { Public } from '~/modules/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -26,9 +26,10 @@ export class AuthController {
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { accessToken,refreshToken } = await this.authService.signIn(signInDto);
+    const { accessToken, refreshToken } =
+      await this.authService.signIn(signInDto);
 
-     this.returnCookie(res, accessToken, refreshToken);
+    this.returnCookie(res, accessToken, refreshToken);
   }
 
   @Public()
@@ -38,23 +39,30 @@ export class AuthController {
     @Body() signUpDto: CreateUserDto,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { accessToken, refreshToken } = await this.authService.signUp(signUpDto);
+    const { accessToken, refreshToken } =
+      await this.authService.signUp(signUpDto);
 
-     this.returnCookie(res, accessToken, refreshToken);
+    this.returnCookie(res, accessToken, refreshToken);
   }
 
-  private returnCookie(res: Response, accessToken: string, refreshToken: string) {
-    res.cookie('access_token', accessToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 1 * 60 * 1000), // 1 minuta
-    }).cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
-      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dni
-    })
+  private returnCookie(
+    res: Response,
+    accessToken: string,
+    refreshToken: string,
+  ) {
+    res
+      .cookie('access_token', accessToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        expires: new Date(Date.now() + 1 * 60 * 1000), // 1 minuta
+      })
+      .cookie('refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: false,
+        sameSite: 'lax',
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dni
+      });
     res.send({ status: 'ok' });
   }
 }

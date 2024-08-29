@@ -6,13 +6,12 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
-
-import { AuthUser, User } from '~/modules/auth/decorators/user.decorator';
+import { AuthUser, User } from '~/modules/decorators/user.decorator';
 import { StatisticsService } from '~/modules/organization/statistics/statistics.service';
 import { GetStatisticsByCategoryDto } from '~/dtos/statistics/get-statistics-by-category.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
 
-@Controller('/organizations/:organizationName/statistics')
+@Controller()
 @UseInterceptors(CacheInterceptor)
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}

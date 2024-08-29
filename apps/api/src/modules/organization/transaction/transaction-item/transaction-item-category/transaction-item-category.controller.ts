@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 
 import { CreateTransactionItemCategoryDto } from '~/dtos/transaction/create-transaction-item-category.dto';
 import { GetTransactionItemCategoryDto } from '~/dtos/transaction/get-transaction-item-category.dto';
-import { Public } from '~/modules/auth/public.decorator';
+import { Public } from '~/modules/decorators/public.decorator';
 
 import { TransactionItemCategoryService } from './transaction-item-category.service';
 
