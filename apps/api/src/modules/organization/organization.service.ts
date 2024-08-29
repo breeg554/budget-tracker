@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -9,6 +9,7 @@ import { UserService } from '~/modules/organization/user/user.service';
 import { SecretService } from '~/modules/organization/secret/secret.service';
 import { Secret } from '~/entities/secret/secret.entity';
 import { CreateSecretDto } from '~/dtos/secret/create-secret.dto';
+import { OrganizationNotFoundError } from '~/modules/organization/errors/organization.error';
 
 @Injectable()
 export class OrganizationService {
@@ -90,7 +91,7 @@ export class OrganizationService {
       !organization ||
       !organization.users.some((orgUser) => orgUser.id === userId)
     ) {
-      throw new NotFoundException('Organization not found');
+      throw new OrganizationNotFoundError();
     }
 
     return organization;

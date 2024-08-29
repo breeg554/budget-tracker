@@ -6,6 +6,12 @@ import { OrganizationService } from '~/modules/organization/organization.service
 import { ChatClient } from '~/modules/clients/chat';
 import { TransactionItemCategoryService } from '~/modules/organization/transaction/transaction-item/transaction-item-category/transaction-item-category.service';
 import { getProcessedReceipt } from '~/dtos/receipt/get-processed-receipt.dto';
+import { ZodError } from 'zod';
+import {
+  ReceiptError,
+  ReceiptParseError,
+  ReceiptSchemaError,
+} from '~/modules/organization/receipt/errors/receipt.error';
 
 @Injectable()
 export class ReceiptService {
@@ -38,11 +44,12 @@ export class ReceiptService {
       2,
     );
 
-    const messages = await this.chatClient.createChat(
-      [
-        {
-          role: 'system',
-          content: `
+    try {
+      const messages = await this.chatClient.createChat(
+        [
+          {
+            role: 'system',
+            content: `
           You are an expert in extracting information from receipts. I will send you a shop receipt in image format ( image is taken vertically ) in Polish, and your task is to accurately retrieve all product details.
 
           Remember to:
@@ -62,20 +69,20 @@ export class ReceiptService {
           6. Assign the most appropriate category ID from the "Available Categories" list to each product. If no category fits, use the ID of "other" category as a last resort.
           7. Ensure that the "category" field contains only the ID (UUID format) from the "Available Categories" list and not the name. The "categoryName" should contain the actual name from the same list.
           8. Product names shouldn't be capitalized.
-          
+
           --- Available Categories ---
-       
+
           ${preparedCategories}
-        
+
           ---
 
           Return json format of that shape
-          
+
             ---
             {
               content: ALL TEXT FROM RECEIPT THAT YOU USED TO GET PRODUCTS,
               products: [
-                { 
+                {
                   name: PRODUCT_NAME ( e.g. "Apple" ),
                   price: PRICE_OF_ITEM ( e.g. 2.99 ),
                   quantity: QUANTITY_OF_ITEM ( e.g. 1 ),
@@ -85,32 +92,38 @@ export class ReceiptService {
               ]
             }
             ---
-            
+
           If you cannot retrieve any products or content from image, return empty array for "products" and empty string for "content".
-          
+
           Check two, three times that name, quantity, and price are correctly matched. Ensure that price refers to the price per unit or kg and not the total line price!!!
-          
+
           Ignore addresses, dates, and other irrelevant information that are above and below the product list.
           `,
-        },
-        {
-          role: 'user',
-          content: [
-            {
-              type: 'image_url',
-              image_url: {
-                url: `data:image/${file.mimetype};base64,${base64Image}`,
+          },
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'image_url',
+                image_url: {
+                  url: `data:image/${file.mimetype};base64,${base64Image}`,
+                },
               },
-            },
-          ],
+            ],
+          },
+        ],
+        {
+          apiKey: secret.value,
+          response_format: { type: 'json_object' },
         },
-      ],
-      {
-        apiKey: secret.value,
-        response_format: { type: 'json_object' },
-      },
-    );
+      );
 
-    return getProcessedReceipt.parse(JSON.parse(messages.content));
+      return getProcessedReceipt.parse(JSON.parse(messages.content));
+    } catch (err) {
+      if (err instanceof SyntaxError) throw new ReceiptParseError();
+      if (err instanceof ZodError) throw new ReceiptSchemaError();
+
+      throw new ReceiptError(err);
+    }
   }
 }
