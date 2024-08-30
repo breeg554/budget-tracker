@@ -38,6 +38,10 @@ export class TransactionItemCategory {
         return '🔋';
       case 'others':
         return '❓';
+      case 'entertainment':
+        return '🎥';
+      case 'utilities':
+        return '💡';
       default:
         return '';
     }
