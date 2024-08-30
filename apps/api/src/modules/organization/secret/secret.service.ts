@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Secret } from '~/entities/secret/secret.entity';
 import { CreateSecretDto } from '~/dtos/secret/create-secret.dto';
 import { EncryptionService } from '~/modules/encryption.service';
+import { SecretNotFoundError } from '~/modules/organization/secret/errors/secret.error';
 
 @Injectable()
 export class SecretService {
@@ -44,7 +45,7 @@ export class SecretService {
       where: { name, organization: { id: organizationId } },
     });
 
-    if (!secret) throw new NotFoundException('Secret not found');
+    if (!secret) throw new SecretNotFoundError();
 
     secret.value = this.encryptionService.decrypt(secret.value);
 

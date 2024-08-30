@@ -40,10 +40,14 @@ export class OrganizationService {
   }
 
   async findByName(name: string): Promise<Organization> {
-    return this.organizationRepository.findOne({
+    const organization = await this.organizationRepository.findOne({
       where: { name },
       relations: ['users'],
     });
+
+    if (!organization) throw new OrganizationNotFoundError();
+
+    return organization;
   }
 
   async findAllByUser(email: string): Promise<Organization[]> {

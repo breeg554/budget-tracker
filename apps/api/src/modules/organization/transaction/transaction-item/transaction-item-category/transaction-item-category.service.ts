@@ -17,7 +17,13 @@ export class TransactionItemCategoryService {
   }
 
   async findOne(id: string): Promise<TransactionItemCategory> {
-    return this.transactionItemCategoryRepository.findOne({ where: { id } });
+    const category = await this.transactionItemCategoryRepository.findOne({
+      where: { id },
+    });
+
+    if (!category) throw new NotFoundException('Category not found');
+
+    return category;
   }
 
   async create(

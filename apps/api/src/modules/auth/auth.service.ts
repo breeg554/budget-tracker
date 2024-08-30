@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -15,6 +11,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Session } from '~/entities/session/session.entity';
 import { EncryptionService } from '~/modules/encryption.service';
+import { InvalidCredentialsError } from '~/modules/auth/errors/auth.error';
 
 @Injectable()
 export class AuthService {
@@ -30,13 +27,13 @@ export class AuthService {
     const user: User = await this.userService.findOneByEmail(email);
 
     if (!user) {
-      throw new BadRequestException('Password or email does not match');
+      throw new InvalidCredentialsError();
     }
 
     const isMatch: boolean = bcrypt.compareSync(password, user.password);
 
     if (!isMatch) {
-      throw new BadRequestException('Password or email does not match');
+      throw new InvalidCredentialsError();
     }
 
     return user;
@@ -46,7 +43,7 @@ export class AuthService {
     const user = await this.userService.findOneByEmail(payload.email);
 
     if (!user) {
-      throw new BadRequestException('Password or email does not match');
+      throw new InvalidCredentialsError();
     }
 
     const accessToken = this.generateAccessToken({
@@ -110,40 +107,40 @@ export class AuthService {
     return this.jwtService.sign(payload, { expiresIn: '60d' });
   }
 
-  async refreshAccessToken(refreshToken: string) {
-    try {
-      const payload = this.jwtService.verify(refreshToken);
-      const userId = payload.id;
-
-      const session = await this.sessionRepository.findOne({
-        where: { user: { id: userId } },
-      });
-
-      if (!session) {
-        throw new UnauthorizedException();
-      }
-
-      const decryptedRefreshToken = this.encryptionService.decrypt(
-        session.refreshToken,
-      );
-
-      if (decryptedRefreshToken !== refreshToken) {
-        throw new UnauthorizedException();
-      }
-
-      const user = await this.userService.findOne(userId);
-      if (!user) {
-        throw new UnauthorizedException();
-      }
-
-      return {
-        accessToken: this.generateAccessToken({
-          email: user.email,
-          id: user.id,
-        }),
-      };
-    } catch (err) {
-      throw new UnauthorizedException();
-    }
-  }
+  // async refreshAccessToken(refreshToken: string) {
+  //   try {
+  //     const payload = this.jwtService.verify(refreshToken);
+  //     const userId = payload.id;
+  //
+  //     const session = await this.sessionRepository.findOne({
+  //       where: { user: { id: userId } },
+  //     });
+  //
+  //     if (!session) {
+  //       throw new UnauthorizedException();
+  //     }
+  //
+  //     const decryptedRefreshToken = this.encryptionService.decrypt(
+  //       session.refreshToken,
+  //     );
+  //
+  //     if (decryptedRefreshToken !== refreshToken) {
+  //       throw new UnauthorizedException();
+  //     }
+  //
+  //     const user = await this.userService.findOne(userId);
+  //     if (!user) {
+  //       throw new UnauthorizedException();
+  //     }
+  //
+  //     return {
+  //       accessToken: this.generateAccessToken({
+  //         email: user.email,
+  //         id: user.id,
+  //       }),
+  //     };
+  //   } catch (err) {
+  //     throw new UnauthorizedException();
+  //   }
+  // }
 }

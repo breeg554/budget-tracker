@@ -55,13 +55,13 @@ export class AuthController {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        expires: new Date(Date.now() + 1 * 60 * 1000), // 1 minuta
+        expires: new Date(Date.now() + 1 * 60 * 1000),
       })
       .cookie('refresh_token', refreshToken, {
         httpOnly: true,
         secure: false,
         sameSite: 'lax',
-        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 dni
+        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       });
     res.send({ status: 'ok' });
   }
