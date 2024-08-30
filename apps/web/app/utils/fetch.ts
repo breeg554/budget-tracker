@@ -1,4 +1,5 @@
 import merge from 'lodash.merge';
+import { LRUCache } from 'lru-cache';
 import { z, ZodType } from 'zod';
 
 import {
@@ -11,17 +12,32 @@ import {
 
 export type ParsedResponse<T> = Response & { data: T };
 
+type TypedFetchRequestInit = RequestInit & { cacheId?: string | null };
+
+const cache = new LRUCache<string, Response>({
+  max: 500,
+});
+
 export const typedFetch = async <T extends ZodType>(
   schema: T,
   url: string,
-  args?: RequestInit,
+  args?: TypedFetchRequestInit,
 ): Promise<ParsedResponse<z.infer<T>>> => {
+  let cachedResponse: Response | undefined = undefined;
+
+  if (isGetRequest(args)) {
+    cachedResponse = cache.get(buildCacheKey(url, args));
+  }
+
   const headers =
     args?.body instanceof FormData
       ? {}
-      : { 'Content-Type': 'application/json' };
+      : {
+          'Content-Type': 'application/json',
+          'If-None-Match': cachedResponse?.headers.get('etag'),
+        };
 
-  const response = await fetch(
+  let response = await fetch(
     url,
     merge(
       {
@@ -33,6 +49,14 @@ export const typedFetch = async <T extends ZodType>(
     console.error(`Failed to fetch from url: ${url} - ${e}`);
     throw new UnknownAPIError();
   });
+
+  if (response.status === 200 && isGetRequest(args)) {
+    cache.set(buildCacheKey(url, args), response.clone());
+  }
+
+  if (response.status === 304 && cachedResponse) {
+    response = cachedResponse.clone();
+  }
 
   if (!response.ok) {
     if (response.status === 422) {
@@ -65,3 +89,11 @@ export const typedFetch = async <T extends ZodType>(
 };
 
 export type TypedFetch = typeof typedFetch;
+
+function isGetRequest(args?: RequestInit): boolean {
+  return !args?.method || args.method === 'GET' || args.method === 'get';
+}
+
+function buildCacheKey(url: string, args?: TypedFetchRequestInit): string {
+  return url + (args?.cacheId ?? '');
+}

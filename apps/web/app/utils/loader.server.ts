@@ -1,7 +1,7 @@
 import { json, LoaderFunctionArgs, redirect } from '@remix-run/node';
 
 import { routes } from '~/routes';
-import { logout } from '~/session.server';
+import { SessionState } from '~/session.server';
 import {
   NotFoundError,
   UnauthorizedError,
@@ -16,6 +16,7 @@ export const loaderHandler =
     try {
       return await fn(args, { fetch: await serverTypedFetch(args.request) });
     } catch (e) {
+      const sessionState = await SessionState.fromRequest(args.request);
       if (e instanceof UnknownAPIError) {
         throw json(
           { error: 'Unknown API error' },
@@ -31,7 +32,7 @@ export const loaderHandler =
       } else if (e instanceof UnauthorizedError) {
         throw redirect(routes.signIn.getPath(), {
           headers: {
-            'Set-cookie': await logout(args.request),
+            'Set-cookie': await sessionState.logout(),
           },
         });
       }

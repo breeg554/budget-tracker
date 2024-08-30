@@ -1,12 +1,12 @@
 import merge from 'lodash.merge';
 
-import { getSession } from '~/session.server';
+import { SessionState } from '~/session.server';
 import { typedFetch, TypedFetch } from '~/utils/fetch';
 
 export const serverTypedFetch =
   async (request: Request): Promise<TypedFetch> =>
   async (schema, url, options) => {
-    const session = await getSession(request.headers.get('Cookie'));
+    const sessionState = await SessionState.fromRequest(request);
 
     return typedFetch(
       schema,
@@ -14,10 +14,10 @@ export const serverTypedFetch =
       merge(
         {
           headers: {
-            Cookie: session.get('tokens'),
+            Cookie: sessionState.tokens,
           },
         },
-        options ?? {},
+        { ...options, cacheId: sessionState.currentUser?.id },
       ),
     );
   };

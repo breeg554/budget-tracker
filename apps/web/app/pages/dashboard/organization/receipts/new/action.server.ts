@@ -4,7 +4,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { createTransactionSchema } from '~/api/Transaction/transactionApi.contracts';
 import { TransactionApi } from '~/api/Transaction/TransactionApi.server';
 import { routes } from '~/routes';
-import { requireSignedIn, setServerToasts } from '~/session.server';
+import { requireSignedIn, SessionState } from '~/session.server';
 import { actionHandler } from '~/utils/action.server';
 import { assert } from '~/utils/assert';
 
@@ -26,14 +26,18 @@ export const action = actionHandler({
 
     await transactionApi.create(params.organizationName, submission.value);
 
+    const sessionState = await SessionState.fromRequest(request);
+
     return redirect(routes.organization.getPath(params.organizationName), {
       headers: {
-        'Set-Cookie': await setServerToasts(request, {
-          success: {
-            title: 'Transaction created',
-            description: `You've successfully created the transaction`,
-          },
-        }),
+        'Set-Cookie': await sessionState
+          .setToasts({
+            success: {
+              title: 'Transaction created',
+              description: `You've successfully created the transaction`,
+            },
+          })
+          .commit(),
       },
     });
   },

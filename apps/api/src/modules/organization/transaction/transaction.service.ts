@@ -8,7 +8,7 @@ import { Transaction } from '~/entities/transaction/transaction.entity';
 import { TransactionItem } from '~/entities/transaction/transactionItem.entity';
 import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 import { OrganizationService } from '~/modules/organization/organization.service';
-import { UserService } from '~/modules/organization/user/user.service';
+import { UserService } from '~/modules/user/user.service';
 import {
   FilterOperator,
   paginate,

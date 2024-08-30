@@ -14,7 +14,7 @@ import './style.css';
 
 import { useEffect } from 'react';
 
-import { getServerToasts } from '~/session.server';
+import { SessionState } from '~/session.server';
 import { errorToast } from '~/toasts/errorToast';
 import { successToast } from '~/toasts/successToast';
 import { ToastProps } from '~/toasts/Toast.interface';
@@ -55,9 +55,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const { cookie, toasts } = await getServerToasts(args.request);
+  const sessionState = await SessionState.fromRequest(args.request);
 
-  return json({ toasts }, { headers: { 'Set-Cookie': cookie } });
+  const toasts = sessionState.toasts;
+
+  return json(
+    { toasts },
+    { headers: { 'Set-Cookie': await sessionState.commit() } },
+  );
 };
 
 export default function App() {
@@ -75,7 +80,7 @@ export default function App() {
     if (toasts.warning) {
       warningToast(toasts.warning as ToastProps);
     }
-  }, [JSON.stringify(toasts)]);
+  }, [toasts]);
 
   return <Outlet />;
 }

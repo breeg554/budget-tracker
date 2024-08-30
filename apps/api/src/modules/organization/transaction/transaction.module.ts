@@ -6,7 +6,7 @@ import { OrganizationModule } from '~/modules/organization/organization.module';
 import { TransactionItemModule } from '~/modules/organization/transaction/transaction-item/transaction-item.module';
 import { TransactionController } from '~/modules/organization/transaction/transaction.controller';
 import { TransactionService } from '~/modules/organization/transaction/transaction.service';
-import { UserModule } from '~/modules/organization/user/user.module';
+import { UserModule } from '~/modules/user/user.module';
 
 @Module({
   imports: [

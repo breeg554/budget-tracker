@@ -3,8 +3,9 @@ import { parseWithZod } from '@conform-to/zod';
 
 import { signUpSchema } from '~/api/Auth/authApi.contracts';
 import { AuthApi } from '~/api/Auth/AuthApi.server';
+import { UserApi } from '~/api/User/UserApi.server';
 import { routes } from '~/routes';
-import { setAuthSession } from '~/session.server';
+import { SessionState } from '~/session.server';
 import { actionHandler } from '~/utils/action.server';
 
 export const action = actionHandler({
@@ -21,8 +22,26 @@ export const action = actionHandler({
 
     const response = await authApi.signUp(submission.value);
 
-    return redirect(routes.signIn.getPath(), {
-      headers: { 'Set-cookie': await setAuthSession(request, response) },
+    const sessionCookie = response.headers.get('Set-Cookie')!;
+
+    const userApi = new UserApi(fetch);
+    const { data: user } = await userApi.meWithSessionCookie(sessionCookie);
+
+    const session = await SessionState.fromRequest(request);
+
+    return redirect(routes.newOrganization.getPath(), {
+      headers: {
+        'Set-cookie': await session
+          .setAuthCookie(sessionCookie)
+          .setCurrentUser(user)
+          .setToasts({
+            success: {
+              title: 'Account created successfully!',
+              description: 'You can now create a new organization.',
+            },
+          })
+          .commit(),
+      },
     });
   },
 });

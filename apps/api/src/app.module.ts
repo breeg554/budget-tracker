@@ -19,6 +19,7 @@ import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
 import { StatisticsModule } from '~/modules/organization/statistics/statistics.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
+import { UserModule } from '~/modules/user/user.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { redisStore } from 'cache-manager-redis-yet';
     RouterModule,
 
     AuthModule,
+    UserModule,
     OrganizationModule,
     TransactionModule,
     StatisticsModule,

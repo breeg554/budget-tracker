@@ -6,7 +6,7 @@ import {
   DashboardNav,
   NavFloatingWrapper,
 } from '~/dashboard/layout/components/DashboardNav';
-import { requireSignedIn, setLastOrganization } from '~/session.server';
+import { requireSignedIn, SessionState } from '~/session.server';
 import { assert } from '~/utils/assert';
 import { loaderHandler } from '~/utils/loader.server';
 
@@ -25,14 +25,15 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
     });
   }
 
+  const sessionState = await SessionState.fromRequest(request);
+
   return json(
     {},
     {
       headers: {
-        'Set-Cookie': await setLastOrganization(
-          request,
-          organization.data.name,
-        ),
+        'Set-Cookie': await sessionState
+          .setOrganizationName(organization.data.name)
+          .commit(),
       },
     },
   );

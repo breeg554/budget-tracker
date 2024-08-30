@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateOrganizationDto } from '~/dtos/organization/create-organization.dto';
 import { Organization } from '~/entities/organization/organization.entity';
 import { User } from '~/entities/user/user.entity';
-import { UserService } from '~/modules/organization/user/user.service';
+import { UserService } from '~/modules/user/user.service';
 import { SecretService } from '~/modules/organization/secret/secret.service';
 import { Secret } from '~/entities/secret/secret.entity';
 import { CreateSecretDto } from '~/dtos/secret/create-secret.dto';

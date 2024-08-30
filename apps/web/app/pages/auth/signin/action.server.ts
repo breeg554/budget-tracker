@@ -2,8 +2,9 @@ import { json, redirect } from '@remix-run/node';
 import { parseWithZod } from '@conform-to/zod';
 
 import { AuthApi } from '~/api/Auth/AuthApi.server';
+import { UserApi } from '~/api/User/UserApi.server';
 import { routes } from '~/routes';
-import { setAuthSession } from '~/session.server';
+import { SessionState } from '~/session.server';
 import { actionHandler } from '~/utils/action.server';
 
 import { schema } from './schema';
@@ -19,10 +20,22 @@ export const action = actionHandler({
     }
 
     const authApi = new AuthApi(fetch);
-
     const response = await authApi.signIn(submission.value);
+
+    const sessionCookie = response.headers.get('Set-Cookie')!;
+
+    const userApi = new UserApi(fetch);
+    const { data: user } = await userApi.meWithSessionCookie(sessionCookie);
+
+    const session = await SessionState.fromRequest(request);
+
     return redirect(routes.dashboard.getPath(), {
-      headers: { 'Set-cookie': await setAuthSession(request, response) },
+      headers: {
+        'Set-cookie': await session
+          .setAuthCookie(sessionCookie)
+          .setCurrentUser(user)
+          .commit(),
+      },
     });
   },
 });

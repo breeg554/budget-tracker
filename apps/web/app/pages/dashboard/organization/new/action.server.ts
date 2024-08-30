@@ -4,6 +4,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { createOrganizationSchema } from '~/api/Organization/organizationApi.contracts';
 import { OrganizationApi } from '~/api/Organization/OrganizationApi.server';
 import { routes } from '~/routes';
+import { SessionState } from '~/session.server';
 import { actionHandler } from '~/utils/action.server';
 
 export const action = actionHandler({
@@ -21,6 +22,15 @@ export const action = actionHandler({
 
     const { data } = await organizationApi.create(submission.value);
 
-    return redirect(routes.organization.getPath(data.name));
+    const sessionData = await SessionState.fromRequest(request);
+    sessionData
+      .setOrganizationName(data.name)
+      .setToasts({ success: 'Organization created' });
+
+    return redirect(routes.organization.getPath(data.name), {
+      headers: {
+        'Set-Cookie': await sessionData.commit(),
+      },
+    });
   },
 });

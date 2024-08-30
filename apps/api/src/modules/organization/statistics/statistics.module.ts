@@ -5,7 +5,7 @@ import { StatisticsController } from '~/modules/organization/statistics/statisti
 import { TransactionModule } from '~/modules/organization/transaction/transaction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from '~/entities/transaction/transaction.entity';
-import { UserModule } from '~/modules/organization/user/user.module';
+import { UserModule } from '~/modules/user/user.module';
 
 @Module({
   imports: [

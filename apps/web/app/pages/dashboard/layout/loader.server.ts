@@ -2,7 +2,7 @@ import { redirect } from '@remix-run/node';
 
 import { OrganizationApi } from '~/api/Organization/OrganizationApi.server';
 import { routes } from '~/routes';
-import { getLastOrganization, requireSignedIn } from '~/session.server';
+import { requireSignedIn, SessionState } from '~/session.server';
 import { loaderHandler } from '~/utils/loader.server';
 
 export const loader = loaderHandler(async ({ request }, { fetch }) => {
@@ -14,7 +14,9 @@ export const loader = loaderHandler(async ({ request }, { fetch }) => {
 
   if (data.length <= 0) return redirect(routes.newOrganization.getPath());
 
-  const lastOrganization = await getLastOrganization(request);
+  const sessionState = await SessionState.fromRequest(request);
+  const lastOrganization = sessionState.organizationName;
+
   if (lastOrganization) {
     return redirect(routes.organization.getPath(lastOrganization));
   }

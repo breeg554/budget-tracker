@@ -7,7 +7,7 @@ import {
 import { SubmissionResult } from '@conform-to/react';
 
 import { routes } from '~/routes';
-import { logout, setServerToasts } from '~/session.server';
+import { SessionState } from '~/session.server';
 import {
   BadRequestError,
   NotFoundError,
@@ -67,12 +67,14 @@ export const actionHandler =
             : notFound();
       }
     } catch (e) {
+      const sessionState = await SessionState.fromRequest(actionArgs.request);
+
       if (e instanceof ValidationError) {
         return json(toSubmissionError(e.fieldErrors));
       } else if (e instanceof UnauthorizedError) {
         throw redirect(routes.signIn.getPath(), {
           headers: {
-            'Set-cookie': await logout(actionArgs.request),
+            'Set-cookie': await sessionState.logout(),
           },
         });
       } else if (e instanceof NotFoundError) {
@@ -83,18 +85,22 @@ export const actionHandler =
         return json(toSubmissionError({ global: [errorMessage] }), {
           status: 500,
           headers: {
-            'Set-cookie': await setServerToasts(actionArgs.request, {
-              error: errorMessage,
-            }),
+            'Set-cookie': await sessionState
+              .setToasts({
+                error: errorMessage,
+              })
+              .commit(),
           },
         });
       } else if (e instanceof BadRequestError) {
         return json(toSubmissionError({ global: [e.message] }), {
           status: 400,
           headers: {
-            'Set-cookie': await setServerToasts(actionArgs.request, {
-              error: e.message,
-            }),
+            'Set-cookie': await sessionState
+              .setToasts({
+                error: e.message,
+              })
+              .commit(),
           },
         });
       }

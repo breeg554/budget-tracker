@@ -4,6 +4,7 @@ import { TransactionModule } from '~/modules/organization/transaction/transactio
 import { StatisticsModule } from '~/modules/organization/statistics/statistics.module';
 import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
 import { Module } from '@nestjs/common';
+import { UserModule } from '~/modules/user/user.module';
 
 @Module({
   imports: [
@@ -25,6 +26,10 @@ import { Module } from '@nestjs/common';
             module: ReceiptModule,
           },
         ],
+      },
+      {
+        path: 'users',
+        module: UserModule,
       },
     ]),
   ],

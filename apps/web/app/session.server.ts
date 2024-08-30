@@ -1,5 +1,6 @@
-import { createCookieSessionStorage, redirect } from '@remix-run/node';
+import { createCookieSessionStorage, redirect, Session } from '@remix-run/node';
 
+import { UserMeDto } from '~/api/User/userApi.types';
 import { routes } from '~/routes';
 import { ToastProps } from '~/toasts/Toast.interface';
 
@@ -9,6 +10,7 @@ type AuthData = {
 
 type SessionData = {
   organizationName?: string;
+  currentUser?: UserMeDto;
 } & AuthData;
 
 type Toasts = {
@@ -34,77 +36,78 @@ const createSession = createCookieSessionStorage<SessionData, FlushData>({
 
 export const { getSession, commitSession, destroySession } = createSession;
 
-export const logout = async (request: Request) => {
-  const cookie = request.headers.get('Cookie');
-  const session = await getSession(cookie);
+export class SessionState {
+  constructor(private readonly session: Session<SessionData, FlushData>) {}
 
-  return await destroySession(session);
-};
+  static async fromRequest(request: Request) {
+    const cookie = request.headers.get('Cookie');
+
+    return new SessionState(await getSession(cookie));
+  }
+
+  setAuthCookie(cookie: string) {
+    this.session.set('tokens', cookie);
+
+    return this;
+  }
+
+  setCurrentUser(user: UserMeDto) {
+    this.session.set('currentUser', user);
+
+    return this;
+  }
+
+  setOrganizationName(organizationName: string) {
+    this.session.set('organizationName', organizationName);
+
+    return this;
+  }
+
+  setToasts(toasts: Partial<Toasts>) {
+    this.session.flash('toasts', toasts);
+
+    return this;
+  }
+
+  async commit() {
+    return await commitSession(this.session);
+  }
+
+  async logout() {
+    return await destroySession(this.session);
+  }
+
+  get tokens() {
+    return this.session.get('tokens');
+  }
+
+  get organizationName() {
+    return this.session.get('organizationName');
+  }
+
+  get toasts() {
+    return this.session.get('toasts');
+  }
+
+  get currentUser() {
+    return this.session.get('currentUser');
+  }
+}
 
 export const requireSignedIn = async (request: Request) => {
-  const cookie = request.headers.get('Cookie');
-  const session = await getSession(cookie);
+  const sessionState = await SessionState.fromRequest(request);
 
-  if (!session.get('tokens')) {
+  if (!sessionState.tokens) {
     throw redirect(routes.signIn.getPath(), {
-      headers: { 'Set-cookie': await logout(request) },
+      headers: { 'Set-cookie': await sessionState.logout() },
     });
   }
 };
 
 export const requireNotSignedIn = async (request: Request) => {
-  const cookie = request.headers.get('Cookie');
-  const session = await getSession(cookie);
+  const sessionState = await SessionState.fromRequest(request);
 
-  if (session.get('tokens')) {
+  if (sessionState.tokens) {
     throw redirect(routes.dashboard.getPath());
   }
-};
-
-export const setAuthSession = async (request: Request, response: Response) => {
-  const authCookie = response.headers.get('Set-Cookie')!;
-  const session = await getSession(request.headers.get('Cookie'));
-
-  session.set('tokens', authCookie);
-
-  return await commitSession(session);
-};
-
-export const setLastOrganization = async (
-  request: Request,
-  organizationName: string,
-) => {
-  const session = await getSession(request.headers.get('Cookie'));
-
-  session.set('organizationName', organizationName);
-
-  return await commitSession(session);
-};
-
-export const getLastOrganization = async (
-  request: Request,
-): Promise<string | undefined> => {
-  const cookie = request.headers.get('Cookie');
-  const session = await getSession(cookie);
-
-  return session.get('organizationName');
-};
-
-export const setServerToasts = async (
-  request: Request,
-  toasts: Partial<Toasts>,
-) => {
-  const session = await getSession(request.headers.get('Cookie'));
-
-  session.flash('toasts', toasts);
-
-  return await commitSession(session);
-};
-
-export const getServerToasts = async (request: Request) => {
-  const session = await getSession(request.headers.get('Cookie'));
-
-  const toasts = session.get('toasts');
-
-  return { cookie: await commitSession(session), toasts };
 };

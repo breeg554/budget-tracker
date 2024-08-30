@@ -40,6 +40,7 @@
     "lodash.kebabcase": "^4.1.1",
     "lodash.merge": "^4.6.2",
     "lodash.startcase": "^4.4.0",
+    "lru-cache": "^11.0.0",
     "lucide-react": "^0.399.0",
     "morgan": "^1.10.0",
     "next-themes": "^0.3.0",

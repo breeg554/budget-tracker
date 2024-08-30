@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
@@ -6,7 +10,7 @@ import { SignInDto } from '~/dtos/auth/sign-in.dto';
 import { CreateUserDto } from '~/dtos/users/create-user.dto';
 import { GetUserDto } from '~/dtos/users/get-user.dto';
 import { User } from '~/entities/user/user.entity';
-import { UserService } from '~/modules/organization/user/user.service';
+import { UserService } from '~/modules/user/user.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Session } from '~/entities/session/session.entity';
@@ -64,10 +68,14 @@ export class AuthService {
   }
 
   async signUp(user: CreateUserDto) {
-    const existingUser = await this.userService.findOneByEmail(user.email);
+    try {
+      await this.userService.findOneByEmail(user.email);
 
-    if (existingUser) {
       throw new BadRequestException('Email already exists');
+    } catch (err) {
+      if (!(err instanceof NotFoundException)) {
+        throw err;
+      }
     }
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
