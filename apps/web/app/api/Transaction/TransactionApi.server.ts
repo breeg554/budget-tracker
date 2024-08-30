@@ -38,6 +38,9 @@ export class TransactionApi {
     if (query?.category) {
       params['filter.items.category.id'] = `$in:${query.category}`;
     }
+    if (query?.author) {
+      params['filter.author.id'] = `$in:${query.author}`;
+    }
     if (query?.search) {
       params['search'] = query.search;
     }

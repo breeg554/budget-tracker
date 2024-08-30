@@ -1,5 +1,6 @@
 import { json } from '@remix-run/node';
 
+import { OrganizationApi } from '~/api/Organization/OrganizationApi.server';
 import { TransactionItemCategoryApi } from '~/api/Transaction/TransactionItemCategoryApi.server';
 import { getPaginationFromUrl } from '~/pagination/getPaginationFromUrl';
 import { requireSignedIn } from '~/session.server';
@@ -14,20 +15,35 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
 
   const { search } = getPaginationFromUrl(request.url);
 
+  const organizationApi = new OrganizationApi(fetch);
   const categoryApi = new TransactionItemCategoryApi(fetch);
 
   const categoriesPromise = categoryApi.getTransactionItemCategories();
+  const organizationUsersPromise = organizationApi.getUsers(
+    params.organizationName,
+  );
 
-  const [categories] = await Promise.all([categoriesPromise]);
+  const [categories, organizationUsers] = await Promise.all([
+    categoriesPromise,
+    organizationUsersPromise,
+  ]);
 
   const category = getUrlArrayParam(
     new URL(request.url).searchParams.get('category'),
   );
 
+  const author = getUrlArrayParam(
+    new URL(request.url).searchParams.get('author'),
+  );
+
+  console.log(organizationUsers);
+
   return json({
     search,
+    author,
     category,
     categories: categories.data,
     organizationName: params.organizationName,
+    organizationUsers: organizationUsers.data,
   });
 });

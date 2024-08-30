@@ -1,12 +1,12 @@
 import { z } from 'zod';
 
+import { userSchema } from '~/api/api.contracts';
+
 export const getOrganizationSchema = z.object({
   id: z.string(),
   createdAt: z.string(),
   updatedAt: z.string(),
   name: z.string(),
-  // users: z.array(z.string()),
-  // transactions: z.array(getTransactionSchema),
 });
 
 export const fromGetOrganizationsResponse = z.array(getOrganizationSchema);
@@ -34,3 +34,5 @@ export const createSecretSchema = z.object({
   name: z.string(),
   value: z.string(),
 });
+
+export const fromGetOrganizationUsersResponse = z.array(userSchema);

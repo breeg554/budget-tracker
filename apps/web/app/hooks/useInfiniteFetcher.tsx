@@ -59,7 +59,7 @@ export const useInfiniteFetcher = <T, R>(
       page: newPage,
     });
 
-    navigate(urlWithParams, { preventScrollReset: true });
+    navigate(urlWithParams, { preventScrollReset: true, state: {} });
   }, [pagination, args.loaderUrl, data]);
 
   const filterPages = (params: Partial<Pagination>) => {

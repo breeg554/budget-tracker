@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { userSchema } from '~/api/api.contracts';
+
 export const createPaginatedSchema = <T extends z.ZodTypeAny>(schema: T) => {
   return z
     .object({
@@ -26,3 +28,5 @@ export const createPaginatedSchema = <T extends z.ZodTypeAny>(schema: T) => {
       };
     });
 };
+
+export type GetUserDto = z.TypeOf<typeof userSchema>;

@@ -31,7 +31,7 @@ export const ReceiptsPage = () => {
     if (inView && hasNextPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage, fetchNextPage]);
+  }, [inView, hasNextPage]);
 
   return (
     <>

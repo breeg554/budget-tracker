@@ -22,11 +22,14 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
 
   const categoriesQuery =
     new URL(request.url).searchParams.get('category') ?? undefined;
+  const authorsQuery =
+    new URL(request.url).searchParams.get('author') ?? undefined;
 
   const transactionsPromise = transactionApi.getAll(params.organizationName, {
     page,
     search,
     category: categoriesQuery,
+    author: authorsQuery,
     limit: 10,
   });
 
@@ -41,6 +44,7 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
     pagination: {
       ...transactions.data.meta,
       category: getUrlArrayParam(categoriesQuery),
+      author: getUrlArrayParam(authorsQuery),
     },
     categories: categories.data,
   });

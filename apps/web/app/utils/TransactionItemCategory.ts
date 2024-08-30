@@ -6,6 +6,9 @@ export class TransactionItemCategory {
   get name() {
     return this.category.name;
   }
+  get id() {
+    return this.category.id;
+  }
 
   get icon() {
     switch (this.name) {

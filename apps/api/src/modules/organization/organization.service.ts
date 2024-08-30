@@ -72,6 +72,18 @@ export class OrganizationService {
     return this.secretService.findOne(secretName, organization.id);
   }
 
+  async findOrganizationUsers(
+    organizationName: string,
+    userId: string,
+  ): Promise<User[]> {
+    const organization = await this.ensureUserInOrganization(
+      userId,
+      organizationName,
+    );
+
+    return organization.users;
+  }
+
   async createSecret(
     data: CreateSecretDto,
     organizationName: string,

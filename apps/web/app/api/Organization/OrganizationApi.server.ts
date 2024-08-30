@@ -1,5 +1,6 @@
 import {
   fromGetOrganizationsResponse,
+  fromGetOrganizationUsersResponse,
   fromGetSecretResponse,
   getOrganizationSchema,
 } from '~/api/Organization/organizationApi.contracts';
@@ -44,6 +45,13 @@ export class OrganizationApi {
         method: 'post',
         body: JSON.stringify(data),
       },
+    );
+  }
+
+  getUsers(organizationName: string) {
+    return this.client(
+      fromGetOrganizationUsersResponse,
+      `${this.baseUrl}/${organizationName}/users`,
     );
   }
 }

@@ -6,6 +6,7 @@ import { AuthUser, User } from '~/modules/decorators/user.decorator';
 import { OrganizationService } from '~/modules/organization/organization.service';
 import { CreateSecretDto } from '~/dtos/secret/create-secret.dto';
 import { GetSecretDto } from '~/dtos/secret/get-secret.dto';
+import { GetUserDto } from '~/dtos/users/get-user.dto';
 
 @Controller()
 export class OrganizationController {
@@ -20,7 +21,7 @@ export class OrganizationController {
   }
 
   @Get()
-  findAll(@User() user: AuthUser): Promise<GetOrganizationDto> {
+  findAll(@User() user: AuthUser): Promise<GetOrganizationDto[]> {
     return this.organizationService.findAllByUser(user.email);
   }
 
@@ -30,6 +31,14 @@ export class OrganizationController {
     @User() user: AuthUser,
   ): Promise<GetOrganizationDto> {
     return this.organizationService.findByNameAndUser(name, user.id);
+  }
+
+  @Get(':name/users')
+  getOrganizationUsers(
+    @Param('name') name: string,
+    @User() user: AuthUser,
+  ): Promise<GetUserDto[]> {
+    return this.organizationService.findOrganizationUsers(name, user.id);
   }
 
   @Post(':name/secrets')

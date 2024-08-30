@@ -1,4 +1,4 @@
-import { userMeSchema } from '~/api/User/userApi.contracts';
+import { userSchema } from '~/api/api.contracts';
 import { typedFetch, TypedFetch } from '~/utils/fetch';
 
 export class UserApi {
@@ -10,11 +10,11 @@ export class UserApi {
   }
 
   me() {
-    return this.client(userMeSchema, `${this.baseUrl}/me`);
+    return this.client(userSchema, `${this.baseUrl}/me`);
   }
 
   meWithSessionCookie(cookie: string) {
-    return this.client(userMeSchema, `${this.baseUrl}/me`, {
+    return this.client(userSchema, `${this.baseUrl}/me`, {
       headers: { Cookie: cookie },
     });
   }

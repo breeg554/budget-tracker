@@ -1,5 +1,5 @@
 import { z } from 'zod';
 
-import { userMeSchema } from './userApi.contracts';
+import { userSchema } from '../api.contracts';
 
-export type UserMeDto = z.TypeOf<typeof userMeSchema>;
+export type UserMeDto = z.TypeOf<typeof userSchema>;

@@ -82,6 +82,7 @@ export class TransactionService {
         filterableColumns: {
           date: [FilterOperator.BTW],
           'items.category.id': [FilterOperator.IN],
+          'author.id': [FilterOperator.IN],
         },
       },
     );
