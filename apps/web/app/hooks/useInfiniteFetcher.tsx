@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { SerializeFrom } from '@remix-run/node';
-import { useLoaderData, useNavigate, useNavigation } from '@remix-run/react';
+import {
+  useFetcher,
+  useLoaderData,
+  useNavigate,
+  useNavigation,
+} from '@remix-run/react';
 
 import { Pagination } from '~/pagination/pagination.utils';
-import { hashString } from '~/utils/stringHash';
 import { buildUrlWithParams } from '~/utils/url';
 
 interface UseInfiniteFetcherProps<T, R, P = {}> {
@@ -13,44 +17,56 @@ interface UseInfiniteFetcherProps<T, R, P = {}> {
     pagination: Pagination<P>;
   };
 }
-//@todo handle case when user is on different page than 1 and he refreshes the page
 export const useInfiniteFetcher = <T, R>(
   args: UseInfiniteFetcherProps<T, R>,
 ) => {
-  const { state } = useNavigation();
   const navigate = useNavigate();
   const loader = useLoaderData<R>();
+  const fetcher = useFetcher<R>();
+  const { state: fetchingState } = useNavigation();
   const { pagination, data: freshData } = args.dataExtractor(loader);
-  const isIdle = state === 'idle';
 
-  const [data, setData] = useState<Record<number, Record<number, T[]>>>({
-    [getDataPageKey(pagination)]: {
-      [pagination.page]: freshData ?? [],
-    },
+  const isIdle = fetchingState === 'idle';
+
+  const [data, setData] = useState<Record<number, T[]>>({
+    [pagination.page]: freshData ?? [],
   });
+
+  const hasNextPage = pagination.totalPages > pagination.page;
+  const hasPrevPage = getMinMaxPage(data).min > 1;
+
   useEffect(() => {
-    const key = getDataPageKey(pagination);
     const page = pagination.page;
 
-    if (data[key]?.[page]) return;
+    const pagesLength = Object.keys(data).length;
 
-    setData((prev) => ({
-      ...prev,
-      [key]: {
-        ...prev[key],
+    if (page === 1 && pagesLength > 1) {
+      setData({
         [page]: freshData ?? [],
-      },
-    }));
-  }, [pagination, data]);
+      });
+    } else {
+      setData((prev) => ({
+        ...prev,
+        [page]: freshData ?? [],
+      }));
+    }
+  }, [pagination, setData]);
+
+  useEffect(() => {
+    if (fetcher.state === 'idle' && !!fetcher.data) {
+      const prevData = args.dataExtractor(fetcher.data);
+
+      setData((prev) => ({
+        [prevData.pagination.page]: prevData.data,
+        ...prev,
+      }));
+    }
+  }, [fetcher.state, hasPrevPage]);
 
   const fetchNextPage = useCallback(() => {
-    if (!isIdle) return;
+    if (!isIdle || !hasNextPage) return;
 
     const newPage = pagination.page + 1;
-
-    const key = getDataPageKey(pagination);
-
-    if (data?.[key]?.[newPage] !== undefined) return;
 
     const params = splitPagination(pagination).filters;
 
@@ -59,7 +75,24 @@ export const useInfiniteFetcher = <T, R>(
       page: newPage,
     });
 
-    navigate(urlWithParams, { preventScrollReset: true, state: {} });
+    navigate(urlWithParams, { preventScrollReset: true });
+  }, [pagination, args.loaderUrl, data, hasNextPage]);
+
+  const fetchPrevPage = useCallback(() => {
+    const minMax = getMinMaxPage(data);
+
+    if (!isIdle || minMax.min <= 1) return;
+
+    const newPage = minMax.min - 1;
+
+    const params = splitPagination(pagination).filters;
+
+    const urlWithParams = buildUrlWithParams(args.loaderUrl, {
+      ...params,
+      page: newPage,
+    });
+
+    fetcher.load(urlWithParams);
   }, [pagination, args.loaderUrl, data]);
 
   const filterPages = (params: Partial<Pagination>) => {
@@ -71,47 +104,42 @@ export const useInfiniteFetcher = <T, R>(
       ...params,
     });
 
-    const key = getDataPageKey({ ...pagination, ...params });
-
-    setData((prev) => ({
-      ...prev,
-      [key]: {},
-    }));
-
     navigate(urlWithParams, { preventScrollReset: true });
   };
 
   const mergedData = useMemo(() => {
-    const key = getDataPageKey(pagination);
-
-    return Object.values(data?.[key] ?? {}).reduce(
+    return Object.values(data).reduce(
       (acc, curr) => [...acc, ...curr],
       [] as T[],
     );
-  }, [data, pagination]);
+  }, [data]);
 
-  const hasNextPage = pagination.totalPages > pagination.page;
   const splitedPagination = splitPagination(pagination);
 
   return {
     fetchNextPage,
+    fetchPrevPage,
     filterPages,
     hasNextPage,
-    isFetchingNextPage: !isIdle,
+    hasPrevPage,
+    isFetchingPage: !isIdle,
     data: mergedData,
     filters: splitedPagination.filters,
     ...splitedPagination.meta,
   };
 };
 
-function getDataPageKey(pagination: Partial<Pagination>) {
-  return hashString(
-    Object.values(splitPagination(pagination).filters).join('-'),
-  );
-}
-
 function splitPagination(pagination: Partial<Pagination>) {
   const { totalPages, totalItems, page, ...rest } = pagination;
 
   return { filters: rest, meta: { totalPages, totalItems, page } };
+}
+
+function getMinMaxPage(data: Record<number, unknown>) {
+  const pages = Object.keys(data).map(Number);
+
+  return {
+    min: Math.min(...pages),
+    max: Math.max(...pages),
+  };
 }

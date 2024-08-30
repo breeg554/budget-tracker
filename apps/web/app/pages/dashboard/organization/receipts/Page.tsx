@@ -18,20 +18,27 @@ export const ReceiptsPage = () => {
   const { ref: fetchNextRef, inView } = useInView();
   const { organizationName } = useLoaderData<typeof loader>();
 
-  const { data, filterPages, hasNextPage, fetchNextPage, isFetchingNextPage } =
-    useInfiniteFetcher<GetTransactionDto, typeof loader>({
-      loaderUrl: routes.receipts.getPath(organizationName),
-      dataExtractor: (response) => ({
-        data: response.transactions,
-        pagination: response.pagination,
-      }),
-    });
+  const {
+    data,
+    filterPages,
+    hasNextPage,
+    fetchNextPage,
+    fetchPrevPage,
+    hasPrevPage,
+    isFetchingPage,
+  } = useInfiniteFetcher<GetTransactionDto, typeof loader>({
+    loaderUrl: routes.receipts.getPath(organizationName),
+    dataExtractor: (response) => ({
+      data: response.transactions,
+      pagination: response.pagination,
+    }),
+  });
 
   useEffect(() => {
-    if (inView && hasNextPage) {
+    if (inView && hasNextPage && !isFetchingPage) {
       fetchNextPage();
     }
-  }, [inView, hasNextPage]);
+  }, [inView, hasNextPage, isFetchingPage]);
 
   return (
     <>
@@ -53,6 +60,18 @@ export const ReceiptsPage = () => {
         <Outlet context={{ onFilter: filterPages }} />
 
         <div className="mt-6 flex flex-col gap-2 justify-center">
+          {hasPrevPage ? (
+            <Button
+              size="xxs"
+              variant="ghost"
+              className="text-xs text-muted-foreground"
+              disabled={isFetchingPage}
+              onClick={fetchPrevPage}
+            >
+              {isFetchingPage ? 'Loading...' : 'Load previous'}
+            </Button>
+          ) : null}
+
           <ReceiptsList transactions={data} />
 
           <Button
@@ -60,10 +79,10 @@ export const ReceiptsPage = () => {
             size="xxs"
             variant="ghost"
             className="text-xs text-muted-foreground"
-            disabled={!hasNextPage}
+            disabled={!hasNextPage || isFetchingPage}
             onClick={fetchNextPage}
           >
-            {isFetchingNextPage ? 'Loading...' : 'Load more'}
+            {isFetchingPage ? 'Loading...' : 'Load more'}
           </Button>
         </div>
       </SectionWrapper>
