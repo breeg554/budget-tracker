@@ -80,7 +80,7 @@ export default function App() {
     if (toasts.warning) {
       warningToast(toasts.warning as ToastProps);
     }
-  }, [toasts]);
+  }, [JSON.stringify(toasts)]);
 
   return <Outlet />;
 }
