@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useLoaderData } from '@remix-run/react';
 import { FilterIcon } from 'lucide-react';
 
@@ -7,6 +7,7 @@ import { GetTransactionItemCategoryDto } from '~/api/Transaction/transactionApi.
 import { Button } from '~/buttons/Button';
 import { IconButton } from '~/buttons/IconButton';
 import { loader } from '~/dashboard/organization/receipts/filters/loader.server';
+import { DateRange, DateRangeInput } from '~/inputs/DateInput';
 import { ItemList } from '~/list/ItemList';
 import { Checkbox } from '~/ui/checkbox';
 import {
@@ -21,15 +22,19 @@ import {
 } from '~/ui/dialog-drawer';
 import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
+import { useFiltersDrawer } from './filtersDrawer.reducer';
+
 export type OnSubmitProps = {
   category: string[];
   author: string[];
+  startDate?: string;
+  endDate?: string;
 };
 
 interface ReceiptsFiltersProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSubmit: ({ category }: OnSubmitProps) => void;
+  onSubmit: (args: OnSubmitProps) => void;
 }
 
 export function FiltersDrawer({
@@ -42,46 +47,52 @@ export function FiltersDrawer({
     organizationUsers: allUsers,
     category,
     author,
+    startDate,
+    endDate,
   } = useLoaderData<typeof loader>();
 
-  const [categories, setCategories] = useState<string[]>(category ?? []);
-  const [authors, setAuthors] = useState<string[]>(author ?? []);
+  const {
+    dispatch,
+    filtersCount,
+    isCategoryChecked,
+    isAuthorChecked,
+    ...state
+  } = useFiltersDrawer({
+    category,
+    author,
+    startDate,
+    endDate,
+  });
 
   const submit = () => {
-    onSubmit({ category: categories, author: authors });
+    onSubmit(state);
   };
 
   const toggleCategory = (id: string) => {
-    setCategories((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((category) => category !== id);
-      }
-
-      return [...prev, id];
-    });
+    dispatch({ type: 'TOGGLE_CATEGORY', payload: { id } });
   };
 
   const toggleAuthor = (id: string) => {
-    setAuthors((prev) => {
-      if (prev.includes(id)) {
-        return prev.filter((author) => author !== id);
-      }
-
-      return [...prev, id];
-    });
+    dispatch({ type: 'TOGGLE_AUTHOR', payload: { id } });
   };
 
-  const isAuthorChecked = (id: string) => authors.includes(id);
+  const onDateChange = (date?: DateRange) => {
+    dispatch({ type: 'SET_DATE', payload: { date } });
+  };
 
-  const isCategoryChecked = (id: string) => categories.includes(id);
+  const clearDate = () => {
+    onDateChange();
+  };
 
-  const hasAdditionalFilters = category && category.length > 0;
+  const hasAdditionalFilters = filtersCount > 0;
 
   return (
     <DialogDrawer open={open} onOpenChange={onOpenChange}>
       <DialogDrawerTrigger asChild>
         <IconButton
-          icon={hasAdditionalFilters ? <span>+1</span> : <FilterIcon />}
+          icon={
+            hasAdditionalFilters ? <span>+{filtersCount}</span> : <FilterIcon />
+          }
           variant={hasAdditionalFilters ? 'default' : 'secondary'}
         />
       </DialogDrawerTrigger>
@@ -95,6 +106,17 @@ export function FiltersDrawer({
 
         <DialogDrawerBody>
           <div className="flex flex-col gap-4 max-h-[50vh] overflow-y-auto">
+            <FilterWrapper>
+              <FilterHeading>Period</FilterHeading>
+
+              <DateRangeInput
+                numberOfMonths={1}
+                selected={state.date}
+                onSelect={onDateChange}
+                onClear={clearDate}
+              />
+            </FilterWrapper>
+
             <FilterWrapper>
               <FilterHeading>Authors</FilterHeading>
 

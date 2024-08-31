@@ -69,7 +69,6 @@ export const useInfiniteFetcher = <T, R>(
     const newPage = pagination.page + 1;
 
     const params = splitPagination(pagination).filters;
-
     const urlWithParams = buildUrlWithParams(args.loaderUrl, {
       ...params,
       page: newPage,

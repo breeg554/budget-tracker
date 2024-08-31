@@ -13,7 +13,9 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
 
   assert(params.organizationName);
 
-  const { page, search } = getPaginationFromUrl(request.url);
+  const { page, search, startDate, endDate } = getPaginationFromUrl(
+    request.url,
+  );
 
   const transactionApi = new TransactionApi(fetch);
   const categoryApi = new TransactionItemCategoryApi(fetch);
@@ -28,6 +30,8 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   const transactionsPromise = transactionApi.getAll(params.organizationName, {
     page,
     search,
+    endDate,
+    startDate,
     category: categoriesQuery,
     author: authorsQuery,
     limit: 10,
@@ -45,6 +49,8 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
       ...transactions.data.meta,
       category: getUrlArrayParam(categoriesQuery),
       author: getUrlArrayParam(authorsQuery),
+      startDate,
+      endDate,
     },
     categories: categories.data,
   });

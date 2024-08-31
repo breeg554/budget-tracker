@@ -13,7 +13,7 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
 
   assert(params.organizationName);
 
-  const { search } = getPaginationFromUrl(request.url);
+  const { search, startDate, endDate } = getPaginationFromUrl(request.url);
 
   const organizationApi = new OrganizationApi(fetch);
   const categoryApi = new TransactionItemCategoryApi(fetch);
@@ -36,12 +36,12 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
     new URL(request.url).searchParams.get('author'),
   );
 
-  console.log(organizationUsers);
-
   return json({
     search,
     author,
     category,
+    endDate,
+    startDate,
     categories: categories.data,
     organizationName: params.organizationName,
     organizationUsers: organizationUsers.data,

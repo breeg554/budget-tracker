@@ -5,6 +5,7 @@ import { TransactionApi } from '~/api/Transaction/TransactionApi.server';
 import { getPaginationFromUrl } from '~/pagination/getPaginationFromUrl';
 import { requireSignedIn } from '~/session.server';
 import { assert } from '~/utils/assert';
+import { CustomDate } from '~/utils/CustomDate';
 import { loaderHandler } from '~/utils/loader.server';
 
 export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
@@ -16,9 +17,13 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
 
   const { startDate, endDate } = getPaginationFromUrl(request.url);
 
+  const dateRange =
+    startDate && endDate
+      ? { startDate, endDate }
+      : CustomDate.getWeekRange(new Date());
+
   const transactionsPromise = transactionApi.getAll(params.organizationName, {
-    startDate: startDate,
-    endDate: endDate,
+    ...dateRange,
   });
   const latestTransactionsPromise = transactionApi.getAll(
     params.organizationName,
@@ -29,8 +34,7 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   const byCategoriesPromise = statisticsApi.getStatisticsByCategories(
     params.organizationName,
     {
-      startDate,
-      endDate,
+      ...dateRange,
     },
   );
 
@@ -47,7 +51,6 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
       .slice()
       .sort((a, b) => b.total - a.total),
     organizationName: params.organizationName,
-    startDate,
-    endDate,
+    ...dateRange,
   });
 });

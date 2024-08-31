@@ -24,6 +24,8 @@ export const ReceiptsFilters = () => {
     search: defaultSearch,
     category,
     author,
+    startDate,
+    endDate,
   } = useLoaderData<typeof loader>();
 
   const [search, setSearch] = useState<string | undefined>(defaultSearch);
@@ -43,7 +45,13 @@ export const ReceiptsFilters = () => {
 
   useEffect(() => {
     if (debouncedSearch === defaultSearch) return;
-    submit({ category: category ?? [], author: author ?? [] });
+
+    submit({
+      category: category ?? [],
+      author: author ?? [],
+      startDate,
+      endDate,
+    });
   }, [debouncedSearch]);
 
   const onOpenChange = (open: boolean) => {
