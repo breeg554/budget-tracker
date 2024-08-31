@@ -84,6 +84,10 @@ export function FiltersDrawer({
     onDateChange();
   };
 
+  const onClearFilters = () => {
+    dispatch({ type: 'CLEAR' });
+  };
+
   const hasAdditionalFilters = filtersCount > 0;
 
   return (
@@ -91,18 +95,36 @@ export function FiltersDrawer({
       <DialogDrawerTrigger asChild>
         <IconButton
           icon={
-            hasAdditionalFilters ? <span>+{filtersCount}</span> : <FilterIcon />
+            <>
+              <FilterIcon className="w-5 h-5" />
+              {hasAdditionalFilters ? (
+                <div className="w-5 h-5 bg-primary text-white text-[10px] flex justify-center items-center rounded-full absolute -top-2 -right-2">
+                  +{filtersCount}
+                </div>
+              ) : null}
+            </>
           }
-          variant={hasAdditionalFilters ? 'default' : 'secondary'}
+          variant="secondary"
+          className="relative"
         />
       </DialogDrawerTrigger>
       <DialogDrawerContent>
         <DialogDrawerHeader>
           <DialogDrawerTitle>More filters</DialogDrawerTitle>
           <DialogDrawerDescription>
-            Select more filters for better results
+            Select more filters for better results.
           </DialogDrawerDescription>
         </DialogDrawerHeader>
+
+        <Button
+          size="xxs"
+          variant="ghost"
+          className="ml-auto mr-0 mb-1 text-xs"
+          disabled={!hasAdditionalFilters}
+          onClick={onClearFilters}
+        >
+          Clear filters
+        </Button>
 
         <DialogDrawerBody>
           <div className="flex flex-col gap-4 max-h-[50vh] overflow-y-auto">
