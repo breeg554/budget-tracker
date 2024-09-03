@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -58,6 +62,74 @@ export class TransactionService {
     });
 
     return this.transactionRepository.save(transaction);
+  }
+
+  async delete(
+    transactionId: string,
+    organizationName: string,
+    userId: string,
+  ): Promise<void> {
+    await this.organizationService.ensureUserInOrganization(
+      userId,
+      organizationName,
+    );
+
+    const transaction = await this.findOneWithItems(
+      transactionId,
+      organizationName,
+      userId,
+    );
+
+    try {
+      await this.transactionRepository.softRemove(transaction);
+    } catch (err) {
+      throw new BadRequestException('Could not delete transaction', {
+        cause: err,
+      });
+    }
+  }
+
+  async findOne(
+    transactionId: string,
+    organizationName: string,
+    userId: string,
+  ): Promise<Transaction> {
+    await this.organizationService.ensureUserInOrganization(
+      userId,
+      organizationName,
+    );
+
+    const transaction = await this.transactionRepository.findOne({
+      where: { id: transactionId },
+    });
+
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    return transaction;
+  }
+
+  async findOneWithItems(
+    transactionId: string,
+    organizationName: string,
+    userId: string,
+  ) {
+    await this.organizationService.ensureUserInOrganization(
+      userId,
+      organizationName,
+    );
+
+    const transaction = await this.transactionRepository.findOne({
+      where: { id: transactionId },
+      relations: ['items'],
+    });
+
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    return transaction;
   }
 
   async findAll(

@@ -32,14 +32,18 @@ export const Avatar = React.forwardRef<
     return (
       <UIAvatar ref={ref} className={cn(getSize(size), className)} {...rest}>
         <UIAvatarImage src={src} />
-        <UIAvatarFallback className="text-sm">{fallback}</UIAvatarFallback>
+        <UIAvatarFallback className={cn(getContentSize(size))}>
+          {fallback}
+        </UIAvatarFallback>
       </UIAvatar>
     );
   }
 
   return (
     <UIAvatar ref={ref} className={cn(getSize(size), className)} {...props}>
-      <UIAvatarFallback className="text-sm">{props.content}</UIAvatarFallback>
+      <UIAvatarFallback className={cn(getContentSize(size))}>
+        {props.content}
+      </UIAvatarFallback>
     </UIAvatar>
   );
 });
@@ -56,5 +60,20 @@ function getSize(size?: AvatarSize) {
       return 'h-11 w-11';
     default:
       return 'h-10 w-10';
+  }
+}
+
+function getContentSize(size?: AvatarSize) {
+  switch (size) {
+    case 'xxs':
+      return 'text-xs';
+    case 'xs':
+      return 'text-xs';
+    case 'sm':
+      return 'text-sm';
+    case 'lg':
+      return 'text-lg';
+    default:
+      return 'text-sm';
   }
 }

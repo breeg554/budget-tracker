@@ -49,19 +49,28 @@ export const getTransactionItemSchema = z.object({
   category: getTransactionItemCategorySchema,
 });
 
-export const getTransactionSchema = z.object({
-  id: z.string(),
-  type: z.nativeEnum(TransactionType),
-  date: z.string(),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-  items: z.array(getTransactionItemSchema),
-  author: z.object({
-    email: z.string(),
+export const getTransactionSchema = z
+  .object({
     id: z.string(),
-  }),
-  price: z.number(),
-  name: z.string(),
-});
+    type: z.nativeEnum(TransactionType),
+    date: z.string(),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+    items: z.array(getTransactionItemSchema),
+    author: z.object({
+      email: z.string(),
+      id: z.string(),
+    }),
+    price: z.number(),
+    name: z.string(),
+  })
+  .transform((val) => ({
+    ...val,
+    categories: [
+      ...new Map(
+        val.items.map((item) => [item.category.id, item.category]),
+      ).values(),
+    ],
+  }));
 
 export const fromGetTransactionsResponse = z.array(getTransactionSchema);

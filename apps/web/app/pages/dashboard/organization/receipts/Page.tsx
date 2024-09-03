@@ -82,7 +82,11 @@ export const ReceiptsPage = () => {
             disabled={!hasNextPage || isFetchingPage}
             onClick={fetchNextPage}
           >
-            {isFetchingPage ? 'Loading...' : 'Load more'}
+            {isFetchingPage
+              ? 'Loading...'
+              : hasNextPage
+                ? 'Load more'
+                : 'No more'}
           </Button>
         </div>
       </SectionWrapper>

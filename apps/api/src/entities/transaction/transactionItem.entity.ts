@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -36,4 +37,6 @@ export class TransactionItem {
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
+  @DeleteDateColumn()
+  deletedDate: Date;
 }

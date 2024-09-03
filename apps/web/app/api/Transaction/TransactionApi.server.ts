@@ -26,6 +26,16 @@ export class TransactionApi {
     );
   }
 
+  delete(transactionId: string, organizationName: string) {
+    return this.client(
+      z.any(),
+      `/organizations/${organizationName}/transactions/${transactionId}`,
+      {
+        method: 'DELETE',
+      },
+    );
+  }
+
   async getAll(organizationName: string, query?: UrlQueryParams) {
     const params: Record<string, any> = {
       limit: query?.limit ?? PAGINATION_DEFAULTS.limit,

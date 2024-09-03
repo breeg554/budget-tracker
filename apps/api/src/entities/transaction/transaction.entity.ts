@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Index,
   ManyToOne,
@@ -29,7 +30,7 @@ export class Transaction {
   @OneToMany(
     () => TransactionItem,
     (transactionItem) => transactionItem.transaction,
-    { cascade: true },
+    { cascade: true, onDelete: 'CASCADE' },
   )
   items: TransactionItem[];
   @ManyToOne(() => Organization, (organization) => organization.transactions)
@@ -42,4 +43,6 @@ export class Transaction {
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
+  @DeleteDateColumn()
+  deletedDate: Date;
 }
