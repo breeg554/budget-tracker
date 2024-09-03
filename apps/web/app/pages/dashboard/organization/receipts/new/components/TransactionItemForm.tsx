@@ -35,7 +35,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
 }) => {
   const [form] = useForm({
     id: formId,
-    defaultValue: { ...defaultValues, quantity: 1 },
+    defaultValue: { ...defaultValues, quantity: defaultValues?.quantity ?? 1 },
     shouldValidate: 'onSubmit',
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createTransactionItemSchema });
