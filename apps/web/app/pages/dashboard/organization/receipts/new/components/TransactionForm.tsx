@@ -45,7 +45,7 @@ import {
   DialogDrawerTrigger,
 } from '~/ui/dialog-drawer';
 import { cn } from '~/utils/cn';
-import { MonetaryValue } from '~/utils/MonetaryValue';
+import { MonetaryValue, TransactionItemValue } from '~/utils/MonetaryValue';
 import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
 import { TransactionItemForm } from './TransactionItemForm';
@@ -236,7 +236,10 @@ function TransactionFormItem({
 
   const category = findCategory(categoryId);
   const categoryItem = category ? new TransactionItemCategory(category) : null;
-  const monetaryValue = new MonetaryValue(price ?? 0, quantity ?? 1);
+  const monetaryValue = new TransactionItemValue(
+    new MonetaryValue(price ?? 0),
+    quantity ?? 1,
+  );
 
   return (
     <article className="flex gap-2 justify-between items-center">
@@ -257,13 +260,10 @@ function TransactionFormItem({
 
       <div className="flex gap-6 justify-end items-center">
         <div className="flex flex-col items-center">
-          <p className="text-foreground">
-            -{monetaryValue.format()}
-            <span className="text-xs">{monetaryValue.currency}</span>
-          </p>
+          <p className="text-foreground">-{monetaryValue.total.format()}</p>
           <p className="text-muted-foreground text-xs">
             ({monetaryValue.quantity.toFixed(2)} *{' '}
-            {monetaryValue.amountPerUnit.toFixed(2)})
+            {monetaryValue.value.format()})
           </p>
         </div>
 
@@ -352,10 +352,7 @@ function TransactionFormSummaryValue({
   const value = new MonetaryValue(getSumValue() ?? 0);
 
   return (
-    <h1 className="text-5xl font-bold w-full text-center">
-      {value.amount.toFixed(2)}
-      <span className="text-xl">{value.currency}</span>
-    </h1>
+    <h1 className="text-5xl font-bold w-full text-center">{value.format()}</h1>
   );
 }
 

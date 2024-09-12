@@ -84,16 +84,15 @@ export const TransactionChartCard = ({
   };
 
   const sumPrice = data.reduce((acc, transaction) => {
-    return acc + transaction.price;
-  }, 0);
+    return acc.add(new MonetaryValue(transaction.price.value));
+  }, new MonetaryValue(0));
 
   return (
     <Card className={cn('relative border-none shadow-none', className)}>
       <CardHeader className="mb-6 pt-5">
         {headerDates()}
         <CardTitle className="font-semibold text-center text-2xl">
-          {new MonetaryValue(sumPrice).format()}
-          <span className="text-sm">PLN</span>
+          {sumPrice.format()}
         </CardTitle>
       </CardHeader>
 

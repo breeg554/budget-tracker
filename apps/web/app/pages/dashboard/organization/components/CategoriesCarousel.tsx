@@ -65,7 +65,6 @@ function CategoriesCarouselItem({
 
       <p className="text-sm line-clamp-1">
         {new MonetaryValue(data.total).format()}
-        <span className="text-[8px]">PLN</span>
       </p>
     </article>
   );

@@ -14,7 +14,7 @@ export type GetTransactionItemCategoryDto = z.TypeOf<
 
 export type GetTransactionDto = z.TypeOf<typeof getTransactionSchema>;
 
-export type GetTransactionItemDto = z.TypeOf<typeof getTransactionItemSchema>;
+export type GetTransactionItemDto = z.infer<typeof getTransactionItemSchema>;
 
 export type CreateTransactionItemDto = z.TypeOf<
   typeof createTransactionItemSchema

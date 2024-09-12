@@ -41,10 +41,10 @@ export function TransactionChart({
             getFormatForDifference(dayDifference),
           );
           if (acc[day] === undefined) {
-            return { ...acc, [day]: transaction.price };
+            return { ...acc, [day]: transaction.price.value };
           }
 
-          return { ...acc, [day]: acc[day] + transaction.price };
+          return { ...acc, [day]: acc[day] + transaction.price.value };
         },
         getDefaultsForFormat(startDate, endDate),
       ),
@@ -55,7 +55,7 @@ export function TransactionChart({
     () =>
       Object.entries(transactionsByDay).map(([day, total]) => ({
         day,
-        total: Number(new MonetaryValue(total).format()),
+        total: new MonetaryValue(total).value,
       })),
     [transactionsByDay],
   );

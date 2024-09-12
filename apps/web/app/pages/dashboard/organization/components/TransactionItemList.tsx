@@ -7,7 +7,6 @@ import {
 import { ClientDate } from '~/dates/ClientDate';
 import { EmptyMessage, ItemList } from '~/list/ItemList';
 import { Skeleton } from '~/ui/skeleton';
-import { MonetaryValue } from '~/utils/MonetaryValue';
 import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
 interface TransactionItemListProps {
@@ -88,7 +87,7 @@ export function TransactionItemListItem({
 
         <div className="flex flex-col">
           <h4 className="text-foreground line-clamp-1" title={item.name}>
-            {item.quantity} x {item.name}
+            {item.price.quantity} x {item.name}
           </h4>
           <p className="text-sm text-muted-foreground">{item.category.name}</p>
         </div>
@@ -96,7 +95,7 @@ export function TransactionItemListItem({
 
       <p className="text-foreground font-medium">
         {item.type === 'outcome' && '-'}
-        {new MonetaryValue(item.price, item.quantity).withCurrency()}
+        {item.price.total.formatted}
       </p>
     </article>
   );

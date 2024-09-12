@@ -21,7 +21,6 @@ import {
   DialogDrawerTitle,
 } from '~/ui/dialog-drawer';
 import { cn } from '~/utils/cn';
-import { MonetaryValue } from '~/utils/MonetaryValue';
 
 import { loader } from './loader.server';
 
@@ -88,10 +87,7 @@ export const ItemPage = () => {
             />
           </DialogDrawerTitle>
           <DialogDrawerDescription>
-            {new MonetaryValue(
-              transactionItem.price,
-              transactionItem.quantity,
-            ).withCurrency()}
+            {transactionItem.price.total.formatted}
           </DialogDrawerDescription>
         </DialogDrawerHeader>
         <DialogDrawerBody>
@@ -105,9 +101,7 @@ export const ItemPage = () => {
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
     {
-      title: data
-        ? `${data?.transactionItem.quantity} x ${data?.transactionItem.name}`
-        : 'Item',
+      title: data ? data?.transactionItem.name : 'Item',
     },
   ];
 };

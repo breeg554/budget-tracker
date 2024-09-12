@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { MonetaryValue, TransactionItemValue } from '~/utils/MonetaryValue';
+
 export const transactionItemCategory = z.object({
   id: z.string(),
   name: z.string(),
@@ -38,16 +40,26 @@ export const getTransactionItemCategorySchema = z.object({
   name: z.string(),
 });
 
-export const getTransactionItemSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  type: z.nativeEnum(TransactionItemType),
-  quantity: z.union([z.number(), z.string().transform((val) => Number(val))]),
-  price: z.union([z.number(), z.string().transform((val) => Number(val))]),
-  createdAt: z.string(),
-  updatedAt: z.string(),
-  category: getTransactionItemCategorySchema,
-});
+export const getTransactionItemSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    type: z.nativeEnum(TransactionItemType),
+    quantity: z.union([z.number(), z.string().transform((val) => Number(val))]),
+    price: z.union([z.number(), z.string().transform((val) => Number(val))]),
+    createdAt: z.string(),
+    updatedAt: z.string(),
+    category: getTransactionItemCategorySchema,
+  })
+  .transform(({ quantity, price, ...rest }) => {
+    return {
+      ...rest,
+      price: new TransactionItemValue(
+        new MonetaryValue(price),
+        quantity,
+      ).toJSON(),
+    };
+  });
 
 export const getTransactionSchema = z
   .object({
@@ -66,6 +78,7 @@ export const getTransactionSchema = z
   })
   .transform((val) => ({
     ...val,
+    price: new MonetaryValue(val.price).toJSON(),
     categories: [
       ...new Map(
         val.items.map((item) => [item.category.id, item.category]),
