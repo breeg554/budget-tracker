@@ -8,6 +8,7 @@ const Drawer = ({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Root>) => (
   <DrawerPrimitive.Root
+    noBodyStyles
     shouldScaleBackground={shouldScaleBackground}
     {...props}
   />
