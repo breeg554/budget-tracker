@@ -18,7 +18,7 @@ interface CategoriesPieChartProps {
 export const CategoriesPieChart = ({ data }: CategoriesPieChartProps) => {
   const sortedData = data
     .slice()
-    .sort((a, b) => b.total - a.total)
+    .sort((a, b) => b.total.value - a.total.value)
     .splice(0, 5)
     .map((item, index) => ({
       ...item,

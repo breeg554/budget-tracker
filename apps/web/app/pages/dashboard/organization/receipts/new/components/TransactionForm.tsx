@@ -44,9 +44,9 @@ import {
   DialogDrawerTitle,
   DialogDrawerTrigger,
 } from '~/ui/dialog-drawer';
+import { Category } from '~/utils/Category';
 import { cn } from '~/utils/cn';
 import { MonetaryValue, TransactionItemValue } from '~/utils/MonetaryValue';
-import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
 import { TransactionItemForm } from './TransactionItemForm';
 
@@ -235,7 +235,7 @@ function TransactionFormItem({
   };
 
   const category = findCategory(categoryId);
-  const categoryItem = category ? new TransactionItemCategory(category) : null;
+  const categoryItem = category ? new Category(category) : null;
   const monetaryValue = new TransactionItemValue(
     new MonetaryValue(price ?? 0),
     quantity ?? 1,

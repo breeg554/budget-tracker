@@ -17,8 +17,8 @@ import { HiddenField } from '~/form/fields/HiddenField';
 import { NumberField } from '~/form/fields/NumberField';
 import { ValidatedForm } from '~/form/ValidatedForm';
 import { CheckIcon } from '~/icons/CheckIcon';
+import { Category } from '~/utils/Category';
 import { cn } from '~/utils/cn';
-import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
 interface TransactionItemFormProps {
   onSubmit?: (values: CreateTransactionItemDto) => void;
@@ -56,6 +56,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
   });
 
   const categoryValues = categories.map((category) => ({
+    ...category,
     value: category.id,
     label: category.name,
   }));
@@ -78,7 +79,7 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
             <CategoryOption
               isSelected={isSelected}
               data={
-                new TransactionItemCategory({
+                new Category({
                   id: option.value,
                   name: option.label,
                 })
@@ -110,7 +111,7 @@ function CategoryOption({
   data,
   isSelected,
 }: {
-  data: TransactionItemCategory;
+  data: Category;
   isSelected: boolean;
 }) {
   return (

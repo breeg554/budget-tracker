@@ -7,7 +7,7 @@ import {
 import { ClientDate } from '~/dates/ClientDate';
 import { EmptyMessage, ItemList } from '~/list/ItemList';
 import { Skeleton } from '~/ui/skeleton';
-import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
+import { Category } from '~/utils/Category';
 
 interface TransactionItemListProps {
   items: Record<string, GetTransactionDto[]>;
@@ -82,7 +82,7 @@ export function TransactionItemListItem({
     <article className="flex gap-2 justify-between items-center">
       <header className="flex items-center gap-3">
         <div className="w-12 h-12 rounded-xl text-xl bg-neutral-100 flex justify-center items-center shrink-0">
-          {new TransactionItemCategory(item.category).icon}
+          {new Category(item.category).icon}
         </div>
 
         <div className="flex flex-col">

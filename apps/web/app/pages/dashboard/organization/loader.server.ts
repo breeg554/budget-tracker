@@ -49,7 +49,7 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
     latestTransactions: latestTransactions.data.data,
     statsByCategories: byCategories.data
       .slice()
-      .sort((a, b) => b.total - a.total),
+      .sort((a, b) => b.total.value - a.total.value),
     organizationName: params.organizationName,
     ...dateRange,
   });

@@ -1,16 +1,14 @@
-import { GetTransactionItemCategoryDto } from '~/api/Transaction/transactionApi.types';
+export class Category {
+  constructor(private readonly category: { id: string; name: string }) {}
 
-export class TransactionItemCategory {
-  constructor(private readonly category: GetTransactionItemCategoryDto) {}
-
-  get name() {
+  get name(): string {
     return this.category.name;
   }
-  get id() {
+  get id(): string {
     return this.category.id;
   }
 
-  get icon() {
+  get icon(): string {
     switch (this.name) {
       case 'alcohol':
         return '🍻';
@@ -45,5 +43,13 @@ export class TransactionItemCategory {
       default:
         return '';
     }
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      id: this.id,
+      icon: this.icon,
+    };
   }
 }

@@ -1,11 +1,14 @@
 import { z } from 'zod';
 
+import { Category } from '~/utils/Category';
 import { MonetaryValue, TransactionItemValue } from '~/utils/MonetaryValue';
 
-export const transactionItemCategory = z.object({
-  id: z.string(),
-  name: z.string(),
-});
+export const transactionItemCategory = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+  })
+  .transform((category) => new Category(category).toJSON());
 
 export const fromTransactionItemCategoriesResponse = z.array(
   transactionItemCategory,
@@ -35,10 +38,12 @@ export const createTransactionSchema = z.object({
   items: z.array(createTransactionItemSchema),
 });
 
-export const getTransactionItemCategorySchema = z.object({
-  id: z.string(),
-  name: z.string(),
-});
+export const getTransactionItemCategorySchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+  })
+  .transform((category) => new Category(category).toJSON());
 
 export const getTransactionItemSchema = z
   .object({

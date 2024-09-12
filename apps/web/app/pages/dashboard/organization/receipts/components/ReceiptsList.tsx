@@ -17,8 +17,8 @@ import { ItemList } from '~/list/ItemList';
 import { confirm } from '~/modals/confirm';
 import { routes } from '~/routes';
 import { Skeleton } from '~/ui/skeleton';
+import { Category } from '~/utils/Category';
 import { CustomDate } from '~/utils/CustomDate';
-import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
 
 interface ReceiptsListProps {
   transactions: GetTransactionDto[];
@@ -123,7 +123,7 @@ interface CategoryItemBadgeProps {
   data: GetTransactionDto['categories'][0];
 }
 function CategoryItemBadge({ data }: CategoryItemBadgeProps) {
-  const categoryItem = new TransactionItemCategory(data);
+  const categoryItem = new Category(data);
 
   return (
     <p className="text-xs flex gap-1 items-center rounded-full px-1 py-0.5 bg-secondary">

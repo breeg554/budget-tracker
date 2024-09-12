@@ -18,7 +18,7 @@ import {
   DialogDrawerTitle,
   DialogDrawerTrigger,
 } from '~/ui/dialog-drawer';
-import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
+import { Category } from '~/utils/Category';
 
 import { useFiltersDrawer } from './filtersDrawer.reducer';
 
@@ -190,7 +190,7 @@ function CategoriesFilterItem({
   checked,
   onCheckedChange,
 }: CategoriesFilterItemProps) {
-  const category = new TransactionItemCategory(data);
+  const category = new Category(data);
   return (
     <label className="cursor-pointer flex gap-1 items-center relative pl-1 pr-2 rounded-full border border-input text-sm has-[button[data-state=checked]]:bg-accent-foreground has-[button[data-state=checked]]:text-white has-[button[data-state=checked]]:border-accent-foreground">
       <Checkbox
