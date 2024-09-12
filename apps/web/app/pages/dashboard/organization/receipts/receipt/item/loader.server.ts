@@ -23,5 +23,6 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   return json({
     organizationName: params.organizationName,
     transactionItem: transactionItem.data,
+    transactionId: params.transactionId,
   });
 });

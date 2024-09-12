@@ -53,18 +53,29 @@ export const routes = {
       `${routes.receipts.getPath(organizationName)}/new` as const,
   },
   receipt: {
-    pattern: '/:organizationName/receipts/:id' as const,
-    getPath: (organizationName: string, transactionId: string) =>
-      `${routes.receipts.getPath(organizationName)}/${transactionId}` as const,
+    pattern: '/:organizationName/receipts/:transactionId' as const,
+    getPath: (
+      organizationName: string,
+      transactionId: string,
+      params?: UrlQueryParams,
+    ) =>
+      buildUrlWithParams(
+        `${routes.receipts.getPath(organizationName)}/${transactionId}`,
+        params,
+      ),
   },
   receiptItem: {
-    pattern: '/:organizationName/receipts/:id/:itemId' as const,
+    pattern: '/:organizationName/receipts/:transactionId/:itemId' as const,
     getPath: (
       organizationName: string,
       transactionId: string,
       itemId: string,
+      params?: UrlQueryParams,
     ) =>
-      `${routes.receipt.getPath(organizationName, transactionId)}/${itemId}` as const,
+      buildUrlWithParams(
+        `${routes.receipt.getPath(organizationName, transactionId)}/${itemId}`,
+        params,
+      ),
   },
   scanReceipt: {
     pattern: '/:organizationName/receipts/new/scan' as const,

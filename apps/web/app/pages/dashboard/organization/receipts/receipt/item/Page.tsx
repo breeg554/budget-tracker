@@ -1,7 +1,17 @@
 import React from 'react';
 import type { MetaFunction } from '@remix-run/node';
-import { useLoaderData, useNavigate } from '@remix-run/react';
+import {
+  useLoaderData,
+  useMatch,
+  useNavigate,
+  useOutletContext,
+  useSearchParams,
+} from '@remix-run/react';
 
+import { IconButton } from '~/buttons/IconButton';
+import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
+import { ChevronRightIcon } from '~/icons/ChevronRightIcon';
+import { routes } from '~/routes';
 import {
   DialogDrawer,
   DialogDrawerBody,
@@ -16,33 +26,76 @@ import { loader } from './loader.server';
 
 export const ItemPage = () => {
   const navigate = useNavigate();
-  const { transactionItem } = useLoaderData<typeof loader>();
+  const [params] = useSearchParams();
+  const match = useMatch(routes.receiptItem.pattern);
+  const { transactionItem, organizationName, transactionId } =
+    useLoaderData<typeof loader>();
+  const { nextItem, previousItem } = useOutletContext<{
+    nextItem: (index: string) => void;
+    previousItem: (index: string) => void;
+  }>();
 
-  const onClose = () => {
-    navigate(-1);
+  const isOpen = !!match;
+
+  const onClose = (value: boolean) => {
+    if (value) return;
+    navigate(
+      routes.receipt.getPath(
+        organizationName,
+        transactionId,
+        Object.fromEntries(params.entries()),
+      ),
+      { preventScrollReset: true },
+    );
+  };
+
+  const onNext = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    nextItem(transactionItem.id);
+  };
+
+  const onPrevious = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    previousItem(transactionItem.id);
   };
 
   return (
-    <>
-      <DialogDrawer open={true} onOpenChange={onClose}>
-        <DialogDrawerContent>
-          <DialogDrawerHeader>
-            <DialogDrawerTitle>
-              {transactionItem.quantity} x {transactionItem.name}
-            </DialogDrawerTitle>
-            <DialogDrawerDescription>
-              {new MonetaryValue(
-                transactionItem.price,
-                transactionItem.quantity,
-              ).withCurrency()}
-            </DialogDrawerDescription>
-          </DialogDrawerHeader>
-          <DialogDrawerBody>
-            <p>category: {transactionItem.category.name}</p>
-          </DialogDrawerBody>
-        </DialogDrawerContent>
-      </DialogDrawer>
-    </>
+    <DialogDrawer open={isOpen} onOpenChange={onClose}>
+      <DialogDrawerContent>
+        <DialogDrawerHeader>
+          <DialogDrawerTitle>
+            <IconButton
+              size="xxs"
+              variant="ghost"
+              type="button"
+              icon={<ChevronLeftIcon />}
+              onClick={onPrevious}
+            />
+
+            <span className="px-2">{transactionItem.name}</span>
+
+            <IconButton
+              size="xxs"
+              variant="ghost"
+              type="button"
+              icon={<ChevronRightIcon />}
+              onClick={onNext}
+            />
+          </DialogDrawerTitle>
+          <DialogDrawerDescription>
+            {new MonetaryValue(
+              transactionItem.price,
+              transactionItem.quantity,
+            ).withCurrency()}
+          </DialogDrawerDescription>
+        </DialogDrawerHeader>
+        <DialogDrawerBody>
+          <p>category: {transactionItem.category.name}</p>
+        </DialogDrawerBody>
+      </DialogDrawerContent>
+    </DialogDrawer>
   );
 };
 

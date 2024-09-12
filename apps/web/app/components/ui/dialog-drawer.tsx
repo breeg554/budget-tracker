@@ -1,7 +1,6 @@
 'use client';
 
 import * as React from 'react';
-import { HTMLAttributes } from 'react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { useMediaQuery } from 'usehooks-ts';
 
