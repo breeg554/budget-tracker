@@ -25,7 +25,7 @@ export const ReceiptPage = () => {
     useLoaderData<typeof loader>();
 
   const onClose = () => {
-    navigate(-1);
+    navigate('..', { preventScrollReset: true });
   };
 
   return (

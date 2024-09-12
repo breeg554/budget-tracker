@@ -19,7 +19,7 @@ export const ItemPage = () => {
   const { transactionItem } = useLoaderData<typeof loader>();
 
   const onClose = () => {
-    navigate(-1);
+    navigate('..', { preventScrollReset: true });
   };
 
   return (
