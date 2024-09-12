@@ -63,7 +63,7 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
   };
 
   return (
-    <article className="border border-input rounded-lg px-3 py-2 flex flex-col gap-2">
+    <article className="border border-input rounded-xl px-3 py-3 flex flex-col gap-3">
       <header className="flex gap-2 justify-between">
         <div className="flex gap-2 items-center">
           <Avatar content={data.author.email.slice(0, 2)} size="sm" />
@@ -87,7 +87,7 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
 
         <div className="flex" onClick={(e) => e.preventDefault()}>
           <Dropdown>
-            <DropdownTrigger />
+            <DropdownTrigger size="xxs" />
 
             <DropdownContent>
               <DropdownItem
