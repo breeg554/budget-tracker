@@ -89,6 +89,7 @@ export const ReceiptPage = () => {
         itemId,
         Object.fromEntries(params.entries()),
       ),
+      { preventScrollReset: true },
     );
   };
 
