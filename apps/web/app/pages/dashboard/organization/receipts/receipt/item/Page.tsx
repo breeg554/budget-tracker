@@ -20,6 +20,7 @@ import {
   DialogDrawerHeader,
   DialogDrawerTitle,
 } from '~/ui/dialog-drawer';
+import { cn } from '~/utils/cn';
 import { MonetaryValue } from '~/utils/MonetaryValue';
 
 import { loader } from './loader.server';
@@ -31,8 +32,8 @@ export const ItemPage = () => {
   const { transactionItem, organizationName, transactionId } =
     useLoaderData<typeof loader>();
   const { nextItem, previousItem } = useOutletContext<{
-    nextItem: (index: string) => void;
-    previousItem: (index: string) => void;
+    nextItem?: (index: string) => void;
+    previousItem?: (index: string) => void;
   }>();
 
   const isOpen = !!match;
@@ -52,13 +53,13 @@ export const ItemPage = () => {
   const onNext = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    nextItem(transactionItem.id);
+    nextItem?.(transactionItem.id);
   };
 
   const onPrevious = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     e.stopPropagation();
-    previousItem(transactionItem.id);
+    previousItem?.(transactionItem.id);
   };
 
   return (
@@ -72,6 +73,7 @@ export const ItemPage = () => {
               type="button"
               icon={<ChevronLeftIcon />}
               onClick={onPrevious}
+              className={cn({ hidden: !previousItem })}
             />
 
             <span className="px-2">{transactionItem.name}</span>
@@ -82,6 +84,7 @@ export const ItemPage = () => {
               type="button"
               icon={<ChevronRightIcon />}
               onClick={onNext}
+              className={cn({ hidden: !nextItem })}
             />
           </DialogDrawerTitle>
           <DialogDrawerDescription>

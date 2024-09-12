@@ -93,6 +93,8 @@ export const ReceiptPage = () => {
     );
   };
 
+  const hasMoreThanOneItem = transaction.items.length > 1;
+
   return (
     <>
       <DialogDrawer open={isOpen} onOpenChange={onClose}>
@@ -122,6 +124,7 @@ export const ReceiptPage = () => {
               renderItem={(item) => (
                 <Link
                   withQuery
+                  preventScrollReset
                   to={routes.receiptItem.getPath(
                     organizationName,
                     transactionId,
@@ -136,7 +139,12 @@ export const ReceiptPage = () => {
         </DialogDrawerContent>
       </DialogDrawer>
 
-      <Outlet context={{ nextItem, previousItem }} />
+      <Outlet
+        context={{
+          nextItem: hasMoreThanOneItem ? nextItem : null,
+          previousItem: hasMoreThanOneItem ? previousItem : null,
+        }}
+      />
     </>
   );
 };
