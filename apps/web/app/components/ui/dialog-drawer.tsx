@@ -154,7 +154,7 @@ const DialogDrawerBody = ({
 }: DialogDrawerProps & React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div
-      className={cn('overflow-y-auto md:max-h-[76vh] md:px-0', className)}
+      className={cn('overflow-y-auto md:max-h-[76dvh] md:px-0', className)}
       {...props}
     >
       <div className="px-1">{children}</div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { useFetcher } from '@remix-run/react';
 
 import { GetTransactionDto } from '~/api/Transaction/transactionApi.types';
+import { Avatar } from '~/avatar/Avatar';
 import { ClientDate } from '~/dates/ClientDate';
 import {
   Dropdown,
@@ -39,7 +40,11 @@ export const ReceiptsList = ({ transactions }: ReceiptsListProps) => {
       className="flex flex-col gap-y-2"
       items={transactions}
       renderItem={(item) => (
-        <Link withQuery to={routes.receipt.getPath(organizationName, item.id)}>
+        <Link
+          withQuery
+          to={routes.receipt.getPath(organizationName, item.id)}
+          preventScrollReset
+        >
           <ReceiptsListItem data={item} onDelete={deleteTransaction} />
         </Link>
       )}
@@ -60,20 +65,24 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
   return (
     <article className="border border-input rounded-lg px-3 py-2 flex flex-col gap-2">
       <header className="flex gap-2 justify-between">
-        <div className="flex flex-col">
-          <p className="text-xs text-muted-foreground">
-            <ClientDate
-              fallback={<Skeleton className="w-[70px] h-[14px] rounded-xl" />}
+        <div className="flex gap-2 items-center">
+          <Avatar content={data.author.email.slice(0, 2)} size="sm" />
+          <div className="flex flex-col">
+            <h1
+              className="text-foreground font-semibold text-base line-clamp-1"
+              title={data.name}
             >
-              {new CustomDate(data.date).format('dd MMM yyy')}
-            </ClientDate>
-          </p>
-          <h1
-            className="text-foreground font-semibold text-base line-clamp-1"
-            title={data.name}
-          >
-            {data.name}
-          </h1>
+              {data.name}
+            </h1>
+
+            <p className="text-xs text-muted-foreground">
+              <ClientDate
+                fallback={<Skeleton className="w-[70px] h-[14px] rounded-xl" />}
+              >
+                {new CustomDate(data.date).format('dd MMM yyy')}
+              </ClientDate>
+            </p>
+          </div>
         </div>
 
         <div className="flex" onClick={(e) => e.preventDefault()}>
@@ -94,11 +103,17 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
       </header>
 
       <main>
-        <ItemList
-          items={data.categories}
-          className="flex flex-wrap gap-1 line-clamp-1"
-          renderItem={(item) => <CategoryItemBadge data={item} />}
-        />
+        <div className="flex gap-1 justify-between">
+          <ItemList
+            items={data.categories}
+            className="flex flex-wrap gap-1 line-clamp-1"
+            renderItem={(item) => <CategoryItemBadge data={item} />}
+          />
+
+          <p className="text-xs text-muted-foreground shrink-0">
+            {data.items.length} Item(s)
+          </p>
+        </div>
       </main>
     </article>
   );

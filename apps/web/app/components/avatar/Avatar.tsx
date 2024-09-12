@@ -8,7 +8,7 @@ import {
 } from '~/ui/avatar';
 import { cn } from '~/utils/cn';
 
-export type AvatarSize = 'xxs' | 'xs' | 'sm' | 'lg';
+export type AvatarSize = 'xxxs' | 'xxs' | 'xs' | 'sm' | 'lg';
 
 type BaseAvatarProps = ComponentProps<typeof UIAvatar> & { size?: AvatarSize };
 
@@ -50,6 +50,8 @@ export const Avatar = React.forwardRef<
 
 function getSize(size?: AvatarSize) {
   switch (size) {
+    case 'xxxs':
+      return 'h-5 w-5';
     case 'xxs':
       return 'h-6 w-6';
     case 'xs':
@@ -65,6 +67,8 @@ function getSize(size?: AvatarSize) {
 
 function getContentSize(size?: AvatarSize) {
   switch (size) {
+    case 'xxxs':
+      return 'text-[8px]';
     case 'xxs':
       return 'text-xs';
     case 'xs':

@@ -29,11 +29,7 @@ export const ReceiptsPage = () => {
     hasPrevPage,
     isFetchingPage,
     filters,
-  } = useInfiniteFetcher<
-    GetTransactionDto,
-    typeof loader,
-    { category?: string[]; author?: string[] }
-  >({
+  } = useInfiniteFetcher<GetTransactionDto, typeof loader>({
     loaderUrl: routes.receipts.getPath(organizationName),
     dataExtractor: (response) => ({
       data: response.transactions,

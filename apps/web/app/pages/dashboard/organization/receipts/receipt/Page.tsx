@@ -57,6 +57,7 @@ export const ReceiptPage = () => {
               renderItem={(item) => (
                 <Link
                   withQuery
+                  preventScrollReset
                   to={routes.receiptItem.getPath(
                     organizationName,
                     transactionId,

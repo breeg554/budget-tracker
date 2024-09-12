@@ -82,7 +82,7 @@ export function TransactionItemListItem({
   return (
     <article className="flex gap-2 justify-between items-center">
       <header className="flex items-center gap-3">
-        <div className="w-12 h-12 rounded-xl text-xl bg-neutral-100 flex justify-center items-center">
+        <div className="w-12 h-12 rounded-xl text-xl bg-neutral-100 flex justify-center items-center shrink-0">
           {new TransactionItemCategory(item.category).icon}
         </div>
 

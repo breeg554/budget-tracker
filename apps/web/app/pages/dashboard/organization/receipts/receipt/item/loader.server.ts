@@ -9,14 +9,14 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   await requireSignedIn(request);
 
   assert(params.organizationName);
-  assert(params.id);
+  assert(params.transactionId);
   assert(params.itemId);
 
   const transactionApi = new TransactionApi(fetch);
 
   const transactionItem = await transactionApi.getItem(
     params.itemId,
-    params.id,
+    params.transactionId,
     params.organizationName,
   );
 

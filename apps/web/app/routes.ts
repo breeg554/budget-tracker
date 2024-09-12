@@ -54,13 +54,17 @@ export const routes = {
   },
   receipt: {
     pattern: '/:organizationName/receipts/:id' as const,
-    getPath: (organizationName: string, id: string) =>
-      `${routes.receipts.getPath(organizationName)}/${id}` as const,
+    getPath: (organizationName: string, transactionId: string) =>
+      `${routes.receipts.getPath(organizationName)}/${transactionId}` as const,
   },
   receiptItem: {
     pattern: '/:organizationName/receipts/:id/:itemId' as const,
-    getPath: (organizationName: string, id: string, itemId: string) =>
-      `${routes.receipt.getPath(organizationName, id)}/${itemId}` as const,
+    getPath: (
+      organizationName: string,
+      transactionId: string,
+      itemId: string,
+    ) =>
+      `${routes.receipt.getPath(organizationName, transactionId)}/${itemId}` as const,
   },
   scanReceipt: {
     pattern: '/:organizationName/receipts/new/scan' as const,
