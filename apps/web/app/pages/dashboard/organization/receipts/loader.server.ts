@@ -1,5 +1,6 @@
 import { json } from '@remix-run/node';
 
+import { OrganizationApi } from '~/api/Organization/OrganizationApi.server';
 import { TransactionApi } from '~/api/Transaction/TransactionApi.server';
 import { TransactionItemCategoryApi } from '~/api/Transaction/TransactionItemCategoryApi.server';
 import { getPaginationFromUrl } from '~/pagination/getPaginationFromUrl';
@@ -19,8 +20,13 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
 
   const transactionApi = new TransactionApi(fetch);
   const categoryApi = new TransactionItemCategoryApi(fetch);
+  const organizationApi = new OrganizationApi(fetch);
 
   const categoriesPromise = categoryApi.getTransactionItemCategories();
+
+  const organizationUsersPromise = organizationApi.getUsers(
+    params.organizationName,
+  );
 
   const categoriesQuery =
     new URL(request.url).searchParams.get('category') ?? undefined;
@@ -37,14 +43,17 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
     limit: 10,
   });
 
-  const [categories, transactions] = await Promise.all([
+  const [categories, transactions, organizationUsers] = await Promise.all([
     categoriesPromise,
     transactionsPromise,
+    organizationUsersPromise,
   ]);
 
   return json({
     organizationName: params.organizationName,
     transactions: transactions.data.data,
+    organizationUsers: organizationUsers.data,
+    categories: categories.data,
     pagination: {
       ...transactions.data.meta,
       category: getUrlArrayParam(categoriesQuery),
@@ -52,6 +61,5 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
       startDate,
       endDate,
     },
-    categories: categories.data,
   });
 });

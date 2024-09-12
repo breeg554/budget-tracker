@@ -12,11 +12,13 @@ import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { routes } from '~/routes';
 
+import { ReceiptsFilters } from './components/receiptsFilter/ReceiptsFilter';
 import { loader } from './loader.server';
 
 export const ReceiptsPage = () => {
   const { ref: fetchNextRef, inView } = useInView();
-  const { organizationName } = useLoaderData<typeof loader>();
+  const { organizationName, organizationUsers, categories } =
+    useLoaderData<typeof loader>();
 
   const {
     data,
@@ -26,14 +28,18 @@ export const ReceiptsPage = () => {
     fetchPrevPage,
     hasPrevPage,
     isFetchingPage,
-  } = useInfiniteFetcher<GetTransactionDto, typeof loader>({
+    filters,
+  } = useInfiniteFetcher<
+    GetTransactionDto,
+    typeof loader,
+    { category?: string[]; author?: string[] }
+  >({
     loaderUrl: routes.receipts.getPath(organizationName),
     dataExtractor: (response) => ({
       data: response.transactions,
       pagination: response.pagination,
     }),
   });
-
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingPage) {
       fetchNextPage();
@@ -56,6 +62,13 @@ export const ReceiptsPage = () => {
 
       <SectionWrapper className="pb-24">
         <p className="mx-auto mb-4 text-center">Transactions</p>
+
+        <ReceiptsFilters
+          onFilter={filterPages}
+          defaultValues={filters}
+          authors={organizationUsers}
+          categories={categories}
+        />
 
         <Outlet context={{ onFilter: filterPages }} />
 

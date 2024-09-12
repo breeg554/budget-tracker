@@ -17,8 +17,8 @@ interface UseInfiniteFetcherProps<T, R, P = {}> {
     pagination: Pagination<P>;
   };
 }
-export const useInfiniteFetcher = <T, R>(
-  args: UseInfiniteFetcherProps<T, R>,
+export const useInfiniteFetcher = <T, R, P = {}>(
+  args: UseInfiniteFetcherProps<T, R, P>,
 ) => {
   const navigate = useNavigate();
   const loader = useLoaderData<R>();
@@ -113,7 +113,7 @@ export const useInfiniteFetcher = <T, R>(
     );
   }, [data]);
 
-  const splitedPagination = splitPagination(pagination);
+  const splitedPagination = splitPagination<P>(pagination);
 
   return {
     fetchNextPage,
@@ -128,7 +128,7 @@ export const useInfiniteFetcher = <T, R>(
   };
 };
 
-function splitPagination(pagination: Partial<Pagination>) {
+function splitPagination<P>(pagination: Partial<Pagination<P>>) {
   const { totalPages, totalItems, page, ...rest } = pagination;
 
   return { filters: rest, meta: { totalPages, totalItems, page } };

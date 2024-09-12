@@ -1,12 +1,10 @@
 import React from 'react';
-import { useLoaderData } from '@remix-run/react';
 import { FilterIcon } from 'lucide-react';
 
 import { GetUserDto } from '~/api/api.types';
 import { GetTransactionItemCategoryDto } from '~/api/Transaction/transactionApi.types';
 import { Button } from '~/buttons/Button';
 import { IconButton } from '~/buttons/IconButton';
-import { loader } from '~/dashboard/organization/receipts/filters/loader.server';
 import { DateRange, DateRangeInput } from '~/inputs/DateInput';
 import { ItemList } from '~/list/ItemList';
 import { Checkbox } from '~/ui/checkbox';
@@ -31,38 +29,37 @@ export type OnSubmitProps = {
   endDate?: string;
 };
 
-interface ReceiptsFiltersProps {
+export type DrawerFilters = {
+  category?: string[];
+  author?: string[];
+  startDate?: string;
+  endDate?: string;
+};
+
+type ReceiptsFiltersProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSubmit: (args: OnSubmitProps) => void;
-}
+  defaultValues: DrawerFilters;
+  authors: GetUserDto[];
+  categories: GetTransactionItemCategoryDto[];
+};
 
 export function FiltersDrawer({
   open,
   onOpenChange,
   onSubmit,
+  defaultValues,
+  categories: allCategories,
+  authors: allUsers,
 }: ReceiptsFiltersProps) {
-  const {
-    categories: allCategories,
-    organizationUsers: allUsers,
-    category,
-    author,
-    startDate,
-    endDate,
-  } = useLoaderData<typeof loader>();
-
   const {
     dispatch,
     filtersCount,
     isCategoryChecked,
     isAuthorChecked,
     ...state
-  } = useFiltersDrawer({
-    category,
-    author,
-    startDate,
-    endDate,
-  });
+  } = useFiltersDrawer(defaultValues);
 
   const submit = () => {
     onSubmit(state);

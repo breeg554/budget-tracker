@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import type { MetaFunction } from '@remix-run/node';
-import { useLoaderData, useOutletContext } from '@remix-run/react';
 import { uid } from 'uid';
 import { useBoolean, useDebounceValue } from 'usehooks-ts';
 
-import {
-  FiltersDrawer,
-  OnSubmitProps,
-} from '~/dashboard/organization/receipts/filters/components/FiltersDrawer';
+import { GetUserDto } from '~/api/api.types';
+import { GetTransactionItemCategoryDto } from '~/api/Transaction/transactionApi.types';
 import { SearchInput } from '~/inputs/SearchInput';
 import { Pagination } from '~/pagination/pagination.utils';
 
-import { loader } from './loader.server';
+import { DrawerFilters, FiltersDrawer, OnSubmitProps } from './FiltersDrawer';
 
-export const ReceiptsFilters = () => {
+interface ReceiptsFiltersProps {
+  onFilter: (args: Partial<Pagination<{ category: string[] }>>) => void;
+  defaultValues: DrawerFilters & { search?: string };
+  authors: GetUserDto[];
+  categories: GetTransactionItemCategoryDto[];
+}
+
+export const ReceiptsFilters = ({
+  onFilter,
+  defaultValues,
+  categories,
+  authors,
+}: ReceiptsFiltersProps) => {
   const [key, setKey] = useState(uid());
   const { value: open, setValue: setOpen } = useBoolean(false);
-  const { onFilter } = useOutletContext<{
-    onFilter: (args: Partial<Pagination<{ category: string[] }>>) => void;
-  }>();
 
   const {
     search: defaultSearch,
@@ -26,7 +31,7 @@ export const ReceiptsFilters = () => {
     author,
     startDate,
     endDate,
-  } = useLoaderData<typeof loader>();
+  } = defaultValues;
 
   const [search, setSearch] = useState<string | undefined>(defaultSearch);
   const [debouncedSearch] = useDebounceValue(search, 500);
@@ -76,11 +81,10 @@ export const ReceiptsFilters = () => {
         open={open}
         onOpenChange={onOpenChange}
         onSubmit={submit}
+        defaultValues={defaultValues}
+        categories={categories}
+        authors={authors}
       />
     </div>
   );
-};
-
-export const meta: MetaFunction = () => {
-  return [{ title: 'Receipts' }];
 };
