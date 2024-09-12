@@ -15,7 +15,7 @@ export const action = actionHandler({
     const submission = parseWithZod(formData, {
       schema: z.object({ id: z.string() }),
     });
-    console.log(submission);
+
     if (submission.status !== 'success') {
       return json(submission.reply(), { status: 400 });
     }

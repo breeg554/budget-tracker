@@ -9,9 +9,12 @@ import {
   DropdownItem,
   DropdownTrigger,
 } from '~/dropdowns/Dropdown';
+import { useOrganizationName } from '~/hooks/useOrganizationName';
 import { TrashIcon } from '~/icons/TrashIcon';
+import { Link } from '~/link/Link';
 import { ItemList } from '~/list/ItemList';
 import { confirm } from '~/modals/confirm';
+import { routes } from '~/routes';
 import { Skeleton } from '~/ui/skeleton';
 import { CustomDate } from '~/utils/CustomDate';
 import { TransactionItemCategory } from '~/utils/TransactionItemCategory';
@@ -22,6 +25,7 @@ interface ReceiptsListProps {
 
 export const ReceiptsList = ({ transactions }: ReceiptsListProps) => {
   const fetcher = useFetcher();
+  const organizationName = useOrganizationName();
   const deleteTransaction = (transactionId: string) => {
     confirm({
       children:
@@ -35,7 +39,9 @@ export const ReceiptsList = ({ transactions }: ReceiptsListProps) => {
       className="flex flex-col gap-y-2"
       items={transactions}
       renderItem={(item) => (
-        <ReceiptsListItem data={item} onDelete={deleteTransaction} />
+        <Link withQuery to={routes.receipt.getPath(organizationName, item.id)}>
+          <ReceiptsListItem data={item} onDelete={deleteTransaction} />
+        </Link>
       )}
     />
   );
@@ -70,7 +76,7 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
           </h1>
         </div>
 
-        <div className="flex ">
+        <div className="flex" onClick={(e) => e.preventDefault()}>
           <Dropdown>
             <DropdownTrigger />
 

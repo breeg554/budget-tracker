@@ -1,6 +1,29 @@
-import React from 'react';
-import { LinkProps, Link as RemixLink } from '@remix-run/react';
+import React, { useMemo } from 'react';
+import {
+  Link as RemixLink,
+  LinkProps as RemixLinkProps,
+  useSearchParams,
+} from '@remix-run/react';
 
-export const Link: React.FC<LinkProps> = (props) => {
-  return <RemixLink {...props} />;
+import { buildUrlWithParams } from '~/utils/url';
+
+interface LinkProps extends RemixLinkProps {
+  withQuery?: boolean;
+}
+
+export const Link: React.FC<LinkProps> = ({ to, withQuery, ...props }) => {
+  const [params] = useSearchParams();
+
+  const url = useMemo(() => {
+    if (!withQuery) return to;
+    if (typeof to === 'string') {
+      return buildUrlWithParams(to, Object.fromEntries(params.entries()));
+    }
+    return {
+      ...to,
+      search: `?${params.toString()}`,
+    };
+  }, [to, withQuery, params]);
+
+  return <RemixLink to={url} {...props} />;
 };

@@ -88,7 +88,7 @@ export function TransactionItemListItem({
 
         <div className="flex flex-col">
           <h4 className="text-foreground line-clamp-1" title={item.name}>
-            {item.name}
+            {item.quantity} x {item.name}
           </h4>
           <p className="text-sm text-muted-foreground">{item.category.name}</p>
         </div>

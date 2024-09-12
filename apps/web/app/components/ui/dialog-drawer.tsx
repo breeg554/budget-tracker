@@ -128,11 +128,15 @@ const DialogDrawerHeader = ({
   );
 };
 
+interface DialogDrawerTitleProps extends DialogDrawerProps {
+  title?: string;
+}
+
 const DialogDrawerTitle = ({
   className,
   children,
   ...props
-}: DialogDrawerProps) => {
+}: DialogDrawerTitleProps) => {
   const isDesktop = useMediaQuery(desktop);
   const Component = isDesktop ? DialogTitle : DrawerTitle;
 

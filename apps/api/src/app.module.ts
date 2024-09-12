@@ -72,7 +72,6 @@ import { UserModule } from '~/modules/user/user.module';
       },
     }),
     RouterModule,
-
     AuthModule,
     UserModule,
     OrganizationModule,

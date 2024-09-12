@@ -19,12 +19,15 @@ import {
   Paginated,
   PaginateQuery,
 } from 'nestjs-paginate';
+import { UpdateTransactionDto } from '~/dtos/transaction/update-transaction.dto';
+import { TransactionItemService } from './transaction-item/transaction-item.service';
 
 @Injectable()
 export class TransactionService {
   constructor(
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
+    private readonly transactionItemService: TransactionItemService,
     private readonly organizationService: OrganizationService,
     private readonly userService: UserService,
   ) {}
@@ -74,7 +77,7 @@ export class TransactionService {
       organizationName,
     );
 
-    const transaction = await this.findOneWithItems(
+    const transaction = await this.findOne(
       transactionId,
       organizationName,
       userId,
@@ -89,7 +92,8 @@ export class TransactionService {
     }
   }
 
-  async findOne(
+  async update(
+    data: UpdateTransactionDto,
     transactionId: string,
     organizationName: string,
     userId: string,
@@ -99,22 +103,26 @@ export class TransactionService {
       organizationName,
     );
 
-    const transaction = await this.transactionRepository.findOne({
-      where: { id: transactionId },
-    });
+    const transaction = await this.findOne(
+      transactionId,
+      organizationName,
+      userId,
+    );
 
-    if (!transaction) {
-      throw new NotFoundException('Transaction not found');
+    try {
+      return await this.transactionRepository.save({ ...transaction, ...data });
+    } catch (err) {
+      throw new BadRequestException('Could not delete transaction', {
+        cause: err,
+      });
     }
-
-    return transaction;
   }
 
-  async findOneWithItems(
+  async findOne(
     transactionId: string,
     organizationName: string,
     userId: string,
-  ) {
+  ): Promise<GetTransactionDto> {
     await this.organizationService.ensureUserInOrganization(
       userId,
       organizationName,
@@ -122,14 +130,14 @@ export class TransactionService {
 
     const transaction = await this.transactionRepository.findOne({
       where: { id: transactionId },
-      relations: ['items'],
+      relations: ['items', 'author'],
     });
 
     if (!transaction) {
       throw new NotFoundException('Transaction not found');
     }
 
-    return transaction;
+    return this.toGetTransactionDto(transaction);
   }
 
   async findAll(
@@ -160,13 +168,43 @@ export class TransactionService {
     );
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
-    return { ...rest, data: this.toGetTransactionDto(data) };
+    return { ...rest, data: data.map(this.toGetTransactionDto) };
   }
 
-  private toGetTransactionDto(
-    transactions: Transaction[],
-  ): GetTransactionDto[] {
-    return transactions.map((transaction) => ({
+  async findItems(
+    transactionId: string,
+    organizationName: string,
+    userId: string,
+  ) {
+    const transaction = await this.findOne(
+      transactionId,
+      organizationName,
+      userId,
+    );
+
+    return this.transactionItemService.findAllByTransactionId(transaction.id);
+  }
+
+  async findItem(
+    transactionId: string,
+    itemId: string,
+    organizationName: string,
+    userId: string,
+  ) {
+    const transaction = await this.findOne(
+      transactionId,
+      organizationName,
+      userId,
+    );
+
+    return this.transactionItemService.findOneByTransactionId(
+      transaction.id,
+      itemId,
+    );
+  }
+
+  private toGetTransactionDto(transaction: Transaction): GetTransactionDto {
+    return {
       ...transaction,
       author: {
         email: transaction.author.email,
@@ -176,6 +214,6 @@ export class TransactionService {
         (curr, item) => curr + Number(item.price) * Number(item.quantity),
         0,
       ),
-    }));
+    };
   }
 }

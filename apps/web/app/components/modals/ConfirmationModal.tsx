@@ -50,7 +50,7 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
       }}
     >
       <DialogDrawerContent
-        className={cn('md:max-w-[500px] md:min-w-[300px] mx-2', className)}
+        className={cn('md:max-w-[500px] md:min-w-[300px]', className)}
       >
         <DialogDrawerHeader>
           <DialogDrawerTitle>Are you sure?</DialogDrawerTitle>

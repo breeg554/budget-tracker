@@ -6,7 +6,11 @@ import { PAGINATION_DEFAULTS } from '~/pagination/pagination.utils';
 import { typedFetch, TypedFetch } from '~/utils/fetch';
 import { buildUrlWithParams, UrlQueryParams } from '~/utils/url';
 
-import { fromGetTransactionsResponse } from './transactionApi.contracts';
+import {
+  fromGetTransactionsResponse,
+  getTransactionItemSchema,
+  getTransactionSchema,
+} from './transactionApi.contracts';
 
 export class TransactionApi {
   private readonly client: TypedFetch;
@@ -33,6 +37,13 @@ export class TransactionApi {
       {
         method: 'DELETE',
       },
+    );
+  }
+
+  getOne(transactionId: string, organizationName: string) {
+    return this.client(
+      getTransactionSchema,
+      `/organizations/${organizationName}/transactions/${transactionId}`,
     );
   }
 
@@ -64,6 +75,13 @@ export class TransactionApi {
       {
         method: 'get',
       },
+    );
+  }
+
+  getItem(itemId: string, transactionId: string, organizationName: string) {
+    return this.client(
+      getTransactionItemSchema,
+      `/organizations/${organizationName}/transactions/${transactionId}/items/${itemId}`,
     );
   }
 }
