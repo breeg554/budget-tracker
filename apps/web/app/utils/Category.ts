@@ -40,6 +40,12 @@ export class Category {
         return '🎥';
       case 'utilities':
         return '💡';
+      case 'cats':
+        return '🐱';
+      case 'smoking':
+        return '🚬';
+      case 'cleaning chemicals':
+        return '🧼';
       default:
         return '';
     }
