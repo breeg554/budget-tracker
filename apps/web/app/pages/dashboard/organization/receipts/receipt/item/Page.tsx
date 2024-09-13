@@ -9,6 +9,11 @@ import {
 } from '@remix-run/react';
 
 import { IconButton } from '~/buttons/IconButton';
+import {
+  DescriptionRow,
+  DescriptionRowContent,
+  DescriptionRowName,
+} from '~/dashboard/organization/receipts/receipt/components/DescriptionRows.components';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { ChevronRightIcon } from '~/icons/ChevronRightIcon';
 import { routes } from '~/routes';
@@ -16,7 +21,6 @@ import {
   DialogDrawer,
   DialogDrawerBody,
   DialogDrawerContent,
-  DialogDrawerDescription,
   DialogDrawerHeader,
   DialogDrawerTitle,
 } from '~/ui/dialog-drawer';
@@ -86,12 +90,32 @@ export const ItemPage = () => {
               className={cn({ hidden: !nextItem })}
             />
           </DialogDrawerTitle>
-          <DialogDrawerDescription>
-            {transactionItem.price.total.formatted}
-          </DialogDrawerDescription>
         </DialogDrawerHeader>
+
         <DialogDrawerBody>
-          <p>category: {transactionItem.category.name}</p>
+          <div className="flex flex-col divide-y mt-2">
+            <DescriptionRow>
+              <DescriptionRowName>Total</DescriptionRowName>
+              <DescriptionRowContent>
+                {transactionItem.price.total.formatted}
+              </DescriptionRowContent>
+            </DescriptionRow>
+
+            <DescriptionRow>
+              <DescriptionRowName>Quantity</DescriptionRowName>
+              <DescriptionRowContent>
+                {transactionItem.price.quantity}
+              </DescriptionRowContent>
+            </DescriptionRow>
+
+            <DescriptionRow>
+              <DescriptionRowName>Category</DescriptionRowName>
+              <DescriptionRowContent>
+                <span className="mr-1">{transactionItem.category.icon}</span>
+                <span>{transactionItem.category.name}</span>
+              </DescriptionRowContent>
+            </DescriptionRow>
+          </div>
         </DialogDrawerBody>
       </DialogDrawerContent>
     </DialogDrawer>

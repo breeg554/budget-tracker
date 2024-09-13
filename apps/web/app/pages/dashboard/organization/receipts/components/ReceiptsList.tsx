@@ -2,6 +2,7 @@ import React from 'react';
 import { useFetcher } from '@remix-run/react';
 
 import { GetTransactionDto } from '~/api/Transaction/transactionApi.types';
+import { CategoryBadge } from '~/dashboard/organization/receipts/components/CategoryBadge';
 import { ClientDate } from '~/dates/ClientDate';
 import {
   Dropdown,
@@ -16,7 +17,6 @@ import { ItemList } from '~/list/ItemList';
 import { confirm } from '~/modals/confirm';
 import { routes } from '~/routes';
 import { Skeleton } from '~/ui/skeleton';
-import { Category } from '~/utils/Category';
 import { cn } from '~/utils/cn';
 import { CustomDate } from '~/utils/CustomDate';
 
@@ -66,9 +66,8 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
     <article className="border border-input rounded-xl p-4 flex flex-col gap-3">
       <header className="flex gap-2 justify-between">
         <div className="flex gap-2 items-center">
-          {/*<Avatar content={data.author.email.slice(0, 2)} size="sm" />*/}
           <h1
-            className="text-foreground font-semibold text-xl line-clamp-1"
+            className="text-foreground font-semibold text-lg line-clamp-1"
             title={data.name}
           >
             {data.name}
@@ -92,32 +91,7 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
         </div>
       </header>
 
-      <main className="flex flex-col divide-y">
-        <ReceiptListItemRow>
-          <ReceiptListItemRowName>Total</ReceiptListItemRowName>
-          <ReceiptListItemRowContent title={data.price.formatted}>
-            {data.price.formatted}
-          </ReceiptListItemRowContent>
-        </ReceiptListItemRow>
-
-        <ReceiptListItemRow>
-          <ReceiptListItemRowName>Date</ReceiptListItemRowName>
-          <ReceiptListItemRowContent title={data.date}>
-            <ClientDate
-              fallback={<Skeleton className="w-[120px] h-6 rounded-xl" />}
-            >
-              {new CustomDate(data.date).format('dd MMM yyy')}
-            </ClientDate>
-          </ReceiptListItemRowContent>
-        </ReceiptListItemRow>
-
-        <ReceiptListItemRow>
-          <ReceiptListItemRowName>Author</ReceiptListItemRowName>
-          <ReceiptListItemRowContent title={data.author.email}>
-            {data.author.email}
-          </ReceiptListItemRowContent>
-        </ReceiptListItemRow>
-
+      <main className="grid grid-cols-[2fr_3fr_4fr] gap-1">
         <ReceiptListItemRow>
           <ReceiptListItemRowName>Items</ReceiptListItemRowName>
           <ReceiptListItemRowContent>
@@ -125,28 +99,38 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
           </ReceiptListItemRowContent>
         </ReceiptListItemRow>
 
+        <ReceiptListItemRow>
+          <ReceiptListItemRowName>Date</ReceiptListItemRowName>
+          <ReceiptListItemRowContent title={data.date}>
+            <ClientDate
+              fallback={<Skeleton className="w-[95px] h-4 rounded-xl" />}
+            >
+              {new CustomDate(data.date).format('dd MMM yyy')}
+            </ClientDate>
+          </ReceiptListItemRowContent>
+        </ReceiptListItemRow>
+
+        <ReceiptListItemRow>
+          <ReceiptListItemRowName>Total</ReceiptListItemRowName>
+          <ReceiptListItemRowContent title={data.price.formatted}>
+            {data.price.formatted}
+          </ReceiptListItemRowContent>
+        </ReceiptListItemRow>
+
+        <ReceiptListItemRow className="col-span-3">
+          <ReceiptListItemRowName>Author</ReceiptListItemRowName>
+          <ReceiptListItemRowContent title={data.author.email}>
+            {data.author.email}
+          </ReceiptListItemRowContent>
+        </ReceiptListItemRow>
+
         <ItemList
           items={data.categories}
-          className="flex flex-wrap gap-1 pt-3"
-          renderItem={(item) => <CategoryItemBadge data={item} />}
+          className="flex flex-wrap gap-1 pt-3 col-span-3"
+          renderItem={(item) => <CategoryBadge data={item} />}
         />
       </main>
     </article>
-  );
-}
-
-interface CategoryItemBadgeProps {
-  data: GetTransactionDto['categories'][0];
-}
-function CategoryItemBadge({ data }: CategoryItemBadgeProps) {
-  const categoryItem = new Category(data);
-
-  return (
-    <p className="text-xs flex gap-1 items-center rounded-full px-1 py-0.5 bg-secondary">
-      <span>{categoryItem.icon}</span>
-
-      <span>{categoryItem.name}</span>
-    </p>
   );
 }
 
@@ -156,13 +140,7 @@ function ReceiptListItemRow({
   ...rest
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <div
-      className={cn(
-        'grid grid-cols-[1fr_2fr] gap-2 items-center py-2 truncate',
-        className,
-      )}
-      {...rest}
-    >
+    <div className={cn('flex flex-col', className)} {...rest}>
       {children}
     </div>
   );

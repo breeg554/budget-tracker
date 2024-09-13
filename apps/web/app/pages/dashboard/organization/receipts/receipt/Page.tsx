@@ -9,6 +9,12 @@ import {
 } from '@remix-run/react';
 
 import { TransactionItemListItem } from '~/dashboard/organization/components/TransactionItemList';
+import { CategoryBadge } from '~/dashboard/organization/receipts/components/CategoryBadge';
+import {
+  DescriptionRow,
+  DescriptionRowContent,
+  DescriptionRowName,
+} from '~/dashboard/organization/receipts/receipt/components/DescriptionRows.components';
 import { ClientDate } from '~/dates/ClientDate';
 import { Link } from '~/link/Link';
 import { ItemList } from '~/list/ItemList';
@@ -17,7 +23,6 @@ import {
   DialogDrawer,
   DialogDrawerBody,
   DialogDrawerContent,
-  DialogDrawerDescription,
   DialogDrawerHeader,
   DialogDrawerTitle,
 } from '~/ui/dialog-drawer';
@@ -106,18 +111,43 @@ export const ReceiptPage = () => {
             >
               {transaction.name}
             </DialogDrawerTitle>
-            <DialogDrawerDescription>
-              <ClientDate>
-                {new CustomDate(transaction.date).format('dd MMM yyy')}
-              </ClientDate>
-            </DialogDrawerDescription>
           </DialogDrawerHeader>
 
           <DialogDrawerBody>
+            <div className="flex flex-col divide-y mt-2 mb-4">
+              <DescriptionRow>
+                <DescriptionRowName>Date</DescriptionRowName>
+                <DescriptionRowContent>
+                  <ClientDate>
+                    {new CustomDate(transaction.date).format('dd MMM yyy')}
+                  </ClientDate>
+                </DescriptionRowContent>
+              </DescriptionRow>
+
+              <DescriptionRow>
+                <DescriptionRowName>Author</DescriptionRowName>
+                <DescriptionRowContent title={transaction.author.email}>
+                  {transaction.author.email}
+                </DescriptionRowContent>
+              </DescriptionRow>
+
+              <DescriptionRow>
+                <DescriptionRowName>Total</DescriptionRowName>
+                <DescriptionRowContent title={transaction.price.formatted}>
+                  {transaction.price.formatted}
+                </DescriptionRowContent>
+              </DescriptionRow>
+
+              <ItemList
+                items={transaction.categories}
+                className="flex flex-wrap gap-1 pt-3 col-span-3"
+                renderItem={(item) => <CategoryBadge data={item} />}
+              />
+            </div>
+
             <p className="text-sm text-muted-foreground">
               {transaction.items.length} Item(s)
             </p>
-
             <ItemList
               className="my-3 flex flex-col gap-2"
               items={transaction.items}
