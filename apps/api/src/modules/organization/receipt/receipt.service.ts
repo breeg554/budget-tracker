@@ -5,13 +5,17 @@ import { Repository } from 'typeorm';
 import { OrganizationService } from '~/modules/organization/organization.service';
 import { ChatClient } from '~/modules/clients/chat';
 import { TransactionItemCategoryService } from '~/modules/organization/transaction/transaction-item/transaction-item-category/transaction-item-category.service';
-import { getProcessedReceipt } from '~/dtos/receipt/get-processed-receipt.dto';
+import {
+  getProcessedReceipt,
+  getProcessedReceiptProducts,
+} from '~/dtos/receipt/get-processed-receipt.dto';
 import { ZodError } from 'zod';
 import {
   ReceiptError,
   ReceiptParseError,
   ReceiptSchemaError,
 } from '~/modules/organization/receipt/errors/receipt.error';
+import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 
 @Injectable()
 export class ReceiptService {
@@ -36,28 +40,132 @@ export class ReceiptService {
     const productCategories =
       await this.transactionItemCategoryService.findAll();
 
-    const base64Image = file.buffer.toString('base64');
+    try {
+      const receiptContent = await this.extractContentFromImage(
+        file,
+        secret.value,
+      );
 
-    const preparedCategories = JSON.stringify(
-      productCategories.map((c) => ({ id: c.id, name: c.name })),
-      null,
-      2,
+      const receiptProducts = await this.extractProductsFromContent(
+        receiptContent.content,
+        productCategories,
+        secret.value,
+      );
+
+      return {
+        content: receiptContent.content,
+        products: receiptProducts.content,
+      };
+    } catch (err) {
+      if (err instanceof SyntaxError) throw new ReceiptParseError();
+      if (err instanceof ZodError) throw new ReceiptSchemaError();
+
+      throw new ReceiptError(err);
+    }
+  }
+
+  private async extractContentFromImage(
+    file: Express.Multer.File,
+    apiKey: string,
+  ) {
+    const result = await this.chatClient.invoke(
+      [
+        this.createSystemMessage(this.buildContentExtractionPrompt()),
+        this.createUserImageMessage(this.base64(file)),
+      ],
+      {
+        apiKey: apiKey,
+      },
     );
 
-    try {
-      const messages = await this.chatClient.createChat(
-        [
-          {
-            role: 'system',
-            content: `
-          You are an expert in extracting information from receipts. I will send you a shop receipt in image format ( image is taken vertically ) in Polish, and your task is to accurately retrieve all product details.
+    const { content } = getProcessedReceipt.parse(
+      JSON.parse(result.content as string),
+    );
 
+    return { ...result, content };
+  }
+
+  private async extractProductsFromContent(
+    content: string,
+    categories: TransactionItemCategory[],
+    apiKey: string,
+  ) {
+    const result = await this.chatClient.invoke(
+      [
+        this.createSystemMessage(this.buildProductExtractionPrompt(categories)),
+        this.createUserTextMessage(content),
+      ],
+      {
+        apiKey: apiKey,
+      },
+    );
+
+    const { products } = getProcessedReceiptProducts.parse(
+      JSON.parse(result.content as string),
+    );
+
+    return { ...result, content: products };
+  }
+
+  private createSystemMessage(content: string) {
+    return {
+      role: 'system' as const,
+      content,
+    };
+  }
+
+  private createUserTextMessage(content: string) {
+    return {
+      role: 'user' as const,
+      content: content,
+    };
+  }
+
+  private createUserImageMessage(imageBase64: string) {
+    return {
+      role: 'user' as const,
+      content: [
+        {
+          type: 'image_url',
+          image_url: {
+            url: imageBase64,
+          },
+        },
+      ],
+    };
+  }
+
+  private buildContentExtractionPrompt() {
+    return `
+          You are an expert in extracting information from receipts. 
+          I will send you a shop receipt in image format (image is taken vertically) and your task is to accurately retrieve all details from the receipt.
+          
+          Receipt image may be of low or high quality.
+         
+          Remember to:
+          1. Extract as many products as possible from the receipt. Ensure each product's name, price, and quantity are correctly identified.
+          2. Read the receipt line by line for correctly matching product name, price and quantity
+          3. Split products by new line
+
+          Return json format of that shape
+          ---
+           {
+             content: CONTENT_FROM_RECEIPT
+           }
+          ---
+          If you cannot retrieve any content from image, return empty string for "content".
+          `;
+  }
+
+  private buildProductExtractionPrompt(categories: TransactionItemCategory[]) {
+    return `
+          You are an expert in extracting information from receipts content. I will send you a shop receipt content (in string format) retrieve all product details.
+      
           Remember to:
           1. Extract as many products as possible from the receipt. Ensure each product's name, price, and quantity are correctly identified.
           2. Read the receipt line by line for correctly matching product name, price and quantity:
             - Do not go to the next line until you are sure you have extracted all the necessary information.
             - Remember that Price appear after the quantity.
-            - In most cases product name is at the beginning of the line when the quantity and price are at the end.
             - Quantity is a number with a comma or a dot (e.g., 0.5, 0.75, 1, 1.5, 2).
             - Price is a number with a comma or a dot (e.g., 3.5, 1.75, 1.22, 1.21, 22.12).
             - The default quantity is 1.
@@ -66,13 +174,13 @@ export class ReceiptService {
             - Extract the price per 1 kg.
             - Example format: "0.836 x9.99 = 8.35" where 0.836 is the quantity, 9.99 is the price per kg.
           4. If you notice the same products (products are the same when have the same name and price) multiple times in the receipt, sum the quantity up!
-          6. Assign the most appropriate category ID from the "Available Categories" list to each product. If no category fits, use the ID of "other" category as a last resort.
-          7. Ensure that the "category" field contains only the ID (UUID format) from the "Available Categories" list and not the name. The "categoryName" should contain the actual name from the same list.
-          8. Product names shouldn't be capitalized.
+          5. Assign the most appropriate category ID from the "Available Categories" list to each product. If no category fits, use the ID of "other" category as a last resort.
+          6. Ensure that the "category" field contains only the ID (UUID format) from the "Available Categories" list and not the name. The "categoryName" should contain the actual name from the same list.
+          7. Product names shouldn't be capitalized.
 
           --- Available Categories ---
 
-          ${preparedCategories}
+          ${this.formatCategories(categories)}
 
           ---
 
@@ -80,7 +188,6 @@ export class ReceiptService {
 
             ---
             {
-              content: ALL TEXT FROM RECEIPT THAT YOU USED TO GET PRODUCTS,
               products: [
                 {
                   name: PRODUCT_NAME ( e.g. "Apple" ),
@@ -93,37 +200,23 @@ export class ReceiptService {
             }
             ---
 
-          If you cannot retrieve any products or content from image, return empty array for "products" and empty string for "content".
+          If you cannot retrieve any products from the content, return empty array for "products".
 
-          Check two, three times that name, quantity, and price are correctly matched. Ensure that price refers to the price per unit or kg and not the total line price!!!
+          Check two, three times that name, quantity, and price are correctly matched. Ensure that price refers to the price per unit or kg and not the total line price!
 
           Ignore addresses, dates, and other irrelevant information that are above and below the product list.
-          `,
-          },
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'image_url',
-                image_url: {
-                  url: `data:image/${file.mimetype};base64,${base64Image}`,
-                },
-              },
-            ],
-          },
-        ],
-        {
-          apiKey: secret.value,
-          response_format: { type: 'json_object' },
-        },
-      );
+          `;
+  }
 
-      return getProcessedReceipt.parse(JSON.parse(messages.content));
-    } catch (err) {
-      if (err instanceof SyntaxError) throw new ReceiptParseError();
-      if (err instanceof ZodError) throw new ReceiptSchemaError();
+  private formatCategories(categories: TransactionItemCategory[]) {
+    return JSON.stringify(
+      categories.map((c) => ({ id: c.id, name: c.name })),
+      null,
+      2,
+    );
+  }
 
-      throw new ReceiptError(err);
-    }
+  private base64(file: Express.Multer.File) {
+    return `data:image/${file.mimetype};base64,${file.buffer.toString('base64')}`;
   }
 }

@@ -27,6 +27,8 @@
     "migration:show": "npm run typeorm -- migration:show -d ./typeorm.config.ts"
   },
   "dependencies": {
+    "@langchain/core": "^0.2.32",
+    "@langchain/openai": "^0.2.11",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
@@ -44,10 +46,10 @@
     "class-validator": "^0.14.1",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.4.5",
+    "langchain": "^0.2.19",
     "nestjs-paginate": "^9.0.0",
     "nestjs-pino": "^4.0.0",
     "nestjs-zod": "^3.0.0",
-    "openai": "^4.55.4",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",

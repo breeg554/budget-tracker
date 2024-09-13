@@ -73,7 +73,7 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
       if (!isFromProcessReceiptSchema(data)) {
         return <p>Ups. Something went wrong...</p>;
       }
-
+      console.log(data);
       const transactionItems = toTransactionItem(data.products);
       return (
         <div>

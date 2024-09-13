@@ -2,6 +2,10 @@ import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
 export const getProcessedReceipt = z.object({
+  content: z.string(),
+});
+
+export const getProcessedReceiptProducts = z.object({
   products: z.array(
     z.object({
       name: z.string(),
@@ -14,7 +18,6 @@ export const getProcessedReceipt = z.object({
       categoryName: z.string(),
     }),
   ),
-  content: z.string(),
 });
 
 export class GetProcessedReceiptDto extends createZodDto(getProcessedReceipt) {}
