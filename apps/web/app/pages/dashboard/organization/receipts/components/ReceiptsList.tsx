@@ -2,7 +2,6 @@ import React from 'react';
 import { useFetcher } from '@remix-run/react';
 
 import { GetTransactionDto } from '~/api/Transaction/transactionApi.types';
-import { Avatar } from '~/avatar/Avatar';
 import { ClientDate } from '~/dates/ClientDate';
 import {
   Dropdown,
@@ -18,6 +17,7 @@ import { confirm } from '~/modals/confirm';
 import { routes } from '~/routes';
 import { Skeleton } from '~/ui/skeleton';
 import { Category } from '~/utils/Category';
+import { cn } from '~/utils/cn';
 import { CustomDate } from '~/utils/CustomDate';
 
 interface ReceiptsListProps {
@@ -63,26 +63,16 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
   };
 
   return (
-    <article className="border border-input rounded-xl px-3 py-3 flex flex-col gap-3">
+    <article className="border border-input rounded-xl p-4 flex flex-col gap-3">
       <header className="flex gap-2 justify-between">
         <div className="flex gap-2 items-center">
-          <Avatar content={data.author.email.slice(0, 2)} size="sm" />
-          <div className="flex flex-col">
-            <h1
-              className="text-foreground font-semibold text-base line-clamp-1"
-              title={data.name}
-            >
-              {data.name}
-            </h1>
-
-            <p className="text-xs text-muted-foreground">
-              <ClientDate
-                fallback={<Skeleton className="w-[70px] h-[14px] rounded-xl" />}
-              >
-                {new CustomDate(data.date).format('dd MMM yyy')}
-              </ClientDate>
-            </p>
-          </div>
+          {/*<Avatar content={data.author.email.slice(0, 2)} size="sm" />*/}
+          <h1
+            className="text-foreground font-semibold text-xl line-clamp-1"
+            title={data.name}
+          >
+            {data.name}
+          </h1>
         </div>
 
         <div className="flex" onClick={(e) => e.preventDefault()}>
@@ -102,18 +92,44 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
         </div>
       </header>
 
-      <main>
-        <div className="flex gap-1 justify-between">
-          <ItemList
-            items={data.categories}
-            className="flex flex-wrap gap-1 line-clamp-1"
-            renderItem={(item) => <CategoryItemBadge data={item} />}
-          />
+      <main className="flex flex-col divide-y">
+        <ReceiptListItemRow>
+          <ReceiptListItemRowName>Total</ReceiptListItemRowName>
+          <ReceiptListItemRowContent title={data.price.formatted}>
+            {data.price.formatted}
+          </ReceiptListItemRowContent>
+        </ReceiptListItemRow>
 
-          <p className="text-xs text-muted-foreground shrink-0">
-            {data.items.length} Item(s)
-          </p>
-        </div>
+        <ReceiptListItemRow>
+          <ReceiptListItemRowName>Date</ReceiptListItemRowName>
+          <ReceiptListItemRowContent title={data.date}>
+            <ClientDate
+              fallback={<Skeleton className="w-[120px] h-6 rounded-xl" />}
+            >
+              {new CustomDate(data.date).format('dd MMM yyy')}
+            </ClientDate>
+          </ReceiptListItemRowContent>
+        </ReceiptListItemRow>
+
+        <ReceiptListItemRow>
+          <ReceiptListItemRowName>Author</ReceiptListItemRowName>
+          <ReceiptListItemRowContent title={data.author.email}>
+            {data.author.email}
+          </ReceiptListItemRowContent>
+        </ReceiptListItemRow>
+
+        <ReceiptListItemRow>
+          <ReceiptListItemRowName>Items</ReceiptListItemRowName>
+          <ReceiptListItemRowContent>
+            {data.items.length}
+          </ReceiptListItemRowContent>
+        </ReceiptListItemRow>
+
+        <ItemList
+          items={data.categories}
+          className="flex flex-wrap gap-1 pt-3"
+          renderItem={(item) => <CategoryItemBadge data={item} />}
+        />
       </main>
     </article>
   );
@@ -131,5 +147,50 @@ function CategoryItemBadge({ data }: CategoryItemBadgeProps) {
 
       <span>{categoryItem.name}</span>
     </p>
+  );
+}
+
+function ReceiptListItemRow({
+  className,
+  children,
+  ...rest
+}: React.HTMLAttributes<HTMLParagraphElement>) {
+  return (
+    <div
+      className={cn(
+        'grid grid-cols-[1fr_2fr] gap-2 items-center py-2 truncate',
+        className,
+      )}
+      {...rest}
+    >
+      {children}
+    </div>
+  );
+}
+
+function ReceiptListItemRowContent({
+  className,
+  children,
+  ...rest
+}: React.HTMLAttributes<HTMLSpanElement>) {
+  return (
+    <p className={cn('text-foreground truncate text-sm', className)} {...rest}>
+      {children}
+    </p>
+  );
+}
+
+function ReceiptListItemRowName({
+  className,
+  children,
+  ...rest
+}: React.HTMLAttributes<HTMLSpanElement>) {
+  return (
+    <span
+      className={cn('text-muted-foreground text-xs shrink-0', className)}
+      {...rest}
+    >
+      {children}
+    </span>
   );
 }
