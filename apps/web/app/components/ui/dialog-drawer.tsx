@@ -170,7 +170,7 @@ const DialogDrawerFooter = ({
   const Component = isDesktop ? DialogFooter : DrawerFooter;
 
   return (
-    <Component className={className} {...props}>
+    <Component className={cn('px-0', className)} {...props}>
       {children}
     </Component>
   );

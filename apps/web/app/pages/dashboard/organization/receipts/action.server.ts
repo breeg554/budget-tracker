@@ -1,8 +1,9 @@
-import { json } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { parseWithZod } from '@conform-to/zod';
 import { z } from 'zod';
 
 import { TransactionApi } from '~/api/Transaction/TransactionApi.server';
+import { routes } from '~/routes';
 import { SessionState } from '~/session.server';
 import { actionHandler } from '~/utils/action.server';
 import { assert } from '~/utils/assert';
@@ -26,15 +27,12 @@ export const action = actionHandler({
 
     const sessionState = await SessionState.fromRequest(request);
 
-    return json(
-      {},
-      {
-        headers: {
-          'Set-Cookie': await sessionState
-            .setToasts({ success: 'Receipt deleted successfully' })
-            .commit(),
-        },
+    return redirect(routes.receipts.getPath(params.organizationName), {
+      headers: {
+        'Set-Cookie': await sessionState
+          .setToasts({ success: 'Transaction deleted successfully' })
+          .commit(),
       },
-    );
+    });
   },
 });

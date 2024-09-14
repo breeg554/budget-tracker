@@ -8,6 +8,7 @@ import {
   useSearchParams,
 } from '@remix-run/react';
 
+import { Button } from '~/buttons/Button';
 import { TransactionItemListItem } from '~/dashboard/organization/components/TransactionItemList';
 import { CategoryBadge } from '~/dashboard/organization/receipts/components/CategoryBadge';
 import {
@@ -15,6 +16,7 @@ import {
   DescriptionRowContent,
   DescriptionRowName,
 } from '~/dashboard/organization/receipts/receipt/components/DescriptionRows.components';
+import { useDeleteReceipt } from '~/dashboard/organization/receipts/receipts.hooks';
 import { ClientDate } from '~/dates/ClientDate';
 import { Link } from '~/link/Link';
 import { ItemList } from '~/list/ItemList';
@@ -23,6 +25,7 @@ import {
   DialogDrawer,
   DialogDrawerBody,
   DialogDrawerContent,
+  DialogDrawerFooter,
   DialogDrawerHeader,
   DialogDrawerTitle,
 } from '~/ui/dialog-drawer';
@@ -32,6 +35,7 @@ import { loader } from './loader.server';
 
 export const ReceiptPage = () => {
   const navigate = useNavigate();
+  const { action: deleteTransaction } = useDeleteReceipt();
   const [params] = useSearchParams();
   const match = useMatch({ path: routes.receipt.pattern, end: false });
   const { transaction, transactionId, organizationName } =
@@ -96,6 +100,10 @@ export const ReceiptPage = () => {
       ),
       { preventScrollReset: true },
     );
+  };
+
+  const onDelete = () => {
+    deleteTransaction(transactionId);
   };
 
   const hasMoreThanOneItem = transaction.items.length > 1;
@@ -166,6 +174,21 @@ export const ReceiptPage = () => {
               )}
             />
           </DialogDrawerBody>
+          <DialogDrawerFooter>
+            <div className="flex gap-1">
+              <Button disabled className="grow" variant="secondary" size="sm">
+                Edit
+              </Button>
+              <Button
+                className="grow"
+                variant="secondary"
+                size="sm"
+                onClick={onDelete}
+              >
+                Delete
+              </Button>
+            </div>
+          </DialogDrawerFooter>
         </DialogDrawerContent>
       </DialogDrawer>
 

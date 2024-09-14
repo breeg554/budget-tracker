@@ -1,8 +1,8 @@
 import React from 'react';
-import { useFetcher } from '@remix-run/react';
 
 import { GetTransactionDto } from '~/api/Transaction/transactionApi.types';
 import { CategoryBadge } from '~/dashboard/organization/receipts/components/CategoryBadge';
+import { useDeleteReceipt } from '~/dashboard/organization/receipts/receipts.hooks';
 import { ClientDate } from '~/dates/ClientDate';
 import {
   Dropdown,
@@ -14,7 +14,6 @@ import { useOrganizationName } from '~/hooks/useOrganizationName';
 import { TrashIcon } from '~/icons/TrashIcon';
 import { Link } from '~/link/Link';
 import { ItemList } from '~/list/ItemList';
-import { confirm } from '~/modals/confirm';
 import { routes } from '~/routes';
 import { Skeleton } from '~/ui/skeleton';
 import { cn } from '~/utils/cn';
@@ -25,16 +24,10 @@ interface ReceiptsListProps {
 }
 
 export const ReceiptsList = ({ transactions }: ReceiptsListProps) => {
-  const fetcher = useFetcher();
+  const { action: deleteTransaction } = useDeleteReceipt();
+
   const organizationName = useOrganizationName();
-  const deleteTransaction = (transactionId: string) => {
-    confirm({
-      children:
-        'You are about to delete this transaction. This action is irreversible.',
-      onConfirm: () =>
-        fetcher.submit({ id: transactionId }, { method: 'delete' }),
-    });
-  };
+
   return (
     <ItemList
       className="flex flex-col gap-y-2"
