@@ -2,7 +2,7 @@ import React from 'react';
 
 import { GetTransactionDto } from '~/api/Transaction/transactionApi.types';
 import { CategoryBadge } from '~/dashboard/organization/receipts/components/CategoryBadge';
-import { useDeleteReceipt } from '~/dashboard/organization/receipts/receipts.hooks';
+import { useDeleteTransaction } from '~/dashboard/organization/receipts/transactions.hooks';
 import { ClientDate } from '~/dates/ClientDate';
 import {
   Dropdown,
@@ -24,7 +24,7 @@ interface ReceiptsListProps {
 }
 
 export const ReceiptsList = ({ transactions }: ReceiptsListProps) => {
-  const { action: deleteTransaction } = useDeleteReceipt();
+  const { action: deleteTransaction } = useDeleteTransaction();
 
   const organizationName = useOrganizationName();
 

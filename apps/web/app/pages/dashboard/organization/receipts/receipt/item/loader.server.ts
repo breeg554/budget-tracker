@@ -1,6 +1,6 @@
 import { json } from '@remix-run/node';
 
-import { TransactionApi } from '~/api/Transaction/TransactionApi.server';
+import { TransactionItemApi } from '~/api/Transaction/TransactionItemApi.server';
 import { requireSignedIn } from '~/session.server';
 import { assert } from '~/utils/assert';
 import { loaderHandler } from '~/utils/loader.server';
@@ -12,9 +12,8 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   assert(params.transactionId);
   assert(params.itemId);
 
-  const transactionApi = new TransactionApi(fetch);
-
-  const transactionItem = await transactionApi.getItem(
+  const transactionItemApi = new TransactionItemApi(fetch);
+  const transactionItem = await transactionItemApi.getOne(
     params.itemId,
     params.transactionId,
     params.organizationName,

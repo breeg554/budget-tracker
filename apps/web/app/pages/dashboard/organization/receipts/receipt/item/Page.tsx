@@ -8,12 +8,14 @@ import {
   useSearchParams,
 } from '@remix-run/react';
 
+import { Button } from '~/buttons/Button';
 import { IconButton } from '~/buttons/IconButton';
 import {
   DescriptionRow,
   DescriptionRowContent,
   DescriptionRowName,
 } from '~/dashboard/organization/receipts/receipt/components/DescriptionRows.components';
+import { useDeleteTransactionItem } from '~/dashboard/organization/receipts/transactions.hooks';
 import { ChevronLeftIcon } from '~/icons/ChevronLeftIcon';
 import { ChevronRightIcon } from '~/icons/ChevronRightIcon';
 import { routes } from '~/routes';
@@ -21,6 +23,7 @@ import {
   DialogDrawer,
   DialogDrawerBody,
   DialogDrawerContent,
+  DialogDrawerFooter,
   DialogDrawerHeader,
   DialogDrawerTitle,
 } from '~/ui/dialog-drawer';
@@ -30,6 +33,7 @@ import { loader } from './loader.server';
 
 export const ItemPage = () => {
   const navigate = useNavigate();
+  const { action: deleteAction } = useDeleteTransactionItem();
   const [params] = useSearchParams();
   const match = useMatch(routes.receiptItem.pattern);
   const { transactionItem, organizationName, transactionId } =
@@ -63,6 +67,10 @@ export const ItemPage = () => {
     e.preventDefault();
     e.stopPropagation();
     previousItem?.(transactionItem.id);
+  };
+
+  const onDelete = () => {
+    deleteAction(transactionItem.id);
   };
 
   return (
@@ -117,6 +125,22 @@ export const ItemPage = () => {
             </DescriptionRow>
           </div>
         </DialogDrawerBody>
+
+        <DialogDrawerFooter>
+          <div className="flex gap-1">
+            <Button disabled className="grow" variant="secondary" size="sm">
+              Edit
+            </Button>
+            <Button
+              className="grow"
+              variant="secondary"
+              size="sm"
+              onClick={onDelete}
+            >
+              Delete
+            </Button>
+          </div>
+        </DialogDrawerFooter>
       </DialogDrawerContent>
     </DialogDrawer>
   );

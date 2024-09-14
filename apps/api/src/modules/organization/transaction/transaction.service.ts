@@ -20,14 +20,12 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate';
 import { UpdateTransactionDto } from '~/dtos/transaction/update-transaction.dto';
-import { TransactionItemService } from './transaction-item/transaction-item.service';
 
 @Injectable()
 export class TransactionService {
   constructor(
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
-    private readonly transactionItemService: TransactionItemService,
     private readonly organizationService: OrganizationService,
     private readonly userService: UserService,
   ) {}
@@ -169,38 +167,6 @@ export class TransactionService {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     return { ...rest, data: data.map(this.toGetTransactionDto) };
-  }
-
-  async findItems(
-    transactionId: string,
-    organizationName: string,
-    userId: string,
-  ) {
-    const transaction = await this.findOne(
-      transactionId,
-      organizationName,
-      userId,
-    );
-
-    return this.transactionItemService.findAllByTransactionId(transaction.id);
-  }
-
-  async findItem(
-    transactionId: string,
-    itemId: string,
-    organizationName: string,
-    userId: string,
-  ) {
-    const transaction = await this.findOne(
-      transactionId,
-      organizationName,
-      userId,
-    );
-
-    return this.transactionItemService.findOneByTransactionId(
-      transaction.id,
-      itemId,
-    );
   }
 
   private toGetTransactionDto(transaction: Transaction): GetTransactionDto {

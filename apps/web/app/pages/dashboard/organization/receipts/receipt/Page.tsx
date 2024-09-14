@@ -16,7 +16,7 @@ import {
   DescriptionRowContent,
   DescriptionRowName,
 } from '~/dashboard/organization/receipts/receipt/components/DescriptionRows.components';
-import { useDeleteReceipt } from '~/dashboard/organization/receipts/receipts.hooks';
+import { useDeleteTransaction } from '~/dashboard/organization/receipts/transactions.hooks';
 import { ClientDate } from '~/dates/ClientDate';
 import { Link } from '~/link/Link';
 import { ItemList } from '~/list/ItemList';
@@ -35,7 +35,7 @@ import { loader } from './loader.server';
 
 export const ReceiptPage = () => {
   const navigate = useNavigate();
-  const { action: deleteTransaction } = useDeleteReceipt();
+  const { action: deleteAction } = useDeleteTransaction();
   const [params] = useSearchParams();
   const match = useMatch({ path: routes.receipt.pattern, end: false });
   const { transaction, transactionId, organizationName } =
@@ -103,7 +103,7 @@ export const ReceiptPage = () => {
   };
 
   const onDelete = () => {
-    deleteTransaction(transactionId);
+    deleteAction(transactionId);
   };
 
   const hasMoreThanOneItem = transaction.items.length > 1;

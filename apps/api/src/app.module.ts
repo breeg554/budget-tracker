@@ -13,13 +13,14 @@ import { CustomZodValidationPipe } from '~/modules/errors/zodValidationPipe';
 import { OrganizationModule } from '~/modules/organization/organization.module';
 
 import { TransactionModule } from '~/modules/organization/transaction/transaction.module';
-import { AppController } from './app.controller';
+import { TransactionItemModule } from '~/modules/organization/transaction/transaction-item/transaction-item.module';
 import { SecretModule } from '~/modules/organization/secret/secret.module';
 import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
 import { StatisticsModule } from '~/modules/organization/statistics/statistics.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { UserModule } from '~/modules/user/user.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { UserModule } from '~/modules/user/user.module';
     UserModule,
     OrganizationModule,
     TransactionModule,
+    TransactionItemModule,
     StatisticsModule,
     SecretModule,
     ReceiptModule,
