@@ -1,6 +1,7 @@
 import { pathsToModuleNameMapper } from 'ts-jest';
 import type { JestConfigWithTsJest } from 'ts-jest';
-//@ts-ignore
+// eslint-disable-next-line
+// @ts-ignore
 import { compilerOptions } from '../tsconfig';
 
 const config: JestConfigWithTsJest = {
