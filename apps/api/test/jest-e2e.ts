@@ -7,6 +7,7 @@ import { compilerOptions } from '../tsconfig';
 const config: JestConfigWithTsJest = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: '..',
+  maxWorkers: '50%',
   testEnvironment: 'node',
   testRegex: '.e2e-spec.ts$',
   transform: {

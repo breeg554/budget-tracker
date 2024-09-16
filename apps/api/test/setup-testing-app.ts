@@ -2,6 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { Maybe } from '~/utils/ts-utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '~/app.module';
+import { DatabaseCleaner } from './database-cleaner';
 
 export class SetupTestingApp {
   private _app: Maybe<INestApplication>;
@@ -13,6 +14,7 @@ export class SetupTestingApp {
 
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
+      providers: [DatabaseCleaner],
     }).compile();
 
     this._app = moduleFixture.createNestApplication();
@@ -23,9 +25,19 @@ export class SetupTestingApp {
   }
 
   public async close() {
-    if (this._app === null) throw new Error('App is not initialized');
+    if (!this._app) throw new Error('App is not initialized');
 
+    await this.cleanup();
     await this._app.close();
+  }
+  //run tests rum
+  public async cleanup() {
+    if (!this._app) throw new Error('App is not initialized');
+
+    const dbCleaner = this._app.get(DatabaseCleaner);
+    await dbCleaner.cleanup();
+
+    return this;
   }
 
   get app() {

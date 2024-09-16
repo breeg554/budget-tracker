@@ -1,6 +1,5 @@
 import * as request from 'supertest';
 
-import { DataSource } from 'typeorm';
 import { SetupTestingApp } from 'test/setup-testing-app';
 import { TransactionItemCategoryController } from '../transaction-item-category.controller';
 
@@ -12,21 +11,10 @@ describe(TransactionItemCategoryController.name, () => {
   });
 
   beforeEach(async () => {
-    const dataSource = setup.app.get(DataSource);
-
-    if (dataSource.isInitialized) {
-      await dataSource.dropDatabase();
-      await dataSource.runMigrations();
-    }
+    await setup.cleanup();
   });
 
   afterAll(async () => {
-    const dataSource = setup.app.get(DataSource);
-
-    if (dataSource.isInitialized) {
-      await dataSource.destroy();
-    }
-
     await setup.close();
   });
 

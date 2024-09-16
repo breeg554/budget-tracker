@@ -1,2 +1,10 @@
 CREATE DATABASE "budget_tracker_db";
 CREATE DATABASE "budget_tracker_test_db";
+CREATE DATABASE "budget_tracker_test_db_1";
+CREATE DATABASE "budget_tracker_test_db_2";
+CREATE DATABASE "budget_tracker_test_db_3";
+CREATE DATABASE "budget_tracker_test_db_4";
+CREATE DATABASE "budget_tracker_test_db_5";
+CREATE DATABASE "budget_tracker_test_db_6";
+CREATE DATABASE "budget_tracker_test_db_7";
+CREATE DATABASE "budget_tracker_test_db_8";

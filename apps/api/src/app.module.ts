@@ -1,7 +1,6 @@
 import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { RouterModule } from '~/modules/router/router.module';
 
 import { LoggerModule } from 'nestjs-pino';
@@ -21,6 +20,7 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { UserModule } from '~/modules/user/user.module';
 import { AppController } from './app.controller';
+import { DatabaseModule } from '~/modules/database/database.module';
 
 @Module({
   imports: [
@@ -29,12 +29,7 @@ import { AppController } from './app.controller';
       envFilePath: '.env',
       load: [DBConfig, RedisConfig],
     }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) =>
-        configService.get('database'),
-      inject: [ConfigService],
-    }),
+    DatabaseModule,
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
