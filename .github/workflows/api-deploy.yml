@@ -28,6 +28,8 @@ jobs:
       - run: pnpm run lint
       - name: Start container
         run: docker compose -p budget-tracker -f .docker/docker-compose-dependencies.yml up -d --build --remove-orphans
+      - env:
+          ENCRYPTION_KEY: ${{ secrets.ENCRYPTION_KEY }}
       - run: pnpm run test:e2e
       - name: Stop container
         run: docker compose -p budget-tracker -f .docker/docker-compose-dependencies.yml down

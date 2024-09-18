@@ -9,7 +9,10 @@ import { UserService } from '~/modules/user/user.service';
 import { SecretService } from '~/modules/organization/secret/secret.service';
 import { Secret } from '~/entities/secret/secret.entity';
 import { CreateSecretDto } from '~/dtos/secret/create-secret.dto';
-import { OrganizationNotFoundError } from '~/modules/organization/errors/organization.error';
+import {
+  OrganizationAlreadyExistsError,
+  OrganizationNotFoundError,
+} from '~/modules/organization/errors/organization.error';
 
 @Injectable()
 export class OrganizationService {
@@ -30,6 +33,10 @@ export class OrganizationService {
       user = await this.userService.findOne(userId);
     }
 
+    if (await this.findByName(data.name)) {
+      throw new OrganizationAlreadyExistsError();
+    }
+
     const organization = this.organizationRepository.create(data);
 
     if (user) {
@@ -40,14 +47,9 @@ export class OrganizationService {
   }
 
   async findByName(name: string): Promise<Organization> {
-    const organization = await this.organizationRepository.findOne({
+    return this.organizationRepository.findOne({
       where: { name },
-      relations: ['users'],
     });
-
-    if (!organization) throw new OrganizationNotFoundError();
-
-    return organization;
   }
 
   async findAllByUser(email: string): Promise<Organization[]> {
@@ -101,7 +103,12 @@ export class OrganizationService {
     userId: string,
     organizationName: string,
   ): Promise<Organization> {
-    const organization = await this.findByName(organizationName);
+    const organization = await this.organizationRepository.findOne({
+      where: { name: organizationName },
+      relations: ['users'],
+    });
+
+    if (!organization) throw new OrganizationNotFoundError();
 
     if (
       !organization ||

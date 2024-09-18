@@ -13,12 +13,15 @@ const config: JestConfigWithTsJest = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  setupFiles: ['<rootDir>/test/setup-tests.ts'],
+  setupFiles: ['<rootDir>/tests/setup-tests.ts'],
   roots: ['<rootDir>'],
   modulePaths: [compilerOptions.baseUrl],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
-    prefix: '<rootDir>/',
-  }),
+  moduleNameMapper: {
+    ...pathsToModuleNameMapper(compilerOptions.paths, {
+      prefix: '<rootDir>/',
+    }),
+    '^~/tests-fixtures/(.*)$': '<rootDir>/tests/fixtures/$1',
+  },
 };
 
 export default config;

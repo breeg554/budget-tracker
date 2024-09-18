@@ -18,8 +18,10 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "~/*": ["./src/*"],
-      "~/modules/*": ["./src/modules/*"]
+      "~/tests-fixtures/*": ["./tests/fixtures/*"],
+      "~/tests/*": ["./tests/*"],
+      "~/modules/*": ["./src/modules/*"],
+      "~/*": ["./src/*"]
     }
   }
 }
