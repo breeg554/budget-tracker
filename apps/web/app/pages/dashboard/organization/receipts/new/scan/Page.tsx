@@ -42,16 +42,16 @@ export const ScanPage = () => {
         }}
       >
         <DialogDrawerHeader>
-          <DialogDrawerTitle>Take or upload photo</DialogDrawerTitle>
+          <DialogDrawerTitle>Upload photo</DialogDrawerTitle>
           <DialogDrawerDescription>
-            Send a photo of your receipt to automatically create a transaction.
+            Send a photo of your receipt to automatically extract the items.
           </DialogDrawerDescription>
         </DialogDrawerHeader>
 
         <DialogDrawerBody>
           <ReceiptRetriever
             onRetrieve={retrieve}
-            triggers={({ takePhoto, uploadPhoto }) => (
+            triggers={({ uploadPhoto }) => (
               <div className="flex gap-2 items-center">
                 <Button
                   variant="outline"
@@ -62,14 +62,14 @@ export const ScanPage = () => {
                   Upload a photo
                 </Button>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="h-[58px] w-full"
-                  onClick={takePhoto}
-                >
-                  Take a photo
-                </Button>
+                {/*<Button*/}
+                {/*  type="button"*/}
+                {/*  variant="outline"*/}
+                {/*  className="h-[58px] w-full"*/}
+                {/*  onClick={takePhoto}*/}
+                {/*>*/}
+                {/*  Take a photo*/}
+                {/*</Button>*/}
               </div>
             )}
           />

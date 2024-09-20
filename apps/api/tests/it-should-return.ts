@@ -1,29 +1,38 @@
 import supertest from 'supertest';
 import { HttpStatus } from '@nestjs/common';
 
-export function itShouldReturnNotFound(
+export function itShouldReturn404(
+  description: string,
   request: () => supertest.Test,
-  args?: { description?: string },
 ) {
-  it(args?.description ?? `should return 404`, async () => {
+  it(`should return 404 ${description}`, async () => {
     await request().expect(HttpStatus.NOT_FOUND);
   });
 }
 
-export function itShouldReturnUnauthorized(request: () => supertest.Test) {
-  it('should return 401', async () => {
+export function itShouldReturn401(
+  description: string,
+  request: () => supertest.Test,
+) {
+  it(`should return 401 ${description}`, async () => {
     await request().expect(HttpStatus.UNAUTHORIZED);
   });
 }
 
-export function itShouldReturnOk(request: () => supertest.Test) {
-  it('should return 200', async () => {
+export function itShouldReturn200(
+  description: string,
+  request: () => supertest.Test,
+) {
+  it(`should return 200 ${description}`, async () => {
     await request().expect(HttpStatus.OK);
   });
 }
 
-export function itShouldReturnCreated(request: () => supertest.Test) {
-  it('should return 201', async () => {
+export function itShouldReturn201(
+  description: string,
+  request: () => supertest.Test,
+) {
+  it(`should return 201 ${description}`, async () => {
     await request().expect(HttpStatus.CREATED);
   });
 }

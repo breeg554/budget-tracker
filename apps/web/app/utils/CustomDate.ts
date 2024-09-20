@@ -158,3 +158,5 @@ export class CustomDate {
     return new CustomDate(setHours(this.date, hours));
   }
 }
+
+export const customDate = (date: DateType): CustomDate => new CustomDate(date);

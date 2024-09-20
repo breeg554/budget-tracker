@@ -23,7 +23,10 @@ export function DescriptionRowContent({
   ...rest
 }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
-    <p className={cn('text-foreground line-clamp-1', className)} {...rest}>
+    <p
+      className={cn('text-foreground line-clamp-1 text-sm', className)}
+      {...rest}
+    >
       {children}
     </p>
   );
@@ -36,7 +39,10 @@ export function DescriptionRowName({
 }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
     <span
-      className={cn('text-muted-foreground text-sm shrink-0', className)}
+      className={cn(
+        'text-muted-foreground text-sm shrink-0 text-xs',
+        className,
+      )}
       {...rest}
     >
       {children}

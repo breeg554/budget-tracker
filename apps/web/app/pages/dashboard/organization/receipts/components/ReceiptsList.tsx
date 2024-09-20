@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { GetTransactionDto } from '~/api/Transaction/transactionApi.types';
-import { CategoryBadge } from '~/dashboard/organization/receipts/components/CategoryBadge';
+import { CategoryCircle } from '~/dashboard/organization/receipts/components/CategoryCircle';
 import { useDeleteTransaction } from '~/dashboard/organization/receipts/transactions.hooks';
 import { ClientDate } from '~/dates/ClientDate';
 import {
@@ -17,7 +17,7 @@ import { ItemList } from '~/list/ItemList';
 import { routes } from '~/routes';
 import { Skeleton } from '~/ui/skeleton';
 import { cn } from '~/utils/cn';
-import { CustomDate } from '~/utils/CustomDate';
+import { customDate } from '~/utils/CustomDate';
 
 interface ReceiptsListProps {
   transactions: GetTransactionDto[];
@@ -56,8 +56,8 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
   };
 
   return (
-    <article className="border border-input rounded-xl p-4 flex flex-col gap-3">
-      <header className="flex gap-2 justify-between">
+    <article className="border border-input rounded-xl flex flex-col">
+      <header className="flex gap-2 justify-between p-4">
         <div className="flex gap-2 items-center">
           <h1
             className="text-foreground font-semibold text-lg line-clamp-1"
@@ -84,11 +84,11 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
         </div>
       </header>
 
-      <main className="grid grid-cols-[2fr_3fr_4fr] gap-1">
+      <section className="flex flex-col divide-y border-t border-input p-4">
         <ReceiptListItemRow>
-          <ReceiptListItemRowName>Items</ReceiptListItemRowName>
-          <ReceiptListItemRowContent>
-            {data.items.length}
+          <ReceiptListItemRowName>Total</ReceiptListItemRowName>
+          <ReceiptListItemRowContent title={data.price.formatted}>
+            {data.price.formatted}
           </ReceiptListItemRowContent>
         </ReceiptListItemRow>
 
@@ -98,15 +98,8 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
             <ClientDate
               fallback={<Skeleton className="w-[95px] h-4 rounded-xl" />}
             >
-              {new CustomDate(data.date).format('dd MMM yyy')}
+              {customDate(data.date).format('dd MMM yyy')}
             </ClientDate>
-          </ReceiptListItemRowContent>
-        </ReceiptListItemRow>
-
-        <ReceiptListItemRow>
-          <ReceiptListItemRowName>Total</ReceiptListItemRowName>
-          <ReceiptListItemRowContent title={data.price.formatted}>
-            {data.price.formatted}
           </ReceiptListItemRowContent>
         </ReceiptListItemRow>
 
@@ -117,12 +110,24 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
           </ReceiptListItemRowContent>
         </ReceiptListItemRow>
 
-        <ItemList
-          items={data.categories}
-          className="flex flex-wrap gap-1 pt-3 col-span-3"
-          renderItem={(item) => <CategoryBadge data={item} />}
-        />
-      </main>
+        <ReceiptListItemRow>
+          <ReceiptListItemRowName>Items</ReceiptListItemRowName>
+          <ReceiptListItemRowContent>
+            {data.items.length}
+          </ReceiptListItemRowContent>
+        </ReceiptListItemRow>
+
+        <ReceiptListItemRow>
+          <ReceiptListItemRowName>Categories</ReceiptListItemRowName>
+          <ItemList
+            items={data.categories}
+            className="relative grow flex justify-end -space-x-2 overflow-hidden"
+            renderItem={(item) => <CategoryCircle data={item} />}
+          >
+            <div className="absolute bottom-0 left-0 bg-gradient-to-l from-transparent to-white w-20 h-6 pointer-events-none" />
+          </ItemList>
+        </ReceiptListItemRow>
+      </section>
     </article>
   );
 }
@@ -133,7 +138,10 @@ function ReceiptListItemRow({
   ...rest
 }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <div className={cn('flex flex-col', className)} {...rest}>
+    <div
+      className={cn('flex gap-4 py-1 items-center justify-between', className)}
+      {...rest}
+    >
       {children}
     </div>
   );
@@ -158,7 +166,7 @@ function ReceiptListItemRowName({
 }: React.HTMLAttributes<HTMLSpanElement>) {
   return (
     <span
-      className={cn('text-muted-foreground text-xs shrink-0', className)}
+      className={cn('text-muted-foreground text-xs shrink-0 w-fit', className)}
       {...rest}
     >
       {children}

@@ -5,10 +5,7 @@ import { OrganizationController } from '../organization.controller';
 import { HttpStatus } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { beforeEachCreateUser } from '~/tests/beforeEachCreateUser';
-import {
-  itShouldReturnNotFound,
-  itShouldReturnUnauthorized,
-} from '~/tests/it-should-return';
+import { itShouldReturn401, itShouldReturn404 } from '~/tests/it-should-return';
 import { createSecretFixture } from '~/tests-fixtures/secret.fixture';
 
 describe(OrganizationController.name, () => {
@@ -18,7 +15,7 @@ describe(OrganizationController.name, () => {
   describe('(GET)', () => {
     const createGetRequest = () => setup.appRequest().get('/organizations');
 
-    itShouldReturnUnauthorized(createGetRequest);
+    itShouldReturn401('when unauthorized', createGetRequest);
 
     it('should return 200', async () => {
       await createOrganizationFixture().saveInDB(
@@ -54,14 +51,9 @@ describe(OrganizationController.name, () => {
         .appRequest()
         .get(`/organizations/${organizationFixture.organization.name}`);
 
-    itShouldReturnUnauthorized(createGetRequest);
-    itShouldReturnNotFound(
-      () =>
-        setup.withSession(
-          createUserFixture({ id: uuidv4() }),
-          createGetRequest,
-        ),
-      { description: 'should return 404 if user does not belong to org' },
+    itShouldReturn401('when unauthorized', createGetRequest);
+    itShouldReturn404('when user does not belong to org', () =>
+      setup.withSession(createUserFixture({ id: uuidv4() }), createGetRequest),
     );
 
     it('should return 200', async () => {
@@ -80,7 +72,7 @@ describe(OrganizationController.name, () => {
     const createPostRequest = () =>
       setup.appRequest().post('/organizations').send({ name: 'NEW ORG' });
 
-    itShouldReturnUnauthorized(createPostRequest);
+    itShouldReturn401('when unauthorized', createPostRequest);
 
     it('should return 201', async () => {
       const response = await setup.withSession(userFixture, createPostRequest);
@@ -117,8 +109,8 @@ describe(OrganizationController.name, () => {
         .appRequest()
         .get(`/organizations/${organizationFixture.organization.name}/users`);
 
-    itShouldReturnUnauthorized(createGetRequest);
-    itShouldReturnNotFound(() =>
+    itShouldReturn401('when unauthorized', createGetRequest);
+    itShouldReturn404('when user does not belong to org', () =>
       setup.withSession(createUserFixture({ id: uuidv4() }), createGetRequest),
     );
 
@@ -149,8 +141,8 @@ describe(OrganizationController.name, () => {
         .post(`/organizations/${organizationFixture.organization.name}/secrets`)
         .send({ name: 'NEW SECRET', value: 'NEW SECRET VALUE' });
 
-    itShouldReturnUnauthorized(createPostRequest);
-    itShouldReturnNotFound(() =>
+    itShouldReturn401('when unauthorized', createPostRequest);
+    itShouldReturn404('when user does not belong to org', () =>
       setup.withSession(createUserFixture({ id: uuidv4() }), createPostRequest),
     );
 
@@ -186,8 +178,8 @@ describe(OrganizationController.name, () => {
           `/organizations/${organizationFixture.organization.name}/secrets/${secretFixture.secret.name}`,
         );
 
-    itShouldReturnUnauthorized(createGetRequest);
-    itShouldReturnNotFound(() =>
+    itShouldReturn401('when unauthorized', createGetRequest);
+    itShouldReturn404('when user does not belong to org', () =>
       setup.withSession(createUserFixture({ id: uuidv4() }), createGetRequest),
     );
 
