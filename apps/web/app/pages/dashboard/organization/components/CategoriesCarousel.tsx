@@ -2,7 +2,7 @@ import React from 'react';
 import startCase from 'lodash.startcase';
 
 import { GetStatisticsByCategory } from '~/api/Statistics/statisticsApi.types';
-import { ItemList } from '~/list/ItemList';
+import { Carousel, CarouselContent, CarouselItem } from '~/ui/carousel';
 import { hashString } from '~/utils/stringHash';
 
 import { CostPercentageChart } from './CostPercentageChart';
@@ -19,17 +19,18 @@ export const CategoriesCarousel = ({ data }: CategoriesCarouselProps) => {
   };
 
   return (
-    <ItemList
-      itemClassName="pr-4"
-      className="flex items-center overflow-x-auto snap-x pb-3"
-      items={data}
-      renderItem={(item) => (
-        <CategoriesCarouselItem
-          data={item}
-          costPercentage={getPercentage(item.total.value)}
-        />
-      )}
-    />
+    <Carousel>
+      <CarouselContent className="-ml-4">
+        {data.map((item) => (
+          <CarouselItem key={item.id} className="pl-4 basis-[170px]">
+            <CategoriesCarouselItem
+              data={item}
+              costPercentage={getPercentage(item.total.value)}
+            />
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
   );
 };
 
