@@ -10,7 +10,6 @@ import {
 
 import { Button } from '~/buttons/Button';
 import { TransactionItemListItem } from '~/dashboard/organization/components/TransactionItemList';
-import { CategoryBadge } from '~/dashboard/organization/receipts/components/CategoryBadge';
 import {
   DescriptionRow,
   DescriptionRowContent,
@@ -124,6 +123,13 @@ export const ReceiptPage = () => {
           <DialogDrawerBody>
             <div className="flex flex-col divide-y mt-2 mb-4">
               <DescriptionRow>
+                <DescriptionRowName>Total</DescriptionRowName>
+                <DescriptionRowContent title={transaction.price.formatted}>
+                  {transaction.price.formatted}
+                </DescriptionRowContent>
+              </DescriptionRow>
+
+              <DescriptionRow>
                 <DescriptionRowName>Date</DescriptionRowName>
                 <DescriptionRowContent>
                   <ClientDate>
@@ -138,19 +144,6 @@ export const ReceiptPage = () => {
                   {transaction.author.email}
                 </DescriptionRowContent>
               </DescriptionRow>
-
-              <DescriptionRow>
-                <DescriptionRowName>Total</DescriptionRowName>
-                <DescriptionRowContent title={transaction.price.formatted}>
-                  {transaction.price.formatted}
-                </DescriptionRowContent>
-              </DescriptionRow>
-
-              <ItemList
-                items={transaction.categories}
-                className="flex flex-wrap gap-1 pt-3 col-span-3"
-                renderItem={(item) => <CategoryBadge data={item} />}
-              />
             </div>
 
             <p className="text-sm text-muted-foreground">

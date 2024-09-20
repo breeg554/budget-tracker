@@ -120,9 +120,12 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
         <ReceiptListItemRow>
           <ReceiptListItemRowName>Categories</ReceiptListItemRowName>
           <ItemList
-            items={data.categories}
+            items={data.items.map((item) => ({
+              category: item.category,
+              id: item.id,
+            }))}
             className="relative grow flex justify-end -space-x-2 overflow-hidden"
-            renderItem={(item) => <CategoryCircle data={item} />}
+            renderItem={(item) => <CategoryCircle data={item.category} />}
           >
             <div className="absolute bottom-0 left-0 bg-gradient-to-l from-transparent to-white w-20 h-6 pointer-events-none" />
           </ItemList>

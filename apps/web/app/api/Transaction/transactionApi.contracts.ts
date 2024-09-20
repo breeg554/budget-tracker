@@ -84,27 +84,6 @@ export const getTransactionSchema = z
   .transform((val) => ({
     ...val,
     price: new MonetaryValue(val.price).toJSON(),
-    categories: [
-      ...new Map(
-        val.items.map((item) => [item.category.id, item.category]),
-      ).values(),
-    ],
-    // categories: val.items.reduce(
-    //   (acc, item) => {
-    //     if (!acc[item.category.id]) {
-    //       return { ...acc, [item.category.id]: { ...item.category, count: 1 } };
-    //     } else {
-    //       return {
-    //         ...acc,
-    //         [item.category.id]: {
-    //           ...item.category,
-    //           count: acc[item.category.id].count + 1,
-    //         },
-    //       };
-    //     }
-    //   },
-    //   {} as Record<string, { name: string; id: string; count: number }>,
-    // ),
   }));
 
 export const fromGetTransactionsResponse = z.array(getTransactionSchema);
