@@ -45,16 +45,16 @@ export class ReceiptService {
         file,
         secret.value,
       );
-
       const receiptProducts = await this.extractProductsFromContent(
         receiptContent.content,
         productCategories,
         secret.value,
       );
-
       return {
         content: receiptContent.content,
         products: receiptProducts.content,
+        place: receiptProducts.place,
+        date: receiptProducts.date,
       };
     } catch (err) {
       if (err instanceof SyntaxError) throw new ReceiptParseError();
@@ -77,7 +77,6 @@ export class ReceiptService {
         apiKey: apiKey,
       },
     );
-
     const { content } = getProcessedReceipt.parse(
       JSON.parse(result.content as string),
     );
@@ -99,12 +98,11 @@ export class ReceiptService {
         apiKey: apiKey,
       },
     );
-
-    const { products } = getProcessedReceiptProducts.parse(
+    const { products, date, place } = getProcessedReceiptProducts.parse(
       JSON.parse(result.content as string),
     );
 
-    return { ...result, content: products };
+    return { ...result, content: products, date, place };
   }
 
   private createSystemMessage(content: string) {
@@ -138,19 +136,18 @@ export class ReceiptService {
   private buildContentExtractionPrompt() {
     return `
           You are an expert in extracting information from receipts. 
-          I will send you a shop receipt in image format (image is taken vertically) and your task is to accurately retrieve all details from the receipt.
+          I will send you a shop receipt in image format and your task is to retrieve all details from the receipt in string format.
           
           Receipt image may be of low or high quality.
          
           Remember to:
-          1. Extract as many products as possible from the receipt. Ensure each product's name, price, and quantity are correctly identified.
-          2. Read the receipt line by line for correctly matching product name, price and quantity
-          3. Split products by new line
+          1. Extract as many details as possible from the receipt. Split lines by new line character.
+          2. Repeat the process two times to ensure you have extracted all the necessary information and in correct order.
 
           Return json format of that shape
           ---
            {
-             content: CONTENT_FROM_RECEIPT
+             content: ALL_CONTENT_FROM_RECEIPT_IN_STRING_FORMAT,
            }
           ---
           If you cannot retrieve any content from image, return empty string for "content".
@@ -159,7 +156,7 @@ export class ReceiptService {
 
   private buildProductExtractionPrompt(categories: TransactionItemCategory[]) {
     return `
-          You are an expert in extracting information from receipts content. I will send you a shop receipt content (in string format) retrieve all product details.
+          You are an expert in extracting information from receipt content. I will send you a shop receipt (in string format) and your task is to retrieve all product details.
       
           Remember to:
           1. Extract as many products as possible from the receipt. Ensure each product's name, price, and quantity are correctly identified.
@@ -177,6 +174,8 @@ export class ReceiptService {
           5. Assign the most appropriate category ID from the "Available Categories" list to each product. If no category fits, use the ID of "other" category as a last resort.
           6. Ensure that the "category" field contains only the ID (UUID format) from the "Available Categories" list and not the name. The "categoryName" should contain the actual name from the same list.
           7. Product names shouldn't be capitalized.
+          8. Ensure that price refers to the price per unit or kg and not the total line price!
+          9. Repeat the process two/three times to be sure you have extracted all the necessary information.
 
           --- Available Categories ---
 
@@ -188,6 +187,8 @@ export class ReceiptService {
 
             ---
             {
+              date: DATE_OF_TRANSACTION ( e.g. "2024-01-01" ),
+              place: PLACE_OF_TRANSACTION ( e.g. "Supermarket" ),
               products: [
                 {
                   name: PRODUCT_NAME ( e.g. "Apple" ),
@@ -201,10 +202,6 @@ export class ReceiptService {
             ---
 
           If you cannot retrieve any products from the content, return empty array for "products".
-
-          Check two, three times that name, quantity, and price are correctly matched. Ensure that price refers to the price per unit or kg and not the total line price!
-
-          Ignore addresses, dates, and other irrelevant information that are above and below the product list.
           `;
   }
 

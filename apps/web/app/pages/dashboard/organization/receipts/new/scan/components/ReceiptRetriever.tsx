@@ -5,7 +5,7 @@ import { useBoolean } from 'usehooks-ts';
 import { isFromProcessReceiptSchema } from '~/api/Receipt/receiptApi.contracts';
 import { ReceiptProduct } from '~/api/Receipt/receiptApi.types';
 import { TransactionItemType } from '~/api/Transaction/transactionApi.contracts';
-import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
+import { CreateTransactionDto } from '~/api/Transaction/transactionApi.types';
 import { ReceiptScanner } from '~/dashboard/organization/receipts/new/scan/components/ReceiptScanner';
 import { ItemList } from '~/list/ItemList';
 
@@ -19,7 +19,7 @@ interface ReceiptRetrieverProps {
     takePhoto: () => void;
     uploadPhoto: () => void;
   }) => ReactNode;
-  onRetrieve: (items: CreateTransactionItemDto[]) => void;
+  onRetrieve: (retrieved: Partial<CreateTransactionDto>) => void;
 }
 
 export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
@@ -73,12 +73,15 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
       if (!isFromProcessReceiptSchema(data)) {
         return <p>Ups. Something went wrong...</p>;
       }
-      console.log(data);
+
       const transactionItems = toTransactionItem(data.products);
+
       return (
         <div>
-          <p>Found {transactionItems.length} products</p>
+          <p>Place: {data.place}</p>
+          <p>Date: {data.date}</p>
 
+          <p className="my-2">Items:</p>
           <ItemList
             items={transactionItems.map((product) => ({
               ...product,
@@ -92,7 +95,16 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
             )}
           />
 
-          <button type="button" onClick={() => onRetrieve(transactionItems)}>
+          <button
+            type="button"
+            onClick={() =>
+              onRetrieve({
+                date: data.date ?? undefined,
+                name: data.place ?? undefined,
+                items: transactionItems,
+              })
+            }
+          >
             Let's see
           </button>
         </div>

@@ -6,6 +6,8 @@ export const getProcessedReceipt = z.object({
 });
 
 export const getProcessedReceiptProducts = z.object({
+  date: z.union([z.string(), z.null()]),
+  place: z.union([z.string(), z.null()]),
   products: z.array(
     z.object({
       name: z.string(),

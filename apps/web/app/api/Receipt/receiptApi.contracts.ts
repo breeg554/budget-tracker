@@ -10,6 +10,8 @@ export const receiptProduct = z.object({
 
 export const fromReceiptProcessResponse = z.object({
   products: z.array(receiptProduct),
+  place: z.union([z.string(), z.null()]),
+  date: z.union([z.string(), z.null()]),
   content: z.string(),
 });
 

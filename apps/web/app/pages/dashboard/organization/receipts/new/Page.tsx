@@ -8,7 +8,7 @@ import {
 } from '@remix-run/react';
 import { uid } from 'uid';
 
-import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
+import { CreateTransactionDto } from '~/api/Transaction/transactionApi.types';
 import { IconButton } from '~/buttons/IconButton';
 import { NavFloatingWrapper } from '~/dashboard/layout/components/DashboardNav';
 import { SubmitButton } from '~/form/SubmitButton';
@@ -28,14 +28,20 @@ export const NewReceiptPage = () => {
   const { itemCategories } = useLoaderData<typeof loader>();
   const lastResult = useActionData<typeof action>();
   const [formKey, setFormKey] = useState(uid());
-  const [items, setItems] = useState<CreateTransactionItemDto[]>([]);
+  const [defaultValues, setDefaultValues] = useState<
+    Partial<CreateTransactionDto>
+  >({ items: [] });
 
   const backToDashboard = () => {
     navigate(routes.organization.getPath(organizationName));
   };
 
-  const onRetrieve = (items: CreateTransactionItemDto[]) => {
-    setItems((prev) => [...prev, ...items]);
+  const onRetrieve = (retrieved: Partial<CreateTransactionDto>) => {
+    setDefaultValues((prev) => ({
+      name: prev.name ?? retrieved.name,
+      date: prev.date ?? retrieved.date,
+      items: [...(prev.items ?? []), ...(retrieved.items ?? [])],
+    }));
     setFormKey(uid());
   };
 
@@ -53,7 +59,7 @@ export const NewReceiptPage = () => {
         id="transaction-form"
         lastResult={lastResult}
         itemCategories={itemCategories}
-        defaultValue={{ items }}
+        defaultValue={defaultValues}
       />
 
       <Outlet context={{ onRetrieve }} />

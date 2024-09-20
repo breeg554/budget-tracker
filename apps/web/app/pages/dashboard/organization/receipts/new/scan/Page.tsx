@@ -2,7 +2,7 @@ import React from 'react';
 import type { MetaFunction } from '@remix-run/node';
 import { useNavigate, useOutletContext } from '@remix-run/react';
 
-import { CreateTransactionItemDto } from '~/api/Transaction/transactionApi.types';
+import { CreateTransactionDto } from '~/api/Transaction/transactionApi.types';
 import { Button } from '~/buttons/Button';
 import { routes } from '~/routes';
 import {
@@ -21,15 +21,15 @@ export const ScanPage = () => {
   const organizationName = useOrganizationName();
   const navigate = useNavigate();
   const { onRetrieve } = useOutletContext<{
-    onRetrieve: (items: CreateTransactionItemDto[]) => void;
+    onRetrieve: (retrieved: Partial<CreateTransactionDto>) => void;
   }>();
 
   const onClose = () => {
     navigate(routes.newReceipt.getPath(organizationName));
   };
 
-  const retrieve = (items: CreateTransactionItemDto[]) => {
-    onRetrieve(items);
+  const retrieve = (retrieved: Partial<CreateTransactionDto>) => {
+    onRetrieve(retrieved);
     onClose();
   };
 
