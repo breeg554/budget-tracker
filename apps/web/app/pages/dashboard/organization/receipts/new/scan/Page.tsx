@@ -28,21 +28,25 @@ export const ScanPage = () => {
   const [processingState, setProcessingState] =
     React.useState<RetrieveState>('idle');
 
+  const closeSidebar = () => {
+    navigate(routes.newReceipt.getPath(organizationName));
+  };
+
   const onClose = () => {
     if (processingState !== 'idle') {
       confirm({
         children:
           'You are currently processing a receipt. Are you sure you want to leave this page?',
-        onConfirm: () => navigate(routes.newReceipt.getPath(organizationName)),
+        onConfirm: closeSidebar,
       });
     } else {
-      navigate(routes.newReceipt.getPath(organizationName));
+      closeSidebar();
     }
   };
 
   const retrieve = (retrieved: Partial<CreateTransactionDto>) => {
     onRetrieve(retrieved);
-    onClose();
+    closeSidebar();
   };
 
   return (
