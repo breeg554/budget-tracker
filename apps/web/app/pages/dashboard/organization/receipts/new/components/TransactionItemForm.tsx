@@ -12,13 +12,13 @@ import {
 } from '~/api/Transaction/transactionApi.types';
 import { Field } from '~/form/Field';
 import { FieldError, FieldLabel, TextField } from '~/form/fields';
-import { ComboboxField } from '~/form/fields/ComboboxField';
 import { HiddenField } from '~/form/fields/HiddenField';
 import { NumberField } from '~/form/fields/NumberField';
+import {
+  RadioGroupField,
+  RadioGroupFieldItemCategory,
+} from '~/form/fields/RadioGroupField';
 import { ValidatedForm } from '~/form/ValidatedForm';
-import { CheckIcon } from '~/icons/CheckIcon';
-import { Category } from '~/utils/Category';
-import { cn } from '~/utils/cn';
 
 interface TransactionItemFormProps {
   onSubmit?: (values: CreateTransactionItemDto) => void;
@@ -35,7 +35,11 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
 }) => {
   const [form] = useForm({
     id: formId,
-    defaultValue: { ...defaultValues, quantity: defaultValues?.quantity ?? 1 },
+    defaultValue: {
+      ...defaultValues,
+      quantity: defaultValues?.quantity ?? 1,
+      category: defaultValues?.category ?? categories[0].id,
+    },
     shouldValidate: 'onSubmit',
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: createTransactionItemSchema });
@@ -71,59 +75,32 @@ export const TransactionItemForm: React.FC<TransactionItemFormProps> = ({
         <FieldError />
       </Field>
 
-      <Field formId={formId} name="category">
-        <FieldLabel>Category</FieldLabel>
-        <ComboboxField
-          options={categoryValues}
-          renderOption={(option, isSelected) => (
-            <CategoryOption
-              isSelected={isSelected}
-              data={
-                new Category({
-                  id: option.value,
-                  name: option.label,
-                })
-              }
-            />
-          )}
-        />
-        <FieldError />
-      </Field>
-
       <div className="grid grid-cols-2 gap-2">
-        <Field formId={formId} name="price">
-          <FieldLabel>Price</FieldLabel>
-          <NumberField placeholder="e.g. 9.99" />
-          <FieldError />
-        </Field>
-
         <Field formId={formId} name="quantity">
           <FieldLabel>Quantity</FieldLabel>
           <NumberField placeholder="e.g. 2" />
           <FieldError />
         </Field>
+
+        <Field formId={formId} name="price">
+          <FieldLabel>Price</FieldLabel>
+          <NumberField placeholder="e.g. 9.99" />
+          <FieldError />
+        </Field>
       </div>
+
+      <Field formId={formId} name="category">
+        <FieldLabel>Category</FieldLabel>
+        <RadioGroupField className="flex gap-1 flex-wrap">
+          {categoryValues.map((category) => (
+            <RadioGroupFieldItemCategory
+              key={category.value}
+              category={category}
+            />
+          ))}
+        </RadioGroupField>
+        <FieldError />
+      </Field>
     </ValidatedForm>
   );
 };
-
-function CategoryOption({
-  data,
-  isSelected,
-}: {
-  data: Category;
-  isSelected: boolean;
-}) {
-  return (
-    <div className="w-full flex items-center gap-2 justify-between">
-      <div className="flex items-center gap-2">
-        {data.icon}
-        <p>{data.name}</p>
-      </div>
-
-      <CheckIcon
-        className={cn('h-4 w-4', isSelected ? 'opacity-100' : 'opacity-0')}
-      />
-    </div>
-  );
-}
