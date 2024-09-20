@@ -35,6 +35,7 @@ interface DialogDrawerRootProps extends BaseProps {
   defaultOpen?: boolean;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
+  dismissible?: boolean;
 }
 
 interface DialogDrawerProps extends BaseProps {

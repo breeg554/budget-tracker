@@ -13,7 +13,7 @@ import { cn } from '~/utils/cn';
 
 export interface ConfirmationModalProps {
   onConfirm?: () => Promise<void> | void;
-  onCancel?: () => Promise<void>;
+  onCancel?: () => Promise<void> | void;
   confirmText?: React.ReactNode;
   cancelText?: React.ReactNode;
   isOpen: boolean;

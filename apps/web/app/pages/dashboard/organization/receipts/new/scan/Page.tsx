@@ -4,6 +4,7 @@ import { useNavigate, useOutletContext } from '@remix-run/react';
 
 import { CreateTransactionDto } from '~/api/Transaction/transactionApi.types';
 import { Button } from '~/buttons/Button';
+import { confirm } from '~/modals/confirm';
 import { routes } from '~/routes';
 import {
   DialogDrawer,
@@ -15,7 +16,7 @@ import {
 } from '~/ui/dialog-drawer';
 import { useOrganizationName } from '~/utils/useOrganizationName';
 
-import { ReceiptRetriever } from './components/ReceiptRetriever';
+import { ReceiptRetriever, RetrieveState } from './components/ReceiptRetriever';
 
 export const ScanPage = () => {
   const organizationName = useOrganizationName();
@@ -24,8 +25,19 @@ export const ScanPage = () => {
     onRetrieve: (retrieved: Partial<CreateTransactionDto>) => void;
   }>();
 
+  const [processingState, setProcessingState] =
+    React.useState<RetrieveState>('idle');
+
   const onClose = () => {
-    navigate(routes.newReceipt.getPath(organizationName));
+    if (processingState !== 'idle') {
+      confirm({
+        children:
+          'You are currently processing a receipt. Are you sure you want to leave this page?',
+        onConfirm: () => navigate(routes.newReceipt.getPath(organizationName)),
+      });
+    } else {
+      navigate(routes.newReceipt.getPath(organizationName));
+    }
   };
 
   const retrieve = (retrieved: Partial<CreateTransactionDto>) => {
@@ -34,7 +46,11 @@ export const ScanPage = () => {
   };
 
   return (
-    <DialogDrawer onOpenChange={onClose} open>
+    <DialogDrawer
+      onOpenChange={onClose}
+      dismissible={processingState === 'idle'}
+      open
+    >
       <DialogDrawerContent
         onSubmit={(e) => {
           e.stopPropagation();
@@ -51,6 +67,7 @@ export const ScanPage = () => {
         <DialogDrawerBody>
           <ReceiptRetriever
             onRetrieve={retrieve}
+            onStateChange={setProcessingState}
             triggers={({ uploadPhoto }) => (
               <div className="flex gap-2 items-center">
                 <Button

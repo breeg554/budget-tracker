@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import { useFetcher } from '@remix-run/react';
 import { useBoolean } from 'usehooks-ts';
 
@@ -11,6 +11,8 @@ import { ItemList } from '~/list/ItemList';
 
 import { action } from '../action.server';
 
+export type RetrieveState = 'idle' | 'processing' | 'done';
+
 interface ReceiptRetrieverProps {
   triggers: ({
     takePhoto,
@@ -20,11 +22,13 @@ interface ReceiptRetrieverProps {
     uploadPhoto: () => void;
   }) => ReactNode;
   onRetrieve: (retrieved: Partial<CreateTransactionDto>) => void;
+  onStateChange?: (state: RetrieveState) => void;
 }
 
 export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
   triggers,
   onRetrieve,
+  onStateChange,
 }) => {
   const fetcher = useFetcher<typeof action>();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -63,6 +67,16 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
 
   const isLoading = fetcher.state !== 'idle';
   const data = fetcher.data;
+
+  useEffect(() => {
+    if (fetcher.state === 'idle' && fetcher.data) {
+      onStateChange?.('done');
+    } else if (fetcher.state === 'idle') {
+      onStateChange?.('idle');
+    } else {
+      onStateChange?.('processing');
+    }
+  }, [fetcher.state]);
 
   const renderStep = () => {
     if (isLoading) {
