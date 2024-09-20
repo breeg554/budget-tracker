@@ -60,7 +60,7 @@ function ReceiptsListItem({ data, onDelete }: ReceiptsListItemProps) {
       <header className="flex gap-2 justify-between p-4">
         <div className="flex gap-2 items-center">
           <h1
-            className="text-foreground font-semibold text-lg line-clamp-1"
+            className="text-foreground font-semibold text-base line-clamp-1"
             title={data.name}
           >
             {data.name}

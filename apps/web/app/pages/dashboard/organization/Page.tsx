@@ -1,18 +1,17 @@
 import React from 'react';
 import type { MetaFunction } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
-import groupBy from 'lodash.groupby';
 
+import { ReceiptsList } from '~/dashboard/organization/receipts/components/ReceiptsList';
 import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { Link } from '~/link/Link';
 import { routes } from '~/routes';
-import { CustomDate, DateRange } from '~/utils/CustomDate';
+import { DateRange } from '~/utils/CustomDate';
 
 import { CategoriesCarousel } from './components/CategoriesCarousel';
 import { OrganizationAvatar } from './components/OrganizationAvatar';
 import { TransactionChartCard } from './components/TransactionChartCard';
-import { TransactionItemList } from './components/TransactionItemList';
 import { TransactionModeTabs } from './components/TransactionModeTabs';
 import { loader } from './loader.server';
 
@@ -27,10 +26,6 @@ export const DashboardPage = () => {
     startDate,
     endDate,
   } = useLoaderData<typeof loader>();
-
-  const days = groupBy(latestTransactions, ({ date }) =>
-    new CustomDate(date).format('dd MMMM'),
-  );
 
   const onTabChange = ({ startDate, endDate }: DateRange) => {
     navigate(
@@ -72,7 +67,7 @@ export const DashboardPage = () => {
       />
 
       {statsByCategories.length > 0 && (
-        <SectionWrapper className="pl-4 pr-0 mb-3">
+        <SectionWrapper className="pl-4 pr-0 mb-4">
           <header className="flex gap-2 justify-between items-center mb-3 pr-4">
             <h2 className="text-sm text-muted-foreground">Categories</h2>
 
@@ -100,8 +95,8 @@ export const DashboardPage = () => {
           </Link>
         </header>
 
-        <div className="pb-20">
-          <TransactionItemList items={days} />
+        <div className="pb-20 pt-4">
+          <ReceiptsList transactions={latestTransactions} />
         </div>
       </SectionWrapper>
     </>

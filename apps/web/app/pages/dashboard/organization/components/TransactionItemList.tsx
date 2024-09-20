@@ -1,75 +1,7 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
-import {
-  GetTransactionDto,
-  GetTransactionItemDto,
-} from '~/api/Transaction/transactionApi.types';
-import { ClientDate } from '~/dates/ClientDate';
-import { EmptyMessage, ItemList } from '~/list/ItemList';
-import { Skeleton } from '~/ui/skeleton';
+import { GetTransactionItemDto } from '~/api/Transaction/transactionApi.types';
 import { Category } from '~/utils/Category';
-
-interface TransactionItemListProps {
-  items: Record<string, GetTransactionDto[]>;
-}
-
-export const TransactionItemList: React.FC<TransactionItemListProps> = ({
-  items,
-}) => {
-  const days = useMemo(() => {
-    return Object.keys(items)
-      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
-      .map((day) => ({
-        day,
-        id: day,
-        items: items[day].reduce(
-          (curr, transaction) => [...curr, ...transaction.items],
-          [] as GetTransactionItemDto[],
-        ),
-      }))
-      .slice(0, 3);
-  }, [items]);
-
-  return (
-    <ItemList
-      items={days}
-      className="grid grid-cols-1 gap-2"
-      emptyText={
-        <EmptyMessage className="block text-center">
-          No transactions found
-        </EmptyMessage>
-      }
-      renderItem={(item) => <TransactionItemListGroup group={item} />}
-    />
-  );
-};
-
-interface TransactionItemListGroupProps {
-  group: { day: string; items: GetTransactionItemDto[] };
-}
-
-function TransactionItemListGroup({ group }: TransactionItemListGroupProps) {
-  return (
-    <div>
-      <div className="flex justify-between items-center gap-2">
-        <ClientDate
-          fallback={
-            <Skeleton className="w-[68px] h-[20px] rounded-2xl mt-4 mb-3" />
-          }
-        >
-          <h4 className="text-muted-foreground text-sm pt-4 pb-3">
-            {group.day}
-          </h4>
-        </ClientDate>
-      </div>
-      <ItemList
-        items={group.items}
-        className="grid grid-cols-1 gap-3"
-        renderItem={(item) => <TransactionItemListItem item={item} />}
-      />
-    </div>
-  );
-}
 
 interface TransactionItemListItemProps {
   item: GetTransactionItemDto;

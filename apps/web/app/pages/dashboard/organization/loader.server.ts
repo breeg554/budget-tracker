@@ -28,7 +28,7 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   const latestTransactionsPromise = transactionApi.getAll(
     params.organizationName,
     {
-      limit: 4,
+      limit: 5,
     },
   );
   const byCategoriesPromise = statisticsApi.getStatisticsByCategories(

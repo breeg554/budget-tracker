@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { GetTransactionDto } from '~/api/Transaction/transactionApi.types';
+import { GetTransactionItemDto } from '~/api/Transaction/transactionApi.types';
 import { Category } from '~/utils/Category';
 
 interface CategoryBadgeProps {
-  data: GetTransactionDto['categories'][0];
+  data: GetTransactionItemDto['category'];
 }
 export function CategoryBadge({ data }: CategoryBadgeProps) {
   const categoryItem = new Category(data);
