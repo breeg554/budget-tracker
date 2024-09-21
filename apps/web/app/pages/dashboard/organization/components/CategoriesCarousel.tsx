@@ -2,6 +2,7 @@ import React from 'react';
 import startCase from 'lodash.startcase';
 
 import { GetStatisticsByCategory } from '~/api/Statistics/statisticsApi.types';
+import { PercentageChangeBadge } from '~/badges/PercentageChangeBadge';
 import { Carousel, CarouselContent, CarouselItem } from '~/ui/carousel';
 import { hashString } from '~/utils/stringHash';
 
@@ -61,7 +62,11 @@ function CategoriesCarouselItem({
         {startCase(data.name)}
       </h4>
 
-      <p className="text-sm line-clamp-1">{data.total.formatted}</p>
+      <div className="flex gap-2 items-center">
+        <p className="text-sm line-clamp-1">{data.total.formatted}</p>
+
+        <PercentageChangeBadge value={data.percentageDifference} />
+      </div>
     </article>
   );
 }

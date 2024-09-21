@@ -5,6 +5,7 @@ export const getStatisticsByCategory = z.object({
   category: z.string(),
   id: z.string(),
   total: z.number(),
+  prevTotal: z.number(),
 });
 
 export class GetStatisticsByCategoryDto extends createZodDto(

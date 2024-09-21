@@ -12,14 +12,6 @@ export class MonetaryValue {
       .parse(value);
   }
 
-  get value() {
-    return this._value;
-  }
-
-  get currency() {
-    return this.currencyCode;
-  }
-
   public add(other: MonetaryValue): MonetaryValue {
     if (this.currency !== other.currency) {
       throw new Error('Cannot add MonetaryValues with different currencies');
@@ -42,7 +34,23 @@ export class MonetaryValue {
       formatted: this.format(),
     };
   }
+
+  public percentageDifference(other: MonetaryValue): number {
+    if (other.value === 0) return 100;
+    return ((this.value - other.value) / other.value) * 100;
+  }
+
+  get value() {
+    return this._value;
+  }
+
+  get currency() {
+    return this.currencyCode;
+  }
 }
+
+export const monetaryValue = (value: number | string) =>
+  new MonetaryValue(value);
 
 export class TransactionItemValue {
   private readonly _quantity: number;
