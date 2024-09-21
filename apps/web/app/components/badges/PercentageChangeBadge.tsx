@@ -42,7 +42,7 @@ function NegativeBadge({
       className={cn('text-red-600 bg-red-500/15', className)}
       {...rest}
     >
-      {value.toFixed(1)}%
+      +{value.toFixed(1)}%
     </BadgeWrapper>
   );
 }
