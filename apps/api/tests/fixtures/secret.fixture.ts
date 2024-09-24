@@ -21,7 +21,12 @@ export class SecretFixture {
   async saveInDB(app: INestApplication) {
     const secretService = app.get(SecretService);
 
-    await secretService.create(this.secret, this.secret.organization.id);
+    const created = await secretService.create(
+      this.secret,
+      this.secret.organization.id,
+    );
+
+    this._secret = Object.assign(new Secret(), { ...this._secret, ...created });
 
     return this;
   }

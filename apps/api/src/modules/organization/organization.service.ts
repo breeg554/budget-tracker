@@ -58,25 +58,21 @@ export class OrganizationService {
     });
   }
 
-  async findByNameAndUser(name: string, userId: string): Promise<Organization> {
-    return await this.ensureUserInOrganization(userId, name);
+  async findByNameAndUser(name: string): Promise<Organization> {
+    return await this.findByName(name);
   }
 
   async findOrganizationSecret(
     secretName: string,
     organizationName: string,
-    userId: string,
   ): Promise<Secret> {
-    const organization = await this.ensureUserInOrganization(
-      userId,
-      organizationName,
-    );
+    const organization = await this.findByName(organizationName);
     return this.secretService.findOne(secretName, organization.id);
   }
 
   async findOrganizationUsers(
-    organizationName: string,
     userId: string,
+    organizationName: string,
   ): Promise<User[]> {
     const organization = await this.ensureUserInOrganization(
       userId,
@@ -89,12 +85,8 @@ export class OrganizationService {
   async createSecret(
     data: CreateSecretDto,
     organizationName: string,
-    userId: string,
   ): Promise<Secret> {
-    const organization = await this.ensureUserInOrganization(
-      userId,
-      organizationName,
-    );
+    const organization = await this.findByName(organizationName);
 
     return this.secretService.create(data, organization.id);
   }

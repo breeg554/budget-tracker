@@ -34,7 +34,6 @@ export class ReceiptService {
     const secret = await this.organizationService.findOrganizationSecret(
       args.secretName,
       args.organizationName,
-      args.userId,
     );
 
     const productCategories =

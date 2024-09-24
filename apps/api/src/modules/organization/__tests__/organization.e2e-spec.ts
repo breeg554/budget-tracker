@@ -4,7 +4,7 @@ import { createUserFixture } from '~/tests-fixtures/user.fixture';
 import { OrganizationController } from '../organization.controller';
 import { HttpStatus } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { beforeEachCreateUser } from '~/tests/beforeEachCreateUser';
+import { beforeEachCreateUser } from '~/tests/before-each-create-user';
 import { itShouldReturn401, itShouldReturn404 } from '~/tests/it-should-return';
 import { createSecretFixture } from '~/tests-fixtures/secret.fixture';
 
@@ -88,6 +88,18 @@ describe(OrganizationController.name, () => {
       );
     });
 
+    it('should return validation errors', async () => {
+      const response = await setup.withSession(userFixture, () =>
+        setup.appRequest().post('/organizations').send({ name: 'a' }),
+      );
+
+      expect(response.status).toBe(HttpStatus.UNPROCESSABLE_ENTITY);
+      expect(response.body).toEqual({
+        fieldErrors: { name: ['String must contain at least 2 character(s)'] },
+        formErrors: [],
+      });
+    });
+
     it('should return 400 if org name already taken', async () => {
       await createOrganizationFixture({ name: 'NEW ORG' }).saveInDB(setup.app);
 
@@ -139,20 +151,24 @@ describe(OrganizationController.name, () => {
       setup
         .appRequest()
         .post(`/organizations/${organizationFixture.organization.name}/secrets`)
-        .send({ name: 'NEW SECRET', value: 'NEW SECRET VALUE' });
+        .send({ name: 'SECRET', value: 'VALUE' });
 
     itShouldReturn401('when unauthorized', createPostRequest);
     itShouldReturn404('when user does not belong to org', () =>
       setup.withSession(createUserFixture({ id: uuidv4() }), createPostRequest),
     );
 
-    it('should return 201', async () => {
+    it('should upsert secret in organization', async () => {
+      await createSecretFixture({
+        organization: organizationFixture.organization,
+        name: 'SECRET',
+      }).saveInDB(setup.app);
       const response = await setup.withSession(userFixture, createPostRequest);
 
       expect(response.status).toBe(HttpStatus.CREATED);
       expect(response.body).toEqual(
         expect.objectContaining({
-          name: 'NEW SECRET',
+          name: 'SECRET',
           id: expect.any(String),
           createdAt: expect.any(String),
           updatedAt: expect.any(String),

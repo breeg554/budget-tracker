@@ -12,9 +12,7 @@ export class UserFixture {
       email: 'test@gmail.com',
       password: 'password',
       organizations: [],
-      //eslint-disable-next-line
-      //@ts-ignore
-      session: [],
+      session: undefined,
       createdAt: new Date(),
       updatedAt: new Date(),
       ...user,

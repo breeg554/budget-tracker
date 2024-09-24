@@ -17,13 +17,9 @@ export class StatisticsService {
   async getStatisticsByCategory(
     query: { startDate: string; endDate: string },
     organizationName: string,
-    userId: string,
   ): Promise<GetStatisticsByCategoryDto[]> {
     const organization =
-      await this.organizationService.ensureUserInOrganization(
-        userId,
-        organizationName,
-      );
+      await this.organizationService.findByName(organizationName);
 
     return await this.transactionRepository
       .createQueryBuilder('transaction')
@@ -48,6 +44,9 @@ export class StatisticsService {
       )
       .groupBy('category.name')
       .addGroupBy('category.id')
+      .having(
+        'SUM(CASE WHEN transaction.date BETWEEN :startDate AND :endDate THEN items.price * items.quantity ELSE 0 END) > 0',
+      )
       .setParameters(this.withPreviousPeriod(query))
       .getRawMany();
   }

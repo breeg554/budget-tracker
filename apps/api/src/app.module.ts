@@ -91,6 +91,7 @@ import { DatabaseModule } from '~/modules/database/database.module';
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
+
     JwtStrategy,
   ],
 })

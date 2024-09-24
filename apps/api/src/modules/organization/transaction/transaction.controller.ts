@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
 
 import { CreateTransactionDto } from '~/dtos/transaction/create-transaction.dto';
@@ -14,54 +15,49 @@ import { AuthUser, User } from '~/modules/decorators/user.decorator';
 import { TransactionService } from '~/modules/organization/transaction/transaction.service';
 import { Paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { UpdateTransactionDto } from '~/dtos/transaction/update-transaction.dto';
+import { OrganizationGuard } from '~/modules/guards/organization-guard';
 
 @Controller()
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @Get()
+  @UseGuards(OrganizationGuard)
   getAll(
-    @Param('organizationName') organizationName: string,
-    @User() user: AuthUser,
+    @Param('name') organizationName: string,
     @Paginate() query: PaginateQuery,
   ): Promise<Paginated<GetTransactionDto>> {
-    return this.transactionService.findAll(query, organizationName, user.id);
+    return this.transactionService.findAll(query, organizationName);
   }
 
   @Get(':id')
-  getOne(
-    @Param('id') id: string,
-    @Param('organizationName') organizationName: string,
-    @User() user: AuthUser,
-  ): Promise<GetTransactionDto> {
-    return this.transactionService.findOne(id, organizationName, user.id);
+  @UseGuards(OrganizationGuard)
+  getOne(@Param('id') id: string): Promise<GetTransactionDto> {
+    return this.transactionService.findOne(id);
   }
 
   @Post()
+  @UseGuards(OrganizationGuard)
   create(
     @Body() data: CreateTransactionDto,
-    @Param('organizationName') organizationName: string,
+    @Param('name') organizationName: string,
     @User() user: AuthUser,
   ): Promise<GetTransactionDto> {
     return this.transactionService.create(data, organizationName, user.id);
   }
 
   @Delete(':id')
-  delete(
-    @Param('id') id: string,
-    @Param('organizationName') organizationName: string,
-    @User() user: AuthUser,
-  ): Promise<void> {
-    return this.transactionService.delete(id, organizationName, user.id);
+  @UseGuards(OrganizationGuard)
+  delete(@Param('id') id: string): Promise<void> {
+    return this.transactionService.delete(id);
   }
 
   @Put(':id')
+  @UseGuards(OrganizationGuard)
   update(
     @Param('id') id: string,
-    @Param('organizationName') organizationName: string,
-    @User() user: AuthUser,
     @Body() data: UpdateTransactionDto,
   ): Promise<GetTransactionDto> {
-    return this.transactionService.update(data, id, organizationName, user.id);
+    return this.transactionService.update(data, id);
   }
 }

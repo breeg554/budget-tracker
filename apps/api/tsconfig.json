@@ -21,6 +21,7 @@
       "~/tests-fixtures/*": ["./tests/fixtures/*"],
       "~/tests/*": ["./tests/*"],
       "~/modules/*": ["./src/modules/*"],
+      "~/transaction/*": ["./src/modules/organization/transaction/*"],
       "~/*": ["./src/*"]
     }
   }

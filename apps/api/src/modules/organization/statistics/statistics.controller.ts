@@ -4,22 +4,23 @@ import {
   Get,
   Param,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { AuthUser, User } from '~/modules/decorators/user.decorator';
 import { StatisticsService } from '~/modules/organization/statistics/statistics.service';
 import { GetStatisticsByCategoryDto } from '~/dtos/statistics/get-statistics-by-category.dto';
 import { CacheInterceptor } from '@nestjs/cache-manager';
+import { OrganizationGuard } from '~/modules/guards/organization-guard';
 
 @Controller()
 @UseInterceptors(CacheInterceptor)
 export class StatisticsController {
   constructor(private readonly statisticsService: StatisticsService) {}
 
+  @UseGuards(OrganizationGuard)
   @Get('categories')
   getAll(
-    @Param('organizationName') organizationName: string,
-    @User() user: AuthUser,
+    @Param('name') organizationName: string,
     @Query() query: { startDate: string; endDate: string },
   ): Promise<GetStatisticsByCategoryDto[]> {
     if (!query.startDate || !query.endDate) {
@@ -29,7 +30,6 @@ export class StatisticsController {
     return this.statisticsService.getStatisticsByCategory(
       query,
       organizationName,
-      user.id,
     );
   }
 }

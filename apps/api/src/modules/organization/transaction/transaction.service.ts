@@ -34,12 +34,9 @@ export class TransactionService {
     data: CreateTransactionDto,
     organizationName: string,
     userId: string,
-  ): Promise<GetTransactionDto> {
+  ): Promise<Transaction> {
     const organization =
-      await this.organizationService.ensureUserInOrganization(
-        userId,
-        organizationName,
-      );
+      await this.organizationService.findByName(organizationName);
 
     const user = await this.userService.findOne(userId);
 
@@ -65,21 +62,8 @@ export class TransactionService {
     return this.transactionRepository.save(transaction);
   }
 
-  async delete(
-    transactionId: string,
-    organizationName: string,
-    userId: string,
-  ): Promise<void> {
-    await this.organizationService.ensureUserInOrganization(
-      userId,
-      organizationName,
-    );
-
-    const transaction = await this.findOne(
-      transactionId,
-      organizationName,
-      userId,
-    );
+  async delete(transactionId: string): Promise<void> {
+    const transaction = await this.findOne(transactionId);
 
     try {
       await this.transactionRepository.softRemove(transaction);
@@ -93,19 +77,8 @@ export class TransactionService {
   async update(
     data: UpdateTransactionDto,
     transactionId: string,
-    organizationName: string,
-    userId: string,
   ): Promise<Transaction> {
-    await this.organizationService.ensureUserInOrganization(
-      userId,
-      organizationName,
-    );
-
-    const transaction = await this.findOne(
-      transactionId,
-      organizationName,
-      userId,
-    );
+    const transaction = await this.findOne(transactionId);
 
     try {
       return await this.transactionRepository.save({ ...transaction, ...data });
@@ -116,16 +89,19 @@ export class TransactionService {
     }
   }
 
-  async findOne(
-    transactionId: string,
-    organizationName: string,
-    userId: string,
-  ): Promise<GetTransactionDto> {
-    await this.organizationService.ensureUserInOrganization(
-      userId,
-      organizationName,
-    );
+  async findById(transactionId: string): Promise<Transaction> {
+    const transaction = await this.transactionRepository.findOne({
+      where: { id: transactionId },
+    });
 
+    if (!transaction) {
+      throw new NotFoundException('Transaction not found');
+    }
+
+    return transaction;
+  }
+
+  async findOne(transactionId: string): Promise<GetTransactionDto> {
     const transaction = await this.transactionRepository.findOne({
       where: { id: transactionId },
       relations: ['items', 'author'],
@@ -141,13 +117,10 @@ export class TransactionService {
   async findAll(
     query: PaginateQuery,
     organizationName: string,
-    userId: string,
   ): Promise<Paginated<GetTransactionDto>> {
     const organization =
-      await this.organizationService.ensureUserInOrganization(
-        userId,
-        organizationName,
-      );
+      await this.organizationService.findByName(organizationName);
+
     const { data, ...rest } = await paginate(
       query,
       this.transactionRepository,

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 
 import { CreateOrganizationDto } from '~/dtos/organization/create-organization.dto';
 import { GetOrganizationDto } from '~/dtos/organization/get-organization.dto';
@@ -7,6 +7,7 @@ import { OrganizationService } from '~/modules/organization/organization.service
 import { CreateSecretDto } from '~/dtos/secret/create-secret.dto';
 import { GetSecretDto } from '~/dtos/secret/get-secret.dto';
 import { GetUserDto } from '~/dtos/users/get-user.dto';
+import { OrganizationGuard } from '~/modules/guards/organization-guard';
 
 @Controller()
 export class OrganizationController {
@@ -25,41 +26,39 @@ export class OrganizationController {
     return this.organizationService.findAllByUser(user.email);
   }
 
+  @UseGuards(OrganizationGuard)
   @Get(':name')
-  findByName(
-    @Param('name') name: string,
-    @User() user: AuthUser,
-  ): Promise<GetOrganizationDto> {
-    return this.organizationService.findByNameAndUser(name, user.id);
+  findByName(@Param('name') name: string): Promise<GetOrganizationDto> {
+    return this.organizationService.findByNameAndUser(name);
   }
 
+  @UseGuards(OrganizationGuard)
   @Get(':name/users')
   getOrganizationUsers(
     @Param('name') name: string,
     @User() user: AuthUser,
   ): Promise<GetUserDto[]> {
-    return this.organizationService.findOrganizationUsers(name, user.id);
+    return this.organizationService.findOrganizationUsers(user.id, name);
   }
 
+  @UseGuards(OrganizationGuard)
   @Post(':name/secrets')
   createSecret(
     @Param('name') name: string,
     @Body() data: CreateSecretDto,
-    @User() user: AuthUser,
   ): Promise<GetSecretDto> {
-    return this.organizationService.createSecret(data, name, user.id);
+    return this.organizationService.createSecret(data, name);
   }
 
+  @UseGuards(OrganizationGuard)
   @Get(':name/secrets/:secretName')
   getOrganizationSecret(
     @Param('secretName') secretName: string,
     @Param('name') organizationName: string,
-    @User() user: AuthUser,
   ): Promise<GetSecretDto> {
     return this.organizationService.findOrganizationSecret(
       secretName,
       organizationName,
-      user.id,
     );
   }
 }

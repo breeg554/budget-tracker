@@ -15,18 +15,18 @@ import { UserModule } from '~/modules/user/user.module';
         module: OrganizationModule,
         children: [
           {
-            path: '/:organizationName/transactions',
+            path: '/:name/transactions',
             module: TransactionModule,
             children: [
               { path: '/:transactionId/items', module: TransactionItemModule },
             ],
           },
           {
-            path: '/:organizationName/statistics',
+            path: '/:name/statistics',
             module: StatisticsModule,
           },
           {
-            path: '/:organizationName/receipts',
+            path: '/:name/receipts',
             module: ReceiptModule,
           },
         ],

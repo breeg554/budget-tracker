@@ -4,13 +4,14 @@ import {
   CreateDateColumn,
   Entity,
   JoinTable,
-  ManyToMany, OneToOne,
+  ManyToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { Organization } from '~/entities/organization/organization.entity';
-import { Session} from "~/entities/session/session.entity";
+import { Session } from '~/entities/session/session.entity';
 
 @Entity()
 export class User {
@@ -28,7 +29,7 @@ export class User {
   createdAt: Date;
   @UpdateDateColumn()
   updatedAt: Date;
-  @OneToOne(() => Session, session => session.user)
+  @OneToOne(() => Session, (session) => session.user)
   @Exclude()
   session: Session;
 
