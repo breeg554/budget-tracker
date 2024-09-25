@@ -9,28 +9,19 @@ import { DataSource } from 'typeorm';
 export class TransactionItemFixture {
   private _transactionItem: TransactionItem;
 
-  constructor(
-    category: TransactionItemCategory,
-    transaction: Transaction,
-    transactionItem?: Partial<TransactionItem>,
-  ) {
+  constructor(category: TransactionItemCategory, transaction: Transaction) {
     this._transactionItem = Object.assign(new TransactionItem(), {
       id: uuidv4(),
-      name: 'TransactionItem',
-      quantity: 1,
       price: 12,
+      quantity: 1,
+      name: 'TransactionItem',
       type: TransactionItemType.OUTCOME,
       createdAt: new Date(),
       updatedAt: new Date(),
       category: category,
       transaction: transaction,
       deletedDate: null,
-      ...transactionItem,
     });
-  }
-
-  get item() {
-    return this._transactionItem;
   }
 
   async saveInDB(app: INestApplication) {
@@ -47,10 +38,40 @@ export class TransactionItemFixture {
 
     return this;
   }
+
+  withName(name: string) {
+    this._transactionItem = Object.assign(new TransactionItem(), {
+      ...this._transactionItem,
+      name,
+    });
+
+    return this;
+  }
+
+  withPrice(price: number) {
+    this._transactionItem = Object.assign(new TransactionItem(), {
+      ...this._transactionItem,
+      price,
+    });
+
+    return this;
+  }
+
+  withQuantity(quantity: number) {
+    this._transactionItem = Object.assign(new TransactionItem(), {
+      ...this._transactionItem,
+      quantity,
+    });
+
+    return this;
+  }
+
+  get item() {
+    return this._transactionItem;
+  }
 }
 
 export const createTransactionItemFixture = (
   category: TransactionItemCategory,
   transaction: Transaction,
-  transactionItem?: Partial<TransactionItem>,
-) => new TransactionItemFixture(category, transaction, transactionItem);
+) => new TransactionItemFixture(category, transaction);

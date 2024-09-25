@@ -9,23 +9,18 @@ import { DataSource } from 'typeorm';
 export class TransactionFixture {
   private _transaction: Transaction;
 
-  constructor(
-    author: User,
-    organization: Organization,
-    transaction?: Partial<Transaction>,
-  ) {
+  constructor(author: User, organization: Organization) {
     this._transaction = Object.assign(new Transaction(), {
       id: uuidv4(),
-      name: 'Transaction',
-      type: TransactionType.PURCHASE,
+      author: author,
       items: [],
       organization: organization,
-      author: author,
+      name: 'Sample Transaction',
+      type: TransactionType.PURCHASE,
       date: new Date().toISOString(),
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedDate: null,
-      ...transaction,
     });
   }
 
@@ -52,5 +47,4 @@ export class TransactionFixture {
 export const createTransactionFixture = (
   author: User,
   organization: Organization,
-  transaction?: Partial<Transaction>,
-) => new TransactionFixture(author, organization, transaction);
+) => new TransactionFixture(author, organization);

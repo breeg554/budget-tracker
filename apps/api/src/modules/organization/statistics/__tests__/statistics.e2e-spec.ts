@@ -6,6 +6,7 @@ import { StatisticsController } from '../statistics.controller';
 import { createTransactionItemCategoryFixture } from '~/tests-fixtures/transaction-item-category.fixture';
 import { createTransactionFixture } from '~/tests-fixtures/transaction.fixture';
 import { createTransactionItemFixture } from '~/tests-fixtures/transaction-item.fixture';
+import { endOfMonth, startOfMonth } from 'date-fns';
 
 describe(StatisticsController.name, () => {
   const setup = setupTestingApp();
@@ -16,45 +17,50 @@ describe(StatisticsController.name, () => {
   );
 
   beforeEach(async () => {
-    await createTransactionItemCategoryFixture({
-      name: 'food',
-    }).saveInDB(setup.app);
-    const categoryFixture = await createTransactionItemCategoryFixture({
-      name: 'eating out',
-    }).saveInDB(setup.app);
+    const categoryFixtureOne = await createTransactionItemCategoryFixture()
+      .withName('alcohol')
+      .saveInDB(setup.app);
+    const categoryFixtureTwo = await createTransactionItemCategoryFixture()
+      .withName('eating out')
+      .saveInDB(setup.app);
+
     const transactionFixture = await createTransactionFixture(
       userFixture.user,
       organizationFixture.organization,
     ).saveInDB(setup.app);
 
     await createTransactionItemFixture(
-      categoryFixture.category,
+      categoryFixtureOne.category,
       transactionFixture.transaction,
-    ).saveInDB(setup.app);
+    )
+      .withQuantity(2)
+      .saveInDB(setup.app);
+
+    await createTransactionItemFixture(
+      categoryFixtureTwo.category,
+      transactionFixture.transaction,
+    )
+      .withPrice(1.15)
+      .saveInDB(setup.app);
   });
 
   describe('(GET) categories', () => {
-    const createGetRequest = (query?: {
-      startDate: string;
-      endDate: string;
-    }) => {
-      if (!query) {
-        return setup
+    const createGetRequest = (query: { startDate: string; endDate: string }) =>
+      setup
+        .appRequest()
+        .get(
+          `/organizations/${organizationFixture.organization.name}/statistics/categories`,
+        )
+        .query(query);
+
+    it('should return 400 when start/end dates not found in query', async () => {
+      const response = await setup.withSession(userFixture, () =>
+        setup
           .appRequest()
           .get(
             `/organizations/${organizationFixture.organization.name}/statistics/categories`,
-          );
-      } else {
-        return setup
-          .appRequest()
-          .get(
-            `/organizations/${organizationFixture.organization.name}/statistics/categories?startDate=${query.startDate}&endDate=${query.endDate}`,
-          );
-      }
-    };
-
-    it('should return 400 when start/end dates not found in query', async () => {
-      const response = await setup.withSession(userFixture, createGetRequest);
+          ),
+      );
 
       expect(response.status).toBe(HttpStatus.BAD_REQUEST);
       expect(response.body).toEqual(
@@ -64,22 +70,29 @@ describe(StatisticsController.name, () => {
       );
     });
 
-    it('should return 200', async () => {
+    it('should return monthly statistics', async () => {
       const response = await setup.withSession(userFixture, () =>
         createGetRequest({
-          startDate: '2024-09-01',
-          endDate: '2024-09-31',
+          startDate: startOfMonth(new Date()).toISOString(),
+          endDate: endOfMonth(new Date()).toISOString(),
         }),
       );
 
       expect(response.status).toBe(HttpStatus.OK);
-      expect(response.body).toEqual([
-        expect.objectContaining({
-          name: 'eating out',
-          prevTotal: '0',
-          total: '12.000000',
-        }),
-      ]);
+      expect(response.body).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            name: 'alcohol',
+            prevTotal: '0',
+            total: '24.000000',
+          }),
+          expect.objectContaining({
+            name: 'eating out',
+            prevTotal: '0',
+            total: '1.150000',
+          }),
+        ]),
+      );
     });
   });
 });

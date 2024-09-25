@@ -10,6 +10,7 @@ import { createSecretFixture } from '~/tests-fixtures/secret.fixture';
 
 describe(OrganizationController.name, () => {
   const setup = setupTestingApp();
+
   const userFixture = beforeEachCreateUser(setup);
 
   describe('(GET)', () => {

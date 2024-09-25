@@ -6,14 +6,13 @@ import { DataSource } from 'typeorm';
 export class TransactionItemCategoryFixture {
   private _transactionItemCategory: TransactionItemCategory;
 
-  constructor(category?: Partial<TransactionItemCategory>) {
+  constructor() {
     this._transactionItemCategory = Object.assign(
       new TransactionItemCategory(),
       {
         id: uuidv4(),
         name: 'Alcohol',
         items: [],
-        ...category,
       },
     );
   }
@@ -33,11 +32,19 @@ export class TransactionItemCategoryFixture {
     return this;
   }
 
+  withName(name: string) {
+    this._transactionItemCategory = Object.assign(
+      new TransactionItemCategory(),
+      { ...this._transactionItemCategory, name },
+    );
+
+    return this;
+  }
+
   get category() {
     return this._transactionItemCategory;
   }
 }
 
-export const createTransactionItemCategoryFixture = (
-  category?: Partial<TransactionItemCategory>,
-) => new TransactionItemCategoryFixture(category);
+export const createTransactionItemCategoryFixture = () =>
+  new TransactionItemCategoryFixture();
