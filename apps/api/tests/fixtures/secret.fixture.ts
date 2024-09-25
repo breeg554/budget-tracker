@@ -7,7 +7,7 @@ export class SecretFixture {
   private _secret: Secret;
 
   constructor(secret?: Partial<Secret>) {
-    this._secret = {
+    this._secret = Object.assign(new Secret(), {
       id: uuidv4(),
       name: 'super-secret',
       value: 'super-secret-value',
@@ -15,7 +15,7 @@ export class SecretFixture {
       createdAt: new Date(),
       updatedAt: new Date(),
       ...secret,
-    };
+    });
   }
 
   async saveInDB(app: INestApplication) {

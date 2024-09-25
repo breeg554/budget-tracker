@@ -2,9 +2,9 @@ import { INestApplication } from '@nestjs/common';
 import { User } from '~/entities/user/user.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { Transaction } from '~/entities/transaction/transaction.entity';
-import { TransactionService } from '~/modules/organization/transaction/transaction.service';
 import { TransactionType } from '~/dtos/transaction/transaction-type.enum';
 import { Organization } from '~/entities/organization/organization.entity';
+import { DataSource } from 'typeorm';
 
 export class TransactionFixture {
   private _transaction: Transaction;
@@ -14,7 +14,7 @@ export class TransactionFixture {
     organization: Organization,
     transaction?: Partial<Transaction>,
   ) {
-    this._transaction = {
+    this._transaction = Object.assign(new Transaction(), {
       id: uuidv4(),
       name: 'Transaction',
       type: TransactionType.PURCHASE,
@@ -26,24 +26,15 @@ export class TransactionFixture {
       updatedAt: new Date(),
       deletedDate: null,
       ...transaction,
-    };
+    });
   }
 
   async saveInDB(app: INestApplication) {
-    const transactionService = app.get(TransactionService);
+    const dataSource = app.get(DataSource);
 
-    const created = await transactionService.create(
-      {
-        ...this.transaction,
-        items: this.transaction.items.map((item) => ({
-          ...item,
-          transaction: this.transaction.id,
-          category: item.category.id,
-        })),
-      },
-      this.transaction.organization.name,
-      this.transaction.author.id,
-    );
+    const created = await dataSource
+      .getRepository(Transaction)
+      .save(this.transaction);
 
     this._transaction = Object.assign(new Transaction(), {
       ...this._transaction,

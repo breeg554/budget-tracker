@@ -7,7 +7,7 @@ export class OrganizationFixture {
   private _organization: Organization;
 
   constructor(organization?: Partial<Organization>) {
-    this._organization = {
+    this._organization = Object.assign(new Organization(), {
       id: uuidv4(),
       name: 'super-org',
       createdAt: new Date(),
@@ -15,15 +15,18 @@ export class OrganizationFixture {
       users: [],
       transactions: [],
       ...organization,
-    };
+    });
   }
 
   async saveInDB(app: INestApplication, userId?: string) {
     const organizationService = app.get(OrganizationService);
-    this._organization = await organizationService.create(
-      this.organization,
-      userId,
-    );
+
+    const created = await organizationService.create(this.organization, userId);
+
+    this._organization = Object.assign(new Organization(), {
+      ...this._organization,
+      ...created,
+    });
 
     return this;
   }

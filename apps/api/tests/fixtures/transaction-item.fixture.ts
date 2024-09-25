@@ -4,7 +4,7 @@ import { TransactionItem } from '~/entities/transaction/transactionItem.entity';
 import { TransactionItemType } from '~/dtos/transaction/transaction-item-type.enum';
 import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 import { INestApplication } from '@nestjs/common';
-import { TransactionItemService } from '~/transaction/transaction-item/transaction-item.service';
+import { DataSource } from 'typeorm';
 
 export class TransactionItemFixture {
   private _transactionItem: TransactionItem;
@@ -14,7 +14,7 @@ export class TransactionItemFixture {
     transaction: Transaction,
     transactionItem?: Partial<TransactionItem>,
   ) {
-    this._transactionItem = {
+    this._transactionItem = Object.assign(new TransactionItem(), {
       id: uuidv4(),
       name: 'TransactionItem',
       quantity: 1,
@@ -26,7 +26,7 @@ export class TransactionItemFixture {
       transaction: transaction,
       deletedDate: null,
       ...transactionItem,
-    };
+    });
   }
 
   get item() {
@@ -34,15 +34,11 @@ export class TransactionItemFixture {
   }
 
   async saveInDB(app: INestApplication) {
-    const transactionItemService = app.get(TransactionItemService);
+    const dataSource = app.get(DataSource);
 
-    const created = await transactionItemService.create(
-      this.item.transaction.id,
-      {
-        ...this.item,
-        category: this.item.category.id,
-      },
-    );
+    const created = await dataSource
+      .getRepository(TransactionItem)
+      .save(this.item);
 
     this._transactionItem = Object.assign(new Transaction(), {
       ...this._transactionItem,
