@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { ReactNode, useMemo } from 'react';
 import kebabCase from 'lodash.kebabcase';
 import startCase from 'lodash.startcase';
-import { Pie, PieChart, Sector } from 'recharts';
-import { PieSectorDataItem } from 'recharts/types/polar/Pie';
+import { Pie, PieChart } from 'recharts';
 
 import { GetStatisticsByCategory } from '~/api/Statistics/statisticsApi.types';
 import {
@@ -10,71 +9,94 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '~/components/ui/chart';
+import { cn } from '~/utils/cn';
 
 interface CategoriesPieChartProps {
   data: GetStatisticsByCategory[];
 }
 
 export const CategoriesPieChart = ({ data }: CategoriesPieChartProps) => {
-  const sortedData = data
-    .slice()
-    .sort((a, b) => b.total.value - a.total.value)
-    .splice(0, 5)
-    .map((item, index) => ({
-      ...item,
-      category: kebabCase(item.name),
-      label: startCase(item.name),
-      fill: `var(--color-${kebabCase(item.name)})`,
-    }));
+  const sortedData = useMemo(() => {
+    return data
+      .slice()
+      .sort((a, b) => b.total.value - a.total.value)
+      .splice(0, 4)
+      .map((item, index) => ({
+        ...item,
+        value: item.total.value,
+        category: kebabCase(item.name),
+        label: startCase(item.name),
+        fill: `var(--color-${kebabCase(item.name)})`,
+      }));
+  }, [data]);
 
   const chartConfig: Record<string, { label: string; color: string }> =
-    sortedData.reduce((acc, item, currentIndex) => {
-      return {
-        ...acc,
-        [item.category]: {
-          label: item.label,
-          color: `hsl(var(--chart-${currentIndex + 1}))`,
-        },
-      };
-    }, {});
+    useMemo(() => {
+      return sortedData.reduce((acc, item, currentIndex) => {
+        return {
+          ...acc,
+          [item.category]: {
+            label: item.label,
+            color: `hsl(var(--chart-${currentIndex + 1}))`,
+          },
+        };
+      }, {});
+    }, [sortedData]);
 
   return (
-    <ChartContainer config={chartConfig} className="mx-auto w-full h-[250px]">
-      <PieChart>
-        <ChartTooltip
-          cursor={false}
-          content={<ChartTooltipContent hideLabel />}
-        />
-        <Pie
-          label={({ payload, ...props }) => {
-            return (
-              <text
-                cx={props.cx}
-                cy={props.cy}
-                x={props.x}
-                y={props.y}
-                textAnchor={props.textAnchor}
-                dominantBaseline={props.dominantBaseline}
-                fill="hsla(var(--primary-foreground))"
-              >
-                {
-                  chartConfig[payload.category as keyof typeof chartConfig]
-                    ?.label
-                }
-              </text>
-            );
-          }}
-          data={sortedData}
-          dataKey="total"
-          nameKey="category"
-          innerRadius={60}
-          labelLine={false}
-          activeIndex={0}
-          activeShape={({ outerRadius = 0, ...props }: PieSectorDataItem) => (
-            <Sector {...props} outerRadius={outerRadius + 10} />
-          )}
-        />
-      </PieChart>
-    </ChartContainer>
+    <div className="grid gap-2 grid-cols-[min-content_1fr] items-center">
+      <ChartContainer
+        config={chartConfig}
+        className="mx-auto aspect-square w-[200px] h-[200px]"
+      >
+        <PieChart>
+          <ChartTooltip
+            cursor={false}
+            content={<ChartTooltipContent hideLabel />}
+          />
+          <Pie
+            data={sortedData}
+            dataKey="value"
+            nameKey="label"
+            innerRadius={40}
+          />
+        </PieChart>
+      </ChartContainer>
+
+      <div className="flex flex-col gap-2">
+        {sortedData.map((item, index) => (
+          <PieChartLabel
+            key={item.name}
+            label={item.label}
+            total={item.total.formatted}
+            color={`hsl(var(--chart-${index + 1}))`}
+          />
+        ))}
+      </div>
+    </div>
   );
 };
+
+interface PieChartLabelProps {
+  total: string;
+  label: ReactNode;
+  color: string;
+}
+
+function PieChartLabel({ total, label, color }: PieChartLabelProps) {
+  return (
+    <div className="flex gap-1">
+      <div
+        className={cn('w-2 h-4 rounded-full mt-0.5')}
+        style={{
+          backgroundColor: color,
+        }}
+      />
+      <div className="flex flex-col">
+        <p className="text-sm line-clamp-1">{label}</p>
+
+        <p className="text-xs text-muted-foreground line-clamp-1">{total}</p>
+      </div>
+    </div>
+  );
+}

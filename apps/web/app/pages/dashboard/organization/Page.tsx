@@ -2,6 +2,8 @@ import React from 'react';
 import type { MetaFunction } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 
+import { DateRangeUpdater } from '~/dashboard/organization/components/DateRangeUpdater';
+import { TransactionChart } from '~/dashboard/organization/components/TransactionChart';
 import { ReceiptsList } from '~/dashboard/organization/receipts/components/ReceiptsList';
 import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
@@ -60,10 +62,21 @@ export const DashboardPage = () => {
 
       <TransactionChartCard
         className="mb-4"
-        startDate={startDate}
-        endDate={endDate}
         data={transactions}
-        onDateChange={onTabChange}
+        content={
+          <TransactionChart
+            data={transactions}
+            startDate={startDate}
+            endDate={endDate}
+          />
+        }
+        header={
+          <DateRangeUpdater
+            onDateChange={onTabChange}
+            startDate={startDate}
+            endDate={endDate}
+          />
+        }
       />
 
       {statsByCategories.length > 0 && (
