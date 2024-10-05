@@ -3,6 +3,7 @@ import type { MetaFunction } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 
 import { DateRangeUpdater } from '~/dashboard/organization/components/DateRangeUpdater';
+// import { TransactionChart } from '~/dashboard/organization/components/TransactionChart';
 import { TransactionModeTabs } from '~/dashboard/organization/components/TransactionModeTabs';
 import { useOrganizationName } from '~/hooks/useOrganizationName';
 import { PageBackground } from '~/layout/PageBackground';
@@ -50,9 +51,17 @@ export const StatisticsPage = () => {
         endDate={endDate}
       />
 
-      <SectionWrapper className="mt-10">
+      <div className="mt-10">
         <CategoriesPieChart data={statsByCategories} />
-      </SectionWrapper>
+      </div>
+
+      {/*<div className="pb-24">*/}
+      {/*  <TransactionChart*/}
+      {/*    data={transactions}*/}
+      {/*    startDate={startDate}*/}
+      {/*    endDate={endDate}*/}
+      {/*  />*/}
+      {/*</div>*/}
     </>
   );
 };

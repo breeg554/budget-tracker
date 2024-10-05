@@ -47,7 +47,7 @@ export const CategoriesPieChart = ({ data }: CategoriesPieChartProps) => {
     <div className="grid gap-2 grid-cols-[min-content_1fr] items-center">
       <ChartContainer
         config={chartConfig}
-        className="mx-auto aspect-square w-[200px] h-[200px]"
+        className="mx-auto aspect-square w-[240px] h-[240px]"
       >
         <PieChart>
           <ChartTooltip
@@ -58,7 +58,7 @@ export const CategoriesPieChart = ({ data }: CategoriesPieChartProps) => {
             data={sortedData}
             dataKey="value"
             nameKey="label"
-            innerRadius={40}
+            innerRadius={50}
           />
         </PieChart>
       </ChartContainer>

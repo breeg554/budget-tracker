@@ -26,6 +26,7 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
     ...dateRange,
     limit: 100,
   });
+
   const latestTransactionsPromise = transactionApi.getAll(
     params.organizationName,
     {
