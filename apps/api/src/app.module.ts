@@ -4,7 +4,7 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { RouterModule } from '~/modules/router/router.module';
 
 import { LoggerModule } from 'nestjs-pino';
-import { DBConfig, RedisConfig } from '~/config';
+import { DBConfig, QueueConfig, RedisConfig } from '~/config';
 import { AuthModule } from '~/modules/auth/auth.module';
 import { JwtGuard } from '~/modules/auth/jwt.guard';
 import { JwtStrategy } from '~/modules/auth/jwt.strategy';
@@ -22,18 +22,20 @@ import { UserModule } from '~/modules/user/user.module';
 import { AppController } from './app.controller';
 import { DatabaseModule } from '~/modules/database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { QueueModule } from '~/modules/queue/queue.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: [DBConfig, RedisConfig],
+      load: [DBConfig, RedisConfig, QueueConfig],
     }),
     DatabaseModule,
     CacheModule.registerAsync({
       isGlobal: true,
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const redis = configService.get('redis');
 
@@ -44,8 +46,8 @@ import { ScheduleModule } from '@nestjs/schedule';
           password: redis.password,
         };
       },
-      inject: [ConfigService],
     }),
+    QueueModule,
     LoggerModule.forRoot({
       pinoHttp: {
         redact: {

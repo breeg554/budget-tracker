@@ -27,8 +27,12 @@
     "migration:show": "npm run typeorm -- migration:show -d ./typeorm.config.ts"
   },
   "dependencies": {
+    "@bull-board/api": "^6.0.0",
+    "@bull-board/express": "^6.0.0",
+    "@bull-board/nestjs": "^6.0.0",
     "@langchain/core": "^0.2.32",
     "@langchain/openai": "^0.2.11",
+    "@nestjs/bullmq": "^10.2.1",
     "@nestjs/cache-manager": "^2.2.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
@@ -41,6 +45,7 @@
     "@nestjs/typeorm": "^10.0.2",
     "@types/passport-jwt": "^4.0.1",
     "bcrypt": "^5.1.1",
+    "bullmq": "^5.18.0",
     "cache-manager": "^5.7.6",
     "cache-manager-redis-yet": "^5.1.4",
     "class-transformer": "^0.5.1",
