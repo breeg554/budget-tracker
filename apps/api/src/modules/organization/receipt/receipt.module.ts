@@ -7,6 +7,7 @@ import { OrganizationModule } from '~/modules/organization/organization.module';
 import { ChatClient } from '~/modules/clients/chat';
 import { TransactionItemCategoryModule } from '~/transaction/transaction-item/transaction-item-category/transaction-item-category.module';
 import { FileService } from '~/modules/file/file.service';
+import { ReceiptScheduledCleanupService } from './receipt-scheduled-cleanup.service';
 
 @Module({
   imports: [
@@ -15,7 +16,12 @@ import { FileService } from '~/modules/file/file.service';
     TransactionItemCategoryModule,
   ],
   controllers: [ReceiptController],
-  providers: [ReceiptService, ChatClient, FileService],
+  providers: [
+    ReceiptService,
+    ChatClient,
+    FileService,
+    ReceiptScheduledCleanupService,
+  ],
   exports: [ReceiptService],
 })
 export class ReceiptModule {}

@@ -70,7 +70,6 @@ export class ReceiptService {
     file: Express.Multer.File,
     apiKey: string,
   ) {
-    console.log(this.fileService.getFileUrl(file.filename));
     const result = await this.chatClient.invoke(
       [
         this.createSystemMessage(this.buildContentExtractionPrompt()),

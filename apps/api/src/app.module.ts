@@ -21,6 +21,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { UserModule } from '~/modules/user/user.module';
 import { AppController } from './app.controller';
 import { DatabaseModule } from '~/modules/database/database.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { DatabaseModule } from '~/modules/database/database.module';
       },
     }),
     RouterModule,
+    ScheduleModule.forRoot(),
     AuthModule,
     UserModule,
     OrganizationModule,
@@ -91,7 +93,6 @@ import { DatabaseModule } from '~/modules/database/database.module';
       provide: APP_GUARD,
       useClass: JwtGuard,
     },
-
     JwtStrategy,
   ],
 })
