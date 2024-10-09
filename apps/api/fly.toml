@@ -24,3 +24,4 @@ swap_size_mb = 256
 [env]
   REDIS_URL = 'redis://fly-redis-purple-darkness-8493.internal:6379'
   REDIS_TTL = '60000'
+  API_URL = 'https://api-blue-dream-2825.fly.dev'

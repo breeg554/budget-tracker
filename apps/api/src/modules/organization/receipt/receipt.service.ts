@@ -16,6 +16,7 @@ import {
   ReceiptSchemaError,
 } from '~/modules/organization/receipt/errors/receipt.error';
 import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
+import { FileService } from '~/modules/file/file.service';
 
 @Injectable()
 export class ReceiptService {
@@ -25,6 +26,7 @@ export class ReceiptService {
     private readonly organizationService: OrganizationService,
     private readonly transactionItemCategoryService: TransactionItemCategoryService,
     private readonly chatClient: ChatClient,
+    private readonly fileService: FileService,
   ) {}
 
   async process(
@@ -56,6 +58,7 @@ export class ReceiptService {
         date: receiptProducts.date,
       };
     } catch (err) {
+      console.log(err);
       if (err instanceof SyntaxError) throw new ReceiptParseError();
       if (err instanceof ZodError) throw new ReceiptSchemaError();
 
@@ -67,10 +70,11 @@ export class ReceiptService {
     file: Express.Multer.File,
     apiKey: string,
   ) {
+    console.log(this.fileService.getFileUrl(file.filename));
     const result = await this.chatClient.invoke(
       [
         this.createSystemMessage(this.buildContentExtractionPrompt()),
-        this.createUserImageMessage(this.base64(file)),
+        this.createUserImageMessage(this.fileService.getFileUrl(file.filename)),
       ],
       {
         apiKey: apiKey,
@@ -118,14 +122,14 @@ export class ReceiptService {
     };
   }
 
-  private createUserImageMessage(imageBase64: string) {
+  private createUserImageMessage(imageUrl: string) {
     return {
       role: 'user' as const,
       content: [
         {
           type: 'image_url',
           image_url: {
-            url: imageBase64,
+            url: imageUrl,
           },
         },
       ],

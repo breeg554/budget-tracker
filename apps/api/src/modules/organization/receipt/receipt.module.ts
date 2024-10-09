@@ -5,7 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Receipt } from '~/entities/receipt/receipt.entity';
 import { OrganizationModule } from '~/modules/organization/organization.module';
 import { ChatClient } from '~/modules/clients/chat';
-import { TransactionItemCategoryModule } from '../transaction/transaction-item/transaction-item-category/transaction-item-category.module';
+import { TransactionItemCategoryModule } from '~/transaction/transaction-item/transaction-item-category/transaction-item-category.module';
+import { FileService } from '~/modules/file/file.service';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { TransactionItemCategoryModule } from '../transaction/transaction-item/t
     TransactionItemCategoryModule,
   ],
   controllers: [ReceiptController],
-  providers: [ReceiptService, ChatClient],
+  providers: [ReceiptService, ChatClient, FileService],
   exports: [ReceiptService],
 })
 export class ReceiptModule {}
