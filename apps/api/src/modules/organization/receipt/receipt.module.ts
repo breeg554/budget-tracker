@@ -8,12 +8,14 @@ import { ChatClient } from '~/modules/clients/chat';
 import { TransactionItemCategoryModule } from '~/transaction/transaction-item/transaction-item-category/transaction-item-category.module';
 import { FileService } from '~/modules/file/file.service';
 import { ReceiptScheduledCleanupService } from './receipt-scheduled-cleanup.service';
+import { QueueModule } from '~/modules/queue/queue.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Receipt]),
     OrganizationModule,
     TransactionItemCategoryModule,
+    QueueModule,
   ],
   controllers: [ReceiptController],
   providers: [
