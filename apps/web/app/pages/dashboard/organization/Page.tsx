@@ -28,7 +28,7 @@ export const DashboardPage = () => {
     organizationName,
     startDate,
     endDate,
-    apiUrl,
+    pageUrl,
   } = useLoaderData<typeof loader>();
 
   const onTabChange = ({ startDate, endDate }: DateRange) => {
@@ -38,7 +38,7 @@ export const DashboardPage = () => {
   };
 
   useEffect(() => {
-    const socketInstance = socket(apiUrl as string)
+    const socketInstance = socket(pageUrl)
       .onConnect((socket) => {
         console.log('Connected to the server');
         socket.hello('user');

@@ -47,7 +47,7 @@ export const loader = loaderHandler(async ({ request, params }, { fetch }) => {
   ]);
 
   return json({
-    apiUrl: process.env.API_URL,
+    pageUrl: process.env.PAGE_URL as string,
     transactions: transactions.data.data,
     latestTransactions: latestTransactions.data.data,
     statsByCategories: byCategories.data

@@ -48,6 +48,19 @@ if (viteDevServer) {
 // more aggressive with this caching.
 app.use(express.static("build/client", { maxAge: "1h" }));
 
+
+app.use(
+  "/api/socket",
+  createProxyMiddleware({
+    target: process.env.API_URL,
+    changeOrigin: true,
+    ws: true,
+    pathRewrite: {
+      "^/api/socket": "/socket.io/",
+    },
+  })
+);
+
 app.use(
   "/api",
   createProxyMiddleware({
@@ -55,6 +68,8 @@ app.use(
     changeOrigin: true,
   })
 );
+
+
 
 app.use(morgan(isProd ? "tiny" : "combined"));
 

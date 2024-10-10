@@ -11,8 +11,11 @@ interface ClientToServerEvents {
 export class Socket {
   private socket: IOSocket<ServerToClientEvents, ClientToServerEvents>;
 
-  constructor(private readonly url: string) {
-    this.socket = io(url, { transports: ['websocket'] });
+  constructor(url: string) {
+    this.socket = io(url, {
+      transports: ['websocket'],
+      path: '/api/socket',
+    });
   }
 
   disconnect() {
