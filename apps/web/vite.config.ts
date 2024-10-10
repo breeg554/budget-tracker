@@ -8,5 +8,13 @@ export default defineConfig({
       ignored: ['**/__tests__', '**/*.(test|spec).(ts|tsx|js|jsx)'],
     },
   },
-  plugins: [remix(), tsconfigPaths()],
+
+  plugins: [
+    remix({
+      future: {
+        unstable_optimizeDeps: true,
+      },
+    }),
+    tsconfigPaths(),
+  ],
 });
