@@ -1,4 +1,9 @@
-import { io, Socket as IOSocket } from 'socket.io-client';
+import {
+  io,
+  Socket as IOSocket,
+  ManagerOptions,
+  SocketOptions,
+} from 'socket.io-client';
 
 interface ServerToClientEvents {
   hello: (data: string) => void;
@@ -8,14 +13,24 @@ interface ClientToServerEvents {
   hello: (data: string) => void;
 }
 
+export type SocketArgs = Partial<ManagerOptions & SocketOptions>;
+
 export class Socket {
   private socket: IOSocket<ServerToClientEvents, ClientToServerEvents>;
 
-  constructor(url: string) {
+  constructor(url: string, args?: SocketArgs) {
     this.socket = io(url, {
       transports: ['websocket'],
       path: '/api/socket',
+      autoConnect: false,
+      ...args,
     });
+  }
+
+  connect() {
+    this.socket.connect();
+
+    return this;
   }
 
   disconnect() {
@@ -49,4 +64,4 @@ export class Socket {
   }
 }
 
-export const socket = (url: string) => new Socket(url);
+export const socket = (url: string, args?: SocketArgs) => new Socket(url, args);

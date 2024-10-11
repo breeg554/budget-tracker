@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -14,6 +15,7 @@ import { SignInDto } from '~/dtos/auth/sign-in.dto';
 import { CreateUserDto } from '~/dtos/users/create-user.dto';
 import { AuthService } from '~/modules/auth/auth.service';
 import { Public } from '~/modules/decorators/public.decorator';
+import { AuthUser, User } from '~/modules/decorators/user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -45,24 +47,28 @@ export class AuthController {
     this.returnCookie(res, accessToken, refreshToken);
   }
 
+  @Get('socket-token')
+  async socketAuth(@User() user: AuthUser) {
+    return this.authService.socketToken(user);
+  }
+
   private returnCookie(
     res: Response,
     accessToken: string,
     refreshToken: string,
   ) {
-    res
-      .cookie('access_token', accessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-        expires: new Date(Date.now() + 1 * 60 * 1000),
-      })
-      .cookie('refresh_token', refreshToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: 'lax',
-        expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-      });
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 1 * 60 * 1000),
+    });
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      expires: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+    });
     res.send({ status: 'ok' });
   }
 }

@@ -4,6 +4,7 @@ import { Logger } from 'nestjs-pino';
 
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { AuthenticatedSocketIoAdapter } from '~/modules/gateways/auth-socket-io.adapter';
 import * as process from 'process';
 import * as path from 'path';
 
@@ -15,6 +16,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('/api');
   app.use(cookieParser());
+  app.useWebSocketAdapter(new AuthenticatedSocketIoAdapter(app));
 
   app.useStaticAssets(path.join(process.cwd(), '/tmp/receipts'), {
     prefix: '/tmp',

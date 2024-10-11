@@ -16,6 +16,7 @@ import { Repository } from 'typeorm';
 import { Session } from '~/entities/session/session.entity';
 import { EncryptionService } from '~/modules/encryption.service';
 import { InvalidCredentialsError } from '~/modules/auth/errors/auth.error';
+import { AuthUser } from '~/modules/decorators/user.decorator';
 
 @Injectable()
 export class AuthService {
@@ -86,6 +87,12 @@ export class AuthService {
     });
 
     return this.signIn(newUser);
+  }
+
+  async socketToken(user: AuthUser) {
+    return {
+      token: this.jwtService.sign({ userId: user.id }, { expiresIn: '1d' }),
+    };
   }
 
   private async saveSession(user: User, refreshToken: string) {

@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import type { MetaFunction } from '@remix-run/node';
 import { useLoaderData, useNavigate } from '@remix-run/react';
 
-import { socket } from '~/clients/Socket';
 import { DateRangeUpdater } from '~/dashboard/organization/components/DateRangeUpdater';
 import { TransactionChart } from '~/dashboard/organization/components/TransactionChart';
 import { ReceiptsList } from '~/dashboard/organization/receipts/components/ReceiptsList';
+import { useSocketConnection } from '~/hooks/useSocketConnection';
 import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { Link } from '~/link/Link';
@@ -20,7 +20,8 @@ import { loader } from './loader.server';
 
 export const DashboardPage = () => {
   const navigate = useNavigate();
-
+  const { state, socket } = useSocketConnection();
+  console.log(state);
   const {
     transactions,
     latestTransactions,
@@ -28,7 +29,6 @@ export const DashboardPage = () => {
     organizationName,
     startDate,
     endDate,
-    pageUrl,
   } = useLoaderData<typeof loader>();
 
   const onTabChange = ({ startDate, endDate }: DateRange) => {
@@ -36,24 +36,6 @@ export const DashboardPage = () => {
       routes.organization.getPath(organizationName, { startDate, endDate }),
     );
   };
-
-  useEffect(() => {
-    const socketInstance = socket(pageUrl)
-      .onConnect((socket) => {
-        console.log('Connected to the server');
-        socket.hello('user');
-      })
-      .onDisconnect((reason, description) => {
-        console.log('Disconnected', reason, description);
-      })
-      .onHello((data, socket) => {
-        console.log(data, socket);
-      });
-
-    return () => {
-      socketInstance.disconnect();
-    };
-  }, []);
 
   return (
     <>
