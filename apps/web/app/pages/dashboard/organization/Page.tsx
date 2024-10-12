@@ -20,8 +20,6 @@ import { loader } from './loader.server';
 
 export const DashboardPage = () => {
   const navigate = useNavigate();
-  const { state, socket } = useSocketConnection();
-  console.log(state);
   const {
     transactions,
     latestTransactions,
@@ -29,8 +27,10 @@ export const DashboardPage = () => {
     organizationName,
     startDate,
     endDate,
+    pageUrl,
   } = useLoaderData<typeof loader>();
-
+  const { state } = useSocketConnection(pageUrl);
+  console.log(state);
   const onTabChange = ({ startDate, endDate }: DateRange) => {
     navigate(
       routes.organization.getPath(organizationName, { startDate, endDate }),
