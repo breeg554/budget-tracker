@@ -7,6 +7,7 @@ import { ReceiptProduct } from '~/api/Receipt/receiptApi.types';
 import { TransactionItemType } from '~/api/Transaction/transactionApi.contracts';
 import { CreateTransactionDto } from '~/api/Transaction/transactionApi.types';
 import { ReceiptScanner } from '~/dashboard/organization/receipts/new/scan/components/ReceiptScanner';
+import { useSocketConnection } from '~/hooks/useSocketConnection';
 import { ItemList } from '~/list/ItemList';
 
 import { action } from '../action.server';
@@ -55,14 +56,18 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
 
     closeScanner();
   };
+  const { state, push, run, room } = useSocketConnection(
+    'http://localhost:3000',
+  );
 
   const onUpload = (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    fetcher.submit(formData, {
-      method: 'post',
-      encType: 'multipart/form-data',
-    });
+    push(file.name);
+    // const formData = new FormData();
+    // formData.append('file', file);
+    // fetcher.submit(formData, {
+    //   method: 'post',
+    //   encType: 'multipart/form-data',
+    // });
   };
 
   const isLoading = fetcher.state !== 'idle';
@@ -77,6 +82,11 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
       onStateChange?.('processing');
     }
   }, [fetcher.state]);
+
+  console.log(state);
+  useEffect(() => {
+    run('http://localhost:3000');
+  }, []);
 
   const renderStep = () => {
     if (isLoading) {

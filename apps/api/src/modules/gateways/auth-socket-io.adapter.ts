@@ -16,6 +16,7 @@ export class AuthenticatedSocketIoAdapter extends IoAdapter {
           request.url,
           process.env.API_URL,
         ).searchParams.get('token');
+
         const verified = token && (await this.jwtService.verify(token));
 
         if (verified) {

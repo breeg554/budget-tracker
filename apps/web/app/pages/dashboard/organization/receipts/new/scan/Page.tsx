@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { MetaFunction } from '@remix-run/node';
-import { useNavigate, useOutletContext } from '@remix-run/react';
+import { useLoaderData, useNavigate, useOutletContext } from '@remix-run/react';
 
 import { CreateTransactionDto } from '~/api/Transaction/transactionApi.types';
 import { Button } from '~/buttons/Button';
+import { useSocketConnection } from '~/hooks/useSocketConnection';
 import { confirm } from '~/modals/confirm';
 import { routes } from '~/routes';
 import {
@@ -17,10 +18,12 @@ import {
 import { useOrganizationName } from '~/utils/useOrganizationName';
 
 import { ReceiptRetriever, RetrieveState } from './components/ReceiptRetriever';
+import { loader } from './loader.server';
 
 export const ScanPage = () => {
   const organizationName = useOrganizationName();
   const navigate = useNavigate();
+  const { pageUrl } = useLoaderData<typeof loader>();
   const { onRetrieve } = useOutletContext<{
     onRetrieve: (retrieved: Partial<CreateTransactionDto>) => void;
   }>();

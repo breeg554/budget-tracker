@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 
+import {
+  receiptAnalysisSocket,
+  ReceiptAnalysisSocket,
+} from '~/clients/ReceiptAnalysisSocket';
 import { SocketArgs } from '~/clients/Socket';
-import { testSocket, TestSocket } from '~/clients/TestSocket';
+import { assert } from '~/utils/assert';
 
 export type SocketConnectionState =
   | 'idle'
@@ -12,27 +16,36 @@ export type SocketConnectionState =
 
 export const useSocketConnection = (url: string, args?: SocketArgs) => {
   const [state, setState] = useState<SocketConnectionState>('idle');
-  const socketRef = useRef<TestSocket | null>(null);
+  const socketRef = useRef<ReceiptAnalysisSocket | null>(null);
+
+  const run = (id: string) => {
+    assert(socketRef.current, 'Socket is not connected');
+
+    socketRef.current.run(id);
+  };
+
+  const push = (data: string) => {
+    assert(socketRef.current, 'Socket is not connected');
+
+    socketRef.current.push(data);
+  };
 
   useEffect(() => {
     if (socketRef.current) return;
 
-    socketRef.current = testSocket(url, args);
+    socketRef.current = new ReceiptAnalysisSocket(url, args);
 
     socketRef.current.connect().then((socket) => {
       socket
         .onConnect(() => {
           setState('connected');
-          socket.hello('world');
         })
         .onDisconnect(() => {
           setState('disconnected');
         })
         .onConnectError((error) => {
           setState('errored');
-        })
-        .onHello((data) => {
-          console.log(data);
+          console.error('Socket connection error:', error);
         });
     });
 
@@ -43,6 +56,8 @@ export const useSocketConnection = (url: string, args?: SocketArgs) => {
 
   return {
     state,
-    socket: socketRef.current,
+    run,
+    push,
+    room: socketRef.current?.roomId,
   };
 };

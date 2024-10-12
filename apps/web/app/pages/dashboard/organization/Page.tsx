@@ -5,7 +5,6 @@ import { useLoaderData, useNavigate } from '@remix-run/react';
 import { DateRangeUpdater } from '~/dashboard/organization/components/DateRangeUpdater';
 import { TransactionChart } from '~/dashboard/organization/components/TransactionChart';
 import { ReceiptsList } from '~/dashboard/organization/receipts/components/ReceiptsList';
-import { useSocketConnection } from '~/hooks/useSocketConnection';
 import { PageBackground } from '~/layout/PageBackground';
 import { SectionWrapper } from '~/layout/SectionWrapper';
 import { Link } from '~/link/Link';
@@ -27,10 +26,8 @@ export const DashboardPage = () => {
     organizationName,
     startDate,
     endDate,
-    pageUrl,
   } = useLoaderData<typeof loader>();
-  const { state } = useSocketConnection(pageUrl);
-  console.log(state);
+
   const onTabChange = ({ startDate, endDate }: DateRange) => {
     navigate(
       routes.organization.getPath(organizationName, { startDate, endDate }),

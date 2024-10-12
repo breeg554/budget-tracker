@@ -10,6 +10,7 @@ import { FileService } from '~/modules/file/file.service';
 import { ReceiptScheduledCleanupService } from './receipt-scheduled-cleanup.service';
 import { QueueModule } from '~/modules/queue/queue.module';
 import { ReceiptGateway } from '~/modules/organization/receipt/receipt.gateway';
+import { GatewayModule } from '~/modules/gateways/gateway.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { ReceiptGateway } from '~/modules/organization/receipt/receipt.gateway';
     OrganizationModule,
     TransactionItemCategoryModule,
     QueueModule,
+    GatewayModule,
   ],
   controllers: [ReceiptController],
   providers: [

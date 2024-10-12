@@ -19,7 +19,6 @@ export class Socket<
       transports: ['websocket'],
       path: '/api/socket',
       autoConnect: false,
-      retries: 3,
       ...args,
     });
 

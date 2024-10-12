@@ -7,7 +7,6 @@ export const loader = loaderHandler(async ({ request }) => {
   await requireSignedIn(request);
 
   return json({
-    organizationId: process.env.BUILDEL_ORGANIZATION_ID as unknown as number,
-    pipelineId: process.env.BUILDEL_PIPELINE_ID as unknown as number,
+    pageUrl: process.env.PAGE_URL ?? '',
   });
 });
