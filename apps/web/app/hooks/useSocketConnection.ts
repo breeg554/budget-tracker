@@ -1,48 +1,40 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { Socket, SocketArgs } from '~/clients/Socket';
+import { SocketArgs } from '~/clients/Socket';
+import { testSocket, TestSocket } from '~/clients/TestSocket';
 
 export type SocketConnectionState =
   | 'idle'
   | 'connecting'
   | 'connected'
-  | 'disconnected';
+  | 'disconnected'
+  | 'errored';
 
-export const useSocketConnection = (url?: string, args?: SocketArgs) => {
+export const useSocketConnection = (url: string, args?: SocketArgs) => {
   const [state, setState] = useState<SocketConnectionState>('idle');
-  const socketRef = useRef<Socket | null>(null);
+  const socketRef = useRef<TestSocket | null>(null);
 
-  const connect = async () => {
-    try {
-      const res = await fetch('/auth-token');
-      const { token, pageUrl } = await res.json();
+  useEffect(() => {
+    if (socketRef.current) return;
 
-      socketRef.current = new Socket(url ?? pageUrl, {
-        ...args,
-        query: {
-          ...args?.query,
-          token,
-        },
-      })
-        .onConnect((socket) => {
+    socketRef.current = testSocket(url, args);
+
+    socketRef.current.connect().then((socket) => {
+      socket
+        .onConnect(() => {
           setState('connected');
           socket.hello('world');
         })
         .onDisconnect(() => {
           setState('disconnected');
         })
+        .onConnectError((error) => {
+          setState('errored');
+        })
         .onHello((data) => {
           console.log(data);
         });
-
-      socketRef.current?.connect();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    connect();
+    });
 
     return () => {
       socketRef.current?.disconnect();

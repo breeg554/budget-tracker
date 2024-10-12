@@ -5,36 +5,58 @@ import {
   SocketOptions,
 } from 'socket.io-client';
 
-interface ServerToClientEvents {
-  hello: (data: string) => void;
-}
-
-interface ClientToServerEvents {
-  hello: (data: string) => void;
-}
-
 export type SocketArgs = Partial<ManagerOptions & SocketOptions>;
 
-export class Socket {
-  private socket: IOSocket<ServerToClientEvents, ClientToServerEvents>;
+export class Socket<
+  S extends Record<string, any> = {},
+  C extends Record<string, any> = {},
+> {
+  private readonly id: string;
+  protected socket: IOSocket<S, C>;
 
   constructor(url: string, args?: SocketArgs) {
     this.socket = io(url, {
       transports: ['websocket'],
       path: '/api/socket',
       autoConnect: false,
+      retries: 3,
       ...args,
+    });
+
+    this.id = crypto.randomUUID();
+  }
+
+  async connect(): Promise<this> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { token } = await this.authSocket();
+
+        this.socket.io.opts.query = {
+          token,
+        };
+
+        this.socket.connect();
+
+        resolve(this);
+      } catch (err) {
+        reject(err);
+      }
     });
   }
 
-  connect() {
-    this.socket.connect();
-
-    return this;
+  disconnect(): Promise<this> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.socket.disconnect();
+        resolve(this);
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 
-  disconnect() {
-    this.socket.disconnect();
+  public onConnectError(cb: (error: Error) => void) {
+    this.socket.on('connect_error', cb);
 
     return this;
   }
@@ -51,16 +73,15 @@ export class Socket {
     return this;
   }
 
-  public onHello(cb: (data: string, socket: this) => void) {
-    this.socket.on('hello', (data) => cb(data, this));
+  private async authSocket() {
+    const res = await fetch('/auth-token', {
+      method: 'post',
+      body: JSON.stringify({ socketId: this.id }),
+    });
 
-    return this;
-  }
+    if (!res.ok) throw new Error('Failed to authenticate socket');
 
-  public hello(data: string) {
-    this.socket.emit('hello', data);
-
-    return this;
+    return res.json();
   }
 }
 

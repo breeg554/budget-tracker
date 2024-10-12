@@ -2,15 +2,21 @@ import { json } from '@remix-run/node';
 import { z } from 'zod';
 
 import { requireSignedIn } from '~/session.server';
-import { loaderHandler } from '~/utils/loader.server';
+import { actionHandler } from '~/utils/action.server';
 
-export const loader = loaderHandler(async ({ request }, { fetch }) => {
-  await requireSignedIn(request);
+export const action = actionHandler({
+  post: async ({ request }, { fetch }) => {
+    await requireSignedIn(request);
 
-  const socketAuth = await fetch(z.any(), '/auth/socket-token');
+    const body = await request.json();
 
-  return json({
-    token: socketAuth?.data?.token,
-    pageUrl: process.env.PAGE_URL as string,
-  });
+    const socketAuth = await fetch(z.any(), '/auth/socket', {
+      method: 'post',
+      body: JSON.stringify(body),
+    });
+
+    return json({
+      token: socketAuth?.data?.token,
+    });
+  },
 });

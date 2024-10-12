@@ -11,6 +11,7 @@ import { AuthService } from './auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Session } from '~/entities/session/session.entity';
 import { EncryptionService } from '~/modules/encryption.service';
+import { AuthWsService } from '~/modules/auth/auth-ws.service';
 
 @Module({
   imports: [
@@ -29,7 +30,13 @@ import { EncryptionService } from '~/modules/encryption.service';
     TypeOrmModule.forFeature([Session]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, EncryptionService],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    EncryptionService,
+    AuthWsService,
+  ],
   exports: [AuthService, JwtModule, EncryptionService],
 })
 export class AuthModule {}

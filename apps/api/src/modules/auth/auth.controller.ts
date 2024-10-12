@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
   Post,
@@ -16,10 +15,14 @@ import { CreateUserDto } from '~/dtos/users/create-user.dto';
 import { AuthService } from '~/modules/auth/auth.service';
 import { Public } from '~/modules/decorators/public.decorator';
 import { AuthUser, User } from '~/modules/decorators/user.decorator';
+import { AuthWsService } from '~/modules/auth/auth-ws.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private authWsService: AuthWsService,
+  ) {}
   @Public()
   @UseGuards(AuthGuard('local'))
   @HttpCode(HttpStatus.OK)
@@ -47,9 +50,9 @@ export class AuthController {
     this.returnCookie(res, accessToken, refreshToken);
   }
 
-  @Get('socket-token')
-  async socketAuth(@User() user: AuthUser) {
-    return this.authService.socketToken(user);
+  @Post('socket')
+  async authSocket(@Body() body: { socketId: string }, @User() user: AuthUser) {
+    return this.authWsService.createAuthToken(body.socketId, user);
   }
 
   private returnCookie(
