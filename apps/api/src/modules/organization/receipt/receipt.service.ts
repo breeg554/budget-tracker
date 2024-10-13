@@ -8,11 +8,13 @@ import {
 } from '~/dtos/receipt/get-processed-receipt.dto';
 import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 import { AiModel } from '~/modules/ai/ai-model.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ReceiptService {
   constructor(
     private readonly transactionItemCategoryService: TransactionItemCategoryService,
+    private configService: ConfigService,
   ) {}
 
   public async processReceiptImage(
@@ -67,6 +69,12 @@ export class ReceiptService {
         },
       ],
     };
+  }
+
+  public getTemporaryReceiptUrl(organizationName: string, fileName: string) {
+    const appConfig = this.configService.get('app');
+
+    return `${appConfig.apiUrl}/api/organizations/${organizationName}/receipts/temporary/${fileName}`;
   }
 
   private buildContentExtractionPrompt() {

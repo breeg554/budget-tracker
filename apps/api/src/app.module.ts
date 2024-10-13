@@ -4,7 +4,7 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { RouterModule } from '~/modules/router/router.module';
 
 import { LoggerModule } from 'nestjs-pino';
-import { DBConfig, QueueConfig, RedisConfig } from '~/config';
+import { AppConfig, DBConfig, QueueConfig, RedisConfig } from '~/config';
 import { AuthModule } from '~/modules/auth/auth.module';
 import { JwtGuard } from '~/modules/auth/jwt.guard';
 import { JwtStrategy } from '~/modules/auth/jwt.strategy';
@@ -29,7 +29,7 @@ import { QueueModule } from '~/modules/queue/queue.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: [DBConfig, RedisConfig, QueueConfig],
+      load: [DBConfig, RedisConfig, QueueConfig, AppConfig],
     }),
     DatabaseModule,
     CacheModule.registerAsync({

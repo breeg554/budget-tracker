@@ -17,21 +17,16 @@ export class FileService {
         cb(null, dest);
       },
       filename: function (_req, file, cb) {
-        cb(null, `${Date.now()}-${crypto.randomUUID()}-${file.originalname}`);
+        cb(
+          null,
+          `${Date.now()}-${crypto.randomUUID()}${path.extname(file.originalname)}`,
+        );
       },
     });
   }
 
-  public removeFile(fileName: string) {
-    fs.unlinkSync(this.getFilePath(fileName));
-  }
-
   public getFilePath(fileName: string) {
     return path.join(process.cwd(), '/tmp/receipts', fileName);
-  }
-
-  public getFileUrl(fileName: string) {
-    return `${process.env.API_URL}/tmp/${fileName}`;
   }
 }
 
