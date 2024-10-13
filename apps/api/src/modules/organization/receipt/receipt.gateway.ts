@@ -33,10 +33,11 @@ export class ReceiptGateway {
     @MessageBody('organizationName') organizationName: string,
     @MessageBody('secretName') secretName: string,
   ): Promise<string> {
+    console.log('PREEEE_ROOOM_ID', fileUrl, organizationName, secretName);
     const roomId = this.gatewayEncryptionService.encrypt(
       `${organizationName}:${secretName}:${fileUrl}`,
     );
-
+    console.log('ROOOOOOOM_ID_CREATED', roomId);
     client.join(roomId);
 
     await this.receiptProducer.addReceiptProcessJob(
