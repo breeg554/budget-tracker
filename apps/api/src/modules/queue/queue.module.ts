@@ -8,6 +8,7 @@ import { BullBoardModule } from '@bull-board/nestjs';
 import { QueueAuthMiddleware } from '~/modules/queue/queue.auth-middleware';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { QueueNames } from '~/modules/queue/enums/queue-names.enum';
+import { ReceiptProducer } from '~/modules/queue/producers/receipt.producer';
 
 @Module({
   imports: [
@@ -27,19 +28,19 @@ import { QueueNames } from '~/modules/queue/enums/queue-names.enum';
       inject: [ConfigService],
     }),
     BullModule.registerQueue({
-      name: QueueNames.test,
+      name: QueueNames.RECEIPT,
     }),
-
     BullBoardModule.forRoot({
       route: '/bull-board',
       adapter: ExpressAdapter,
       middleware: QueueAuthMiddleware,
     }),
     BullBoardModule.forFeature({
-      name: QueueNames.test,
+      name: QueueNames.RECEIPT,
       adapter: BullMQAdapter,
     }),
   ],
-  exports: [BullModule],
+  providers: [ReceiptProducer],
+  exports: [BullModule, ReceiptProducer],
 })
 export class QueueModule {}

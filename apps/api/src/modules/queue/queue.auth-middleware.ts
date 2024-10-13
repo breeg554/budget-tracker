@@ -31,10 +31,7 @@ export class QueueAuthMiddleware implements NestMiddleware {
       this.sendUnauthorizedResponse(res);
       return;
     }
-    const isPasswordValid = await await bcrypt.compare(
-      password,
-      this.passwordHash,
-    );
+    const isPasswordValid = await bcrypt.compare(password, this.passwordHash);
 
     if (!isPasswordValid) {
       this.sendUnauthorizedResponse(res);

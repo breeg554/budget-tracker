@@ -25,11 +25,8 @@ export const action = actionHandler({
     if (submission.status !== 'success') {
       return json(submission.reply());
     }
-    const processReceipt = await receiptApi.processReceipt(
-      params.organizationName,
-      formData,
-    );
+    const uploaded = await receiptApi.upload(params.organizationName, formData);
 
-    return json(processReceipt.data);
+    return json(uploaded.data);
   },
 });

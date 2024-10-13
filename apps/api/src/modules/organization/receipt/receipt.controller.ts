@@ -1,6 +1,5 @@
 import {
   Controller,
-  Param,
   Post,
   UploadedFile,
   UseFilters,
@@ -8,18 +7,19 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 
-import { ReceiptService } from '~/modules/organization/receipt/receipt.service';
-import { AuthUser, User } from '~/modules/decorators/user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ReceiptExceptionFilter } from '~/modules/organization/receipt/errors/receipt-exception.filter';
 import { OrganizationGuard } from '~/modules/guards/organization-guard';
-import { createDiscFileStorage } from '~/modules/file/file.service';
+import {
+  createDiscFileStorage,
+  FileService,
+} from '~/modules/file/file.service';
 
 @Controller()
 export class ReceiptController {
-  constructor(private readonly receiptService: ReceiptService) {}
+  constructor(private fileService: FileService) {}
 
-  @Post()
+  @Post('upload')
   @UseGuards(OrganizationGuard)
   @UseFilters(ReceiptExceptionFilter)
   @UseInterceptors(
@@ -27,15 +27,11 @@ export class ReceiptController {
       storage: createDiscFileStorage().getDiskStorage(),
     }),
   )
-  process(
-    @Param('name') organizationName: string,
-    @User() user: AuthUser,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return this.receiptService.process(file, {
-      organizationName,
-      userId: user.id,
-      secretName: 'openai',
-    });
+  async upload(@UploadedFile() file: Express.Multer.File) {
+    return {
+      fileUrl: this.fileService.getFileUrl(file.filename),
+      fileName: file.filename,
+      originalName: file.originalname,
+    };
   }
 }

@@ -12,7 +12,13 @@ export const fromReceiptProcessResponse = z.object({
   products: z.array(receiptProduct),
   place: z.union([z.string(), z.null()]),
   date: z.union([z.string(), z.null()]),
-  content: z.string(),
+  content: z.string().nullish(),
+});
+
+export const fromUploadReceiptSchema = z.object({
+  fileUrl: z.string(),
+  fileName: z.string(),
+  originalName: z.string(),
 });
 
 export const processReceiptSchema = z.object({

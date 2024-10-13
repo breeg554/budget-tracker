@@ -1,3 +1,3 @@
 export enum QueueNames {
-  test = 'test',
+  RECEIPT = 'RECEIPT_QUEUE',
 }

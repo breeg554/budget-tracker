@@ -23,3 +23,7 @@ export const getProcessedReceiptProducts = z.object({
 });
 
 export class GetProcessedReceiptDto extends createZodDto(getProcessedReceipt) {}
+
+export class GetProcessedReceiptProductsDto extends createZodDto(
+  getProcessedReceiptProducts,
+) {}

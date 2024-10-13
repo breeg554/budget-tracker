@@ -3,9 +3,14 @@ import {
   MessageBody,
   SubscribeMessage,
   WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { GatewayEncryptionService } from '~/modules/gateways/gateway-encryption.service';
+import { ReceiptProducer } from '~/modules/queue/producers/receipt.producer';
+import { ReceiptProcessEvent } from '~/modules/organization/receipt/events/receipt-process.event';
+import { GetProcessedReceiptProductsDto } from '~/dtos/receipt/get-processed-receipt.dto';
+import { ReceiptProcessStatus } from '~/modules/organization/receipt/enums/receipt-process.enum';
 
 @WebSocketGateway({
   transports: ['websocket'],
@@ -14,28 +19,65 @@ import { GatewayEncryptionService } from '~/modules/gateways/gateway-encryption.
   },
 })
 export class ReceiptGateway {
-  constructor(private gatewayEncryptionService: GatewayEncryptionService) {}
+  @WebSocketServer() server: Server;
+
+  constructor(
+    private gatewayEncryptionService: GatewayEncryptionService,
+    private receiptProducer: ReceiptProducer,
+  ) {}
 
   @SubscribeMessage('run')
-  handleEvent(
+  async handleEvent(
     @ConnectedSocket() client: Socket,
-    @MessageBody() id: string,
-  ): string {
-    const roomId = this.gatewayEncryptionService.encrypt(id);
+    @MessageBody('fileUrl') fileUrl: string,
+    @MessageBody('organizationName') organizationName: string,
+    @MessageBody('secretName') secretName: string,
+  ): Promise<string> {
+    const roomId = this.gatewayEncryptionService.encrypt(
+      `${organizationName}:${secretName}:${fileUrl}`,
+    );
 
     client.join(roomId);
+
+    await this.receiptProducer.addReceiptProcessJob(
+      new ReceiptProcessEvent({
+        fileUrl,
+        organizationName,
+        secretName,
+        roomId,
+      }),
+    );
 
     return roomId;
   }
 
-  @SubscribeMessage('push')
-  handlePush(
-    @ConnectedSocket() client: Socket,
-    @MessageBody('room') room: string,
-    @MessageBody('data') data: string | Blob,
-  ): void {
-    const { roomId, userId } = this.gatewayEncryptionService.decrypt(room);
+  processImage(roomId: string) {
+    this.statusChange(roomId, ReceiptProcessStatus.IMAGE_PROCESSING);
+  }
 
-    console.log('handlePush', roomId, userId, data);
+  processContent(roomId: string) {
+    this.statusChange(roomId, ReceiptProcessStatus.CONTENT_PROCESSING);
+  }
+
+  errorProcessing(roomId: string, error: Error) {
+    this.server.to(roomId).emit('errorProcessing', { message: error.message });
+    this.processError(roomId);
+  }
+
+  private processError(roomId: string) {
+    this.statusChange(roomId, ReceiptProcessStatus.ERROR);
+  }
+
+  finishProcessing(roomId: string, data: GetProcessedReceiptProductsDto) {
+    this.server.to(roomId).emit('finishProcessing', data);
+    this.processDone(roomId);
+  }
+
+  private processDone(roomId: string) {
+    this.statusChange(roomId, ReceiptProcessStatus.DONE);
+  }
+
+  private statusChange(roomId: string, status: string) {
+    this.server.to(roomId).emit('statusChange', status);
   }
 }

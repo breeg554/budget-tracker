@@ -7,6 +7,10 @@ import {
 
 export type SocketArgs = Partial<ManagerOptions & SocketOptions>;
 
+export type OnConnectCb = (socket: Socket) => void;
+export type OnDisconnectCb = (reason: string, description: unknown) => void;
+export type OnConnectErrorCb = (error: Error) => void;
+
 export class Socket<
   S extends Record<string, any> = {},
   C extends Record<string, any> = {},
@@ -54,22 +58,26 @@ export class Socket<
     });
   }
 
-  public onConnectError(cb: (error: Error) => void) {
+  public onConnectError(cb: OnConnectErrorCb) {
     this.socket.on('connect_error', cb);
 
     return this;
   }
 
-  public onDisconnect(cb: (reason: string, description: unknown) => void) {
+  public onDisconnect(cb: OnDisconnectCb) {
     this.socket.on('disconnect', cb);
 
     return this;
   }
 
-  public onConnect(cb: (socket: this) => void) {
+  public onConnect(cb: OnConnectCb) {
     this.socket.on('connect', () => cb(this));
 
     return this;
+  }
+
+  get connected() {
+    return this.socket.connected;
   }
 
   private async authSocket() {

@@ -1,13 +1,14 @@
 import React, { ReactNode, useEffect, useRef } from 'react';
-import { useFetcher } from '@remix-run/react';
+import { useFetcher, useLoaderData } from '@remix-run/react';
 import { useBoolean } from 'usehooks-ts';
 
-import { isFromProcessReceiptSchema } from '~/api/Receipt/receiptApi.contracts';
 import { ReceiptProduct } from '~/api/Receipt/receiptApi.types';
 import { TransactionItemType } from '~/api/Transaction/transactionApi.contracts';
 import { CreateTransactionDto } from '~/api/Transaction/transactionApi.types';
+import { OnStatusChangeCb } from '~/clients/ReceiptProcessSocket';
 import { ReceiptScanner } from '~/dashboard/organization/receipts/new/scan/components/ReceiptScanner';
-import { useSocketConnection } from '~/hooks/useSocketConnection';
+import { loader } from '~/dashboard/organization/receipts/new/scan/loader.server';
+import { useProcessReceipt } from '~/dashboard/organization/receipts/new/scan/useProcessReceipt';
 import { ItemList } from '~/list/ItemList';
 
 import { action } from '../action.server';
@@ -31,6 +32,7 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
   onRetrieve,
   onStateChange,
 }) => {
+  const { pageUrl } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
   const inputRef = useRef<HTMLInputElement>(null);
   const {
@@ -56,54 +58,65 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
 
     closeScanner();
   };
-  const { state, push, run, room } = useSocketConnection(
-    'http://localhost:3000',
-  );
 
-  const onUpload = (file: File) => {
-    push(file.name);
-    // const formData = new FormData();
-    // formData.append('file', file);
-    // fetcher.submit(formData, {
-    //   method: 'post',
-    //   encType: 'multipart/form-data',
-    // });
+  const onStatusChange: OnStatusChangeCb = (status) => {
+    switch (status) {
+      case 'idle':
+        onStateChange?.('idle');
+        break;
+      case 'image-processing':
+        onStateChange?.('processing');
+        break;
+      case 'content-processing':
+        onStateChange?.('processing');
+        break;
+      case 'done':
+        onStateChange?.('done');
+        break;
+    }
   };
 
-  const isLoading = fetcher.state !== 'idle';
-  const data = fetcher.data;
+  const {
+    status: processingStatus,
+    data: processResult,
+    processReceipt,
+  } = useProcessReceipt(pageUrl, {
+    callbacks: { onStatusChange },
+  });
+
+  const onUpload = (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    fetcher.submit(formData, {
+      method: 'post',
+      encType: 'multipart/form-data',
+    });
+  };
 
   useEffect(() => {
     if (fetcher.state === 'idle' && fetcher.data) {
-      onStateChange?.('done');
-    } else if (fetcher.state === 'idle') {
-      onStateChange?.('idle');
-    } else {
+      //eslint-disable-next-line
+      //@ts-ignore
+      processReceipt(fetcher.data.fileUrl);
+    } else if (fetcher.state !== 'idle') {
       onStateChange?.('processing');
     }
   }, [fetcher.state]);
 
-  console.log(state);
-  useEffect(() => {
-    run('http://localhost:3000');
-  }, []);
-
   const renderStep = () => {
-    if (isLoading) {
-      return <p>Loading...</p>;
-    }
-
-    if (data) {
-      if (!isFromProcessReceiptSchema(data)) {
-        return <p>Ups. Something went wrong...</p>;
-      }
-
-      const transactionItems = toTransactionItem(data.products);
+    if (processingStatus === 'image-processing') {
+      return <p>We are processing the receipt image...</p>;
+    } else if (processingStatus === 'content-processing') {
+      return <p>We are processing the receipt content...</p>;
+    } else if (processingStatus === 'done' && !processResult) {
+      return <p>Jus a moment...</p>;
+    } else if (processingStatus === 'done' && processResult) {
+      const transactionItems = toTransactionItem(processResult.products);
 
       return (
         <div>
-          <p>Place: {data.place}</p>
-          <p>Date: {data.date}</p>
+          <p>Place: {processResult.place}</p>
+          <p>Date: {processResult.date}</p>
 
           <p className="my-2">Items:</p>
           <ItemList
@@ -123,8 +136,8 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
             type="button"
             onClick={() =>
               onRetrieve({
-                date: data.date ?? undefined,
-                name: data.place ?? undefined,
+                date: processResult.date ?? undefined,
+                name: processResult.place ?? undefined,
                 items: transactionItems,
               })
             }
@@ -133,6 +146,8 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
           </button>
         </div>
       );
+    } else if (fetcher.state !== 'idle') {
+      return <p>Uploading the receipt...</p>;
     }
 
     return (
