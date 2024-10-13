@@ -152,6 +152,9 @@ export const ReceiptRetriever: React.FC<ReceiptRetrieverProps> = ({
 
     return (
       <>
+        {processingStatus === 'error' ? (
+          <p>Something went wrong. Try again</p>
+        ) : null}
         {triggers({
           takePhoto: openScanner,
           uploadPhoto: openPicker,

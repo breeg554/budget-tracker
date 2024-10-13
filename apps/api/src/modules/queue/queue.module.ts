@@ -16,17 +16,13 @@ import { ReceiptProducer } from '~/modules/queue/producers/receipt.producer';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
         const redis = configService.get('redis');
-        console.log(
-          'REEEEEDIS URL',
-          redis.url,
-          '   -----   ',
-          redis.url.split('redis://')[1],
-        );
+
         return {
           connection: {
-            url: redis.url.split('redis://')[1],
+            url: redis.url,
             ttl: redis.ttl,
             password: redis.password,
+            family: 6,
           },
         };
       },
