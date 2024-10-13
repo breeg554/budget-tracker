@@ -22,7 +22,6 @@ export class QueueAuthMiddleware implements NestMiddleware {
       this.sendUnauthorizedResponse(res);
       return;
     }
-
     const encodedCreds = authHeader.split(' ')[1];
     const decodedCreds = Buffer.from(encodedCreds, 'base64').toString('utf-8');
     const [username, password] = decodedCreds.split(':');
@@ -32,12 +31,10 @@ export class QueueAuthMiddleware implements NestMiddleware {
       return;
     }
     const isPasswordValid = await bcrypt.compare(password, this.passwordHash);
-
     if (!isPasswordValid) {
       this.sendUnauthorizedResponse(res);
       return;
     }
-
     next();
   }
 

@@ -30,6 +30,10 @@ import { ReceiptProducer } from '~/modules/queue/producers/receipt.producer';
     }),
     BullModule.registerQueue({
       name: QueueNames.RECEIPT,
+      defaultJobOptions: {
+        removeOnComplete: 100,
+        removeOnFail: 1000,
+      },
     }),
     BullBoardModule.forRoot({
       route: '/bull-board',
