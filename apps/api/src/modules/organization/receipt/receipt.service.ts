@@ -19,7 +19,7 @@ export class ReceiptService {
 
   public async processReceiptImage(
     fileUrl: string,
-    aiClient: AiModel,
+    aiClient: AiModel<GetProcessedReceiptDto>,
   ): Promise<GetProcessedReceiptDto> {
     return aiClient
       .withZodStructuredOutput(getProcessedReceipt)

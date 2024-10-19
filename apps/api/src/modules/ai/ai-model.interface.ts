@@ -4,6 +4,7 @@ import {
   SystemMessage as LangchainSystemMessage,
   BaseMessage,
   MessageContent,
+  BaseMessageChunk,
 } from '@langchain/core/messages';
 import { z } from 'zod';
 
@@ -29,14 +30,16 @@ export interface SystemMessage {
 
 export type AiModelMessage = AIMessage | HumanMessage | SystemMessage;
 
-export type AiModelConstructor = new (args: AiModelArgs) => AiModel;
+export type AiModelConstructor = new <R extends BaseMessageChunk>(
+  args: AiModelArgs,
+) => AiModel<R>;
 
-export abstract class AiModel {
-  public abstract invoke<R>(messages: AiModelMessage[]): Promise<R>;
+export abstract class AiModel<R = BaseMessageChunk> {
+  public abstract invoke(messages: AiModelMessage[]): Promise<R>;
 
   public abstract withZodStructuredOutput<T extends z.ZodTypeAny>(
     schema: T,
-  ): this;
+  ): AiModel<z.infer<T>>;
 
   protected getMessages(messages: AiModelMessage[]) {
     return messages.map(this.formatMessage);

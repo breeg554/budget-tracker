@@ -5,26 +5,28 @@ import {
   AiModelMessage,
 } from '~/modules/ai/ai-model.interface';
 import { ChatOpenAI } from '@langchain/openai';
+
+import { BaseMessageChunk } from '@langchain/core/messages';
 import { StructuredOutputParser } from 'langchain/output_parsers';
-import { z } from 'zod';
+import { z, ZodTypeAny } from 'zod';
 
 @Injectable()
-export class OpenAIModel extends AiModel {
+export class OpenAIModel<T = BaseMessageChunk> extends AiModel<T> {
   private readonly client: ChatOpenAI;
-  private parser: StructuredOutputParser<any>;
 
-  constructor(args: AiModelArgs, parser?: StructuredOutputParser<any>) {
+  constructor(
+    private readonly args: AiModelArgs,
+    private readonly parser?: StructuredOutputParser<ZodTypeAny>,
+  ) {
     super();
 
     this.client = new ChatOpenAI({
       model: 'gpt-4o-2024-08-06',
       ...args,
     });
-
-    this.parser = parser;
   }
 
-  public async invoke(messages: AiModelMessage[]): Promise<any> {
+  public async invoke(messages: AiModelMessage[]): Promise<T> {
     const client = this.parser
       ? this.client.withStructuredOutput(this.parser)
       : this.client;
@@ -32,9 +34,12 @@ export class OpenAIModel extends AiModel {
     return client.invoke(this.getMessages(messages));
   }
 
-  public withZodStructuredOutput<T extends z.ZodTypeAny>(schema: T) {
-    this.parser = StructuredOutputParser.fromZodSchema(schema);
-
-    return this;
+  public withZodStructuredOutput<T extends z.ZodTypeAny>(
+    schema: T,
+  ): OpenAIModel<z.infer<T>> {
+    return new OpenAIModel<T>(
+      this.args,
+      StructuredOutputParser.fromZodSchema(schema),
+    );
   }
 }
