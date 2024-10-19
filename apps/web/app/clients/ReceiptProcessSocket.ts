@@ -1,11 +1,10 @@
 import { ReceiptProcessDto } from '~/api/Receipt/receiptApi.types';
 import { Socket, SocketArgs } from '~/clients/Socket';
-import { assert } from '~/utils/assert';
 
 type RunArgs = {
   organizationName: string;
   fileUrl: string;
-  secretName: string;
+  model: 'openai';
 };
 
 export type ReceiptProcessStatus =
@@ -47,19 +46,15 @@ export class ReceiptProcessSocket extends Socket<ListenEvents, EmitEvents> {
     args: Omit<RunArgs, 'secretName'>,
     callbacks?: Partial<ReceiptProcessRunCallbacks>,
   ) {
-    this.socket.emit(
-      'run',
-      { ...args, secretName: 'openai' },
-      (runId: string) => {
-        this.roomId = runId;
+    this.socket.emit('run', { ...args, model: 'openai' }, (runId: string) => {
+      this.roomId = runId;
 
-        callbacks?.onStatusChange &&
-          this.onStatusChange(callbacks.onStatusChange);
-        callbacks?.onFinishedProcessing &&
-          this.onFinishedProcessing(callbacks.onFinishedProcessing);
-        callbacks?.onError && this.onError(callbacks.onError);
-      },
-    );
+      callbacks?.onStatusChange &&
+        this.onStatusChange(callbacks.onStatusChange);
+      callbacks?.onFinishedProcessing &&
+        this.onFinishedProcessing(callbacks.onFinishedProcessing);
+      callbacks?.onError && this.onError(callbacks.onError);
+    });
 
     return this;
   }

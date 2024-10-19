@@ -31,10 +31,10 @@ export class ReceiptGateway {
     @ConnectedSocket() client: Socket,
     @MessageBody('fileUrl') fileUrl: string,
     @MessageBody('organizationName') organizationName: string,
-    @MessageBody('secretName') secretName: string,
+    @MessageBody('model') model: string,
   ): Promise<string> {
     const roomId = this.gatewayEncryptionService.encrypt(
-      `${organizationName}:${secretName}:${fileUrl}`,
+      `${organizationName}:${model}:${fileUrl}`,
     );
 
     client.join(roomId);
@@ -43,7 +43,7 @@ export class ReceiptGateway {
       new ReceiptProcessEvent({
         fileUrl,
         organizationName,
-        secretName,
+        model,
         roomId,
       }),
     );

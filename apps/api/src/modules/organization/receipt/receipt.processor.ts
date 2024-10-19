@@ -28,7 +28,7 @@ export class ReceiptProcessor extends WorkerHost {
     switch (job.name) {
       case ReceiptProcessEvent.EVENT_NAME:
         const secret = await this.organizationService.findOrganizationSecret(
-          job.data.secretName,
+          job.data.model,
           job.data.organizationName,
         );
 

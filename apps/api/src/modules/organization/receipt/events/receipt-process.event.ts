@@ -1,6 +1,6 @@
 export type ReceiptProcessEventPayload = {
   fileUrl: string;
-  secretName: string;
+  model: string;
   organizationName: string;
   roomId: string;
 };
