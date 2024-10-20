@@ -43,7 +43,7 @@ export class ReceiptProcessSocket extends Socket<ListenEvents, EmitEvents> {
   }
 
   public run(
-    args: Omit<RunArgs, 'secretName'>,
+    args: Omit<RunArgs, 'model'>,
     callbacks?: Partial<ReceiptProcessRunCallbacks>,
   ) {
     this.socket.emit('run', { ...args, model: 'openai' }, (runId: string) => {
