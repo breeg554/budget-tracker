@@ -9,7 +9,8 @@ export const getReceiptSchema = z.object({
   updatedAt: z.date(),
   organization: getOrganizationSchema,
   author: getUserSchema,
-  content: z.string(),
+  key: z.string(),
+  originalName: z.string(),
 });
 
 export class GetReceiptDto extends createZodDto(getReceiptSchema) {}

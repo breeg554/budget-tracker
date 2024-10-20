@@ -1,8 +1,10 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
-export const createReceiptSchema = z.object({
-  image: z.string(),
+export const createReceiptDto = z.object({
+  fileUrl: z.string(),
+  fileKey: z.string(),
+  originalName: z.string(),
 });
 
-export class CreateReceiptDto extends createZodDto(createReceiptSchema) {}
+export class CreateReceiptDto extends createZodDto(createReceiptDto) {}
