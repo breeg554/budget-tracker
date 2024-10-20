@@ -9,12 +9,24 @@ import {
 import { TransactionItemCategory } from '~/entities/transaction/transactionItemCategory.entity';
 import { AiModel } from '~/modules/ai/ai-model.interface';
 import { ConfigService } from '@nestjs/config';
+import { StorageClient } from '~/modules/storage/interfaces/storage-client.interface';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Receipt } from '~/entities/receipt/receipt.entity';
+import { Repository } from 'typeorm';
+import { OrganizationService } from '~/modules/organization/organization.service';
+import { UserService } from '~/modules/user/user.service';
+import { ReceiptCreateFailedError } from '~/modules/organization/receipt/errors/receipt.error';
 
 @Injectable()
 export class ReceiptService {
   constructor(
+    @InjectRepository(Receipt)
+    private readonly receiptRepository: Repository<Receipt>,
     private readonly transactionItemCategoryService: TransactionItemCategoryService,
     private configService: ConfigService,
+    private readonly storageClient: StorageClient,
+    private readonly organizationService: OrganizationService,
+    private readonly userService: UserService,
   ) {}
 
   public async processReceiptImage(
@@ -43,6 +55,36 @@ export class ReceiptService {
       ]);
   }
 
+  public async upload(
+    file: Express.Multer.File,
+    organizationName: string,
+    userId: string,
+  ) {
+    try {
+      const organization =
+        await this.organizationService.findByName(organizationName);
+      const user = await this.userService.findOne(userId);
+
+      const { key } = await this.storageClient.upload(file.buffer, {
+        name: file.originalname,
+        ...file,
+        key: `${organizationName}/${userId}/${crypto.randomUUID()}`,
+      });
+
+      const receipt = new Receipt();
+      receipt.organization = organization;
+      receipt.author = user;
+      receipt.key = key;
+      receipt.originalName = file.originalname;
+      receipt.mimeType = file.mimetype;
+      receipt.size = file.size;
+
+      return await this.receiptRepository.save(receipt);
+    } catch (err) {
+      throw new ReceiptCreateFailedError(err);
+    }
+  }
+
   private createSystemMessage(content: string) {
     return {
       role: 'system' as const,
@@ -69,12 +111,6 @@ export class ReceiptService {
         },
       ],
     };
-  }
-
-  public getTemporaryReceiptUrl(organizationName: string, fileName: string) {
-    const appConfig = this.configService.get('app');
-
-    return `${appConfig.apiUrl}/api/organizations/${organizationName}/receipts/temporary/${fileName}`;
   }
 
   private buildContentExtractionPrompt() {

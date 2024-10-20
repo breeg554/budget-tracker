@@ -6,6 +6,7 @@ import { ReceiptModule } from '~/modules/organization/receipt/receipt.module';
 import { TransactionItemModule } from '~/modules/organization/transaction/transaction-item/transaction-item.module';
 import { Module } from '@nestjs/common';
 import { UserModule } from '~/modules/user/user.module';
+import { TemporaryFilesModule } from '~/modules/temporary/temporary-files.module';
 
 @Module({
   imports: [
@@ -34,6 +35,10 @@ import { UserModule } from '~/modules/user/user.module';
       {
         path: 'users',
         module: UserModule,
+      },
+      {
+        path: 'temporary',
+        module: TemporaryFilesModule,
       },
     ]),
   ],

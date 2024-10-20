@@ -20,7 +20,7 @@ import { AuthWsService } from '~/modules/auth/auth-ws.service';
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
+        secret: configService.get<string>('AUTH_JWT_SECRET'),
         signOptions: {
           expiresIn: '30d',
         },

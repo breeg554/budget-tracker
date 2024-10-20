@@ -18,8 +18,14 @@ export class Receipt {
   organization: Organization;
   @ManyToOne(() => User)
   author: User;
-  @Column('text')
-  content: string;
+  @Column()
+  key: string;
+  @Column()
+  originalName: string;
+  @Column()
+  mimeType: string;
+  @Column()
+  size: number;
   @CreateDateColumn()
   createdAt: Date;
   @UpdateDateColumn()

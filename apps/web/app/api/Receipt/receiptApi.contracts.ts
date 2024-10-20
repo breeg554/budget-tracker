@@ -17,7 +17,7 @@ export const fromReceiptProcessResponse = z.object({
 
 export const fromUploadReceiptSchema = z.object({
   fileUrl: z.string(),
-  fileName: z.string(),
+  fileKey: z.string(),
   originalName: z.string(),
 });
 

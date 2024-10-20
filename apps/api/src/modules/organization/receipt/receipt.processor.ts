@@ -59,20 +59,20 @@ export class ReceiptProcessor extends WorkerHost {
   }
 
   @OnWorkerEvent('error')
-  onError(job: Job, error: Error) {
-    this.receiptGateway.errorProcessing(job.data.roomId, error);
+  onError(job: Job, err: Error) {
+    this.receiptGateway.errorProcessing(job.data.roomId, err);
 
     this.logger.error(
-      `Job ${job.id} failed with error ${error.name}: ${error.message} at ${error.stack}`,
+      `Job ${job.id} failed with error ${err.name}: ${err.message} at ${err.stack}`,
     );
   }
 
   @OnWorkerEvent('failed')
-  onFailed(job: Job, error: Error) {
-    this.receiptGateway.errorProcessing(job.data.roomId, error);
+  onFailed(job: Job, err: Error) {
+    this.receiptGateway.errorProcessing(job.data.roomId, err);
 
     this.logger.error(
-      `Job ${job.id} failed with error ${error.name}: ${error.message} at ${error.stack}`,
+      `Job ${job.id} failed with error ${err.name}: ${err.message} at ${err.stack}`,
     );
   }
 }

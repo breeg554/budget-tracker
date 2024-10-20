@@ -15,3 +15,9 @@ export class ReceiptError extends Error {
     super('Unknown error occurred while processing receipt. Please try again.');
   }
 }
+
+export class ReceiptCreateFailedError extends Error {
+  constructor(readonly cause: Error) {
+    super('Failed to create receipt');
+  }
+}

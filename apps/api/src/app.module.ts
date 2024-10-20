@@ -4,7 +4,13 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { RouterModule } from '~/modules/router/router.module';
 
 import { LoggerModule } from 'nestjs-pino';
-import { AppConfig, DBConfig, QueueConfig, RedisConfig } from '~/config';
+import {
+  AppConfig,
+  DBConfig,
+  QueueConfig,
+  RedisConfig,
+  S3Config,
+} from '~/config';
 import { AuthModule } from '~/modules/auth/auth.module';
 import { JwtGuard } from '~/modules/auth/jwt.guard';
 import { JwtStrategy } from '~/modules/auth/jwt.strategy';
@@ -23,13 +29,15 @@ import { AppController } from './app.controller';
 import { DatabaseModule } from '~/modules/database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { QueueModule } from '~/modules/queue/queue.module';
+import { StorageModule } from '~/modules/storage/storage.module';
+import { TemporaryFilesModule } from '~/modules/temporary/temporary-files.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
-      load: [DBConfig, RedisConfig, QueueConfig, AppConfig],
+      load: [DBConfig, RedisConfig, QueueConfig, AppConfig, S3Config],
     }),
     DatabaseModule,
     CacheModule.registerAsync({
@@ -70,6 +78,7 @@ import { QueueModule } from '~/modules/queue/queue.module';
         },
       },
     }),
+    StorageModule,
     RouterModule,
     ScheduleModule.forRoot(),
     AuthModule,
@@ -80,6 +89,7 @@ import { QueueModule } from '~/modules/queue/queue.module';
     StatisticsModule,
     SecretModule,
     ReceiptModule,
+    TemporaryFilesModule,
   ],
   controllers: [AppController],
   providers: [
