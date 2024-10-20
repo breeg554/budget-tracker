@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   HttpCode,
@@ -42,12 +43,16 @@ export class AuthController {
   @Post('signup')
   async signUp(
     @Body() signUpDto: CreateUserDto,
+    //eslint-disable-next-line
     @Res({ passthrough: true }) res: Response,
   ) {
+    //eslint-disable-next-line
     const { accessToken, refreshToken } =
       await this.authService.signUp(signUpDto);
 
-    this.returnCookie(res, accessToken, refreshToken);
+    throw new BadRequestException('Registration is disabled');
+
+    // this.returnCookie(res, accessToken, refreshToken);
   }
 
   @Post('socket')
